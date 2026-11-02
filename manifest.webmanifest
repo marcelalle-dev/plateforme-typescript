@@ -1,6 +1,6 @@
 {
-  "name": "TypeScript en 50 exercices",
-  "short_name": "TypeScript 50",
+  "name": "Plateforme interactive TypeScript personnalisée",
+  "short_name": "TypeScript",
   "description": "Cours, quiz et pratique pour apprendre TypeScript, même sans connexion.",
   "lang": "fr",
   "start_url": "./",

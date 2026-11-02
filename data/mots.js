@@ -552,6 +552,510 @@ export const MOTS_NOUVEAUX = {
   "parseOffer",
   "goodFetcher",
   "badFetcher"
+ ],
+ "51": [
+  "Repository",
+  "add",
+  "remove",
+  "class",
+  "InMemoryRepository",
+  "implements",
+  "private",
+  "this",
+  "set",
+  "delete"
+ ],
+ "52": [
+  "mapValues",
+  "U",
+  "obj",
+  "fn",
+  "XOF_PER_EUR",
+  "budgetsXof",
+  "logo",
+  "site",
+  "affiche",
+  "budgetsEur",
+  "xof",
+  "lengths"
+ ],
+ "53": [
+  "pluck",
+  "_titles",
+  "_budgets",
+  "\"price\""
+ ],
+ "54": [
+  "ApiResponse",
+  "data",
+  "readTotal"
+ ],
+ "55": [
+  "Result",
+  "E",
+  "success",
+  "failure",
+  "mapResult",
+  "parseInteger",
+  "text",
+  "/^-?\\d+$/"
+ ],
+ "56": [
+  "Stack",
+  "pop",
+  "peek",
+  "size",
+  "\"un\"",
+  "\"deux\""
+ ],
+ "57": [
+  "UpdateOfferInput",
+  "Pick",
+  "\"deadline\"",
+  "\"description\"",
+  "applyUpdate",
+  "patch",
+  "updated"
+ ],
+ "58": [
+  "CreateOfferInput",
+  "Omit",
+  "\"createdAt\"",
+  "createOffer",
+  "newId",
+  "withId",
+  "\"pirate\""
+ ],
+ "59": [
+  "Settings",
+  "theme",
+  "\"light\"",
+  "\"dark\"",
+  "DEFAULT_SETTINGS",
+  "Required",
+  "resolveSettings",
+  "partial",
+  "Readonly",
+  "defaults",
+  "custom"
+ ],
+ "60": [
+  "statusLabels",
+  "published",
+  "in_selection",
+  "assigned",
+  "in_progress",
+  "delivered",
+  "validated",
+  "disputed",
+  "cancelled",
+  "labelOf"
+ ],
+ "61": [
+  "computePayout",
+  "platformFee",
+  "collaboratorAmount",
+  "Payout",
+  "PayoutArgs",
+  "Parameters",
+  "args",
+  "_payout",
+  "_args"
+ ],
+ "62": [
+  "FinalStatus",
+  "Extract",
+  "ActiveStatus",
+  "Exclude",
+  "FINAL_STATUSES",
+  "isActive",
+  "s",
+  "Defined",
+  "NonNullable",
+  "_final",
+  "_defined",
+  "active"
+ ],
+ "63": [
+  "statusColors",
+  "\"blue\"",
+  "StatusKey",
+  "Color",
+  "colorOf"
+ ],
+ "64": [
+  "Nullable",
+  "Mutable",
+  "TaskForm",
+  "initialForm",
+  "Config",
+  "retries",
+  "baseUrl",
+  "editable",
+  "_nullable",
+  "_mutable"
+ ],
+ "65": [
+  "ElementOf",
+  "infer",
+  "Unwrap",
+  "_e1",
+  "_e2",
+  "_u1",
+  "_u2",
+  "verified"
+ ],
+ "66": [
+  "EscrowAccount",
+  "#held",
+  "constructor",
+  "taskId",
+  "hold",
+  "+=",
+  "release",
+  "heldAmount",
+  "account"
+ ],
+ "67": [
+  "Member",
+  "public",
+  "email",
+  "protected",
+  "maskedEmail",
+  "domain",
+  "Mentor",
+  "\"Mentor\"",
+  "member",
+  "mentor"
+ ],
+ "68": [
+  "ChargeResult",
+  "\"ok\"",
+  "reference",
+  "PaymentGateway",
+  "charge",
+  "FakeGateway",
+  "CheckoutService",
+  "counter",
+  "gateway",
+  "pay",
+  "checkout"
+ ],
+ "69": [
+  "abstract",
+  "Notifier",
+  "send",
+  "to",
+  "format",
+  "charAt",
+  "EmailNotifier",
+  "SmsNotifier",
+  "static",
+  "MAX_LENGTH",
+  "trimEnd",
+  "notifiers",
+  "notifier",
+  "\"awa\"",
+  "impossible"
+ ],
+ "70": [
+  "Money",
+  "isInteger",
+  "zero",
+  "other",
+  "equals",
+  "toString",
+  "attempt",
+  "action",
+  "a",
+  "b"
+ ],
+ "71": [
+  "formatPayout"
+ ],
+ "72": [
+  "listOffers",
+  "offersFeature"
+ ],
+ "73": [
+  "import",
+  "z",
+  "from",
+  "\"zod\"",
+  "offerSchema",
+  "object",
+  "int",
+  "positive",
+  "enum",
+  "coerce",
+  "date",
+  "optional",
+  "valid",
+  "safeParse",
+  "invalid",
+  "issue",
+  "issues"
+ ],
+ "74": [
+  "createTaskSchema",
+  "maxBudget",
+  "array",
+  "refine",
+  "\"maxBudget\"",
+  "forms",
+  "\"Lo\"",
+  "form",
+  "\"valide\"",
+  "flattenError",
+  "fieldErrors"
+ ],
+ "75": [
+  "formSchema",
+  "preprocess",
+  "\"on\"",
+  "unchecked"
+ ],
+ "76": [
+  "paymentSchema",
+  "discriminatedUnion",
+  "\"status\"",
+  "literal",
+  "incoming",
+  "\"lost\""
+ ],
+ "77": [
+  "envSchema",
+  "DATABASE_URL",
+  "url",
+  "PORT",
+  "COMMISSION_RATE",
+  "Env",
+  "loadEnv",
+  "source",
+  "fields",
+  "env"
+ ],
+ "78": [
+  "emailSchema",
+  "pipe",
+  "ageSchema",
+  "regex",
+  "transform",
+  "AgeInput",
+  "AgeOutput",
+  "output",
+  "_in",
+  "_out"
+ ],
+ "79": [
+  "fetchOffers",
+  "loadOffers",
+  "paths"
+ ],
+ "80": [
+  "getErrorMessage",
+  "\"message\"",
+  "thrown",
+  "\"quota\""
+ ],
+ "81": [
+  "DomainError",
+  "super",
+  "target",
+  "AlreadyAppliedError",
+  "\"ALREADY_APPLIED\"",
+  "TaskNotPublishedError",
+  "\"TASK_NOT_PUBLISHED\"",
+  "TypeError"
+ ],
+ "82": [
+  "readFromDisk",
+  "loadOffer",
+  "cause"
+ ],
+ "83": [
+  "validateBudget",
+  "report"
+ ],
+ "84": [
+  "toError",
+  "tryCatch",
+  "parseJson"
+ ],
+ "85": [
+  "ErrorCode",
+  "\"NOT_FOUND\"",
+  "\"INVALID_INPUT\"",
+  "\"FORBIDDEN\"",
+  "AppError",
+  "\"AppError\"",
+  "httpStatus",
+  "NOT_FOUND",
+  "ALREADY_APPLIED",
+  "INVALID_INPUT",
+  "FORBIDDEN",
+  "ErrorCodeWithConflict",
+  "\"CONFLICT\"",
+  "HttpResponse",
+  "body",
+  "toHttp",
+  "\"INTERNAL\""
+ ],
+ "86": [
+  "renderToStaticMarkup",
+  "OfferCardProps",
+  "\"currency\"",
+  "onOpen",
+  "offerId",
+  "OfferCard",
+  "article",
+  "h3",
+  "p",
+  "button",
+  "\"button\"",
+  "onClick",
+  "\"offer\"",
+  "open",
+  "missingOffer"
+ ],
+ "87": [
+  "useState",
+  "ChangeEvent",
+  "\"react\"",
+  "TASK_STATUSES",
+  "isTaskStatus",
+  "StatusSelect",
+  "setStatus",
+  "handleChange",
+  "event",
+  "HTMLSelectElement",
+  "neverCalled",
+  "select",
+  "onChange",
+  "option"
+ ],
+ "88": [
+  "ReactNode",
+  "useToggle",
+  "initial",
+  "setValue",
+  "toggle",
+  "current",
+  "PanelProps",
+  "initiallyOpen",
+  "children",
+  "Panel",
+  "section"
+ ],
+ "89": [
+  "express",
+  "Request",
+  "Response",
+  "\"express\"",
+  "AddressInfo",
+  "ApplyParams",
+  "ApplyBody",
+  "applyToTask",
+  "req",
+  "res",
+  "params",
+  "json",
+  "app",
+  "use",
+  "post",
+  "server",
+  "listen",
+  "once",
+  "\"listening\"",
+  "isAddressInfo",
+  "address",
+  "fetch",
+  "port",
+  "method",
+  "\"POST\"",
+  "headers",
+  "close"
+ ],
+ "90": [
+  "RouteDef",
+  "\"GET\"",
+  "annotatedRoutes",
+  "_lost",
+  "routes",
+  "satisfies",
+  "_kept",
+  "\"listOffers\"",
+  "\"createOffer\"",
+  "routePath",
+  "withDelete",
+  "removeOffer",
+  "\"DELETE\""
+ ],
+ "91": [
+  "parseTask"
+ ],
+ "92": [
+  "computeFeeTypo",
+  "ammount",
+  "computeFee"
+ ],
+ "93": [
+  "found",
+  "showTitleUnsafe",
+  "requireOffer",
+  "o"
+ ],
+ "94": [
+  "fromString",
+  "missingRate"
+ ],
+ "95": [],
+ "96": [
+  "Skills",
+  "allowedTransitions",
+  "canTransition",
+  "noSkill",
+  "application",
+  "\"Disponible\"",
+  "\"interdit\""
+ ],
+ "97": [
+  "InvalidTransitionError",
+  "\"INVALID_TRANSITION\"",
+  "transition"
+ ],
+ "98": [
+  "assertPublished",
+  "hasAlreadyApplied",
+  "existing",
+  "apply",
+  "\"Bonjour\""
+ ],
+ "99": [
+  "InvalidPaymentStateError",
+  "\"INVALID_PAYMENT_STATE\"",
+  "assertValidAmount",
+  "assertValidRate",
+  "commissionRate",
+  "releasePayment",
+  "odd",
+  "released"
+ ],
+ "100": [
+  "assert",
+  "positiveBudget",
+  "tuple",
+  "CreateTaskInput",
+  "createTask",
+  "step",
+  "check",
+  "equal",
+  "original",
+  "next",
+  "throws",
+  "notEqual",
+  "held",
+  "deepEqual"
  ]
 };
 export const MOTS_PRATIQUE = {
@@ -803,5 +1307,253 @@ export const MOTS_PRATIQUE = {
   "User",
   "age",
   "parseUser"
+ ],
+ "51": [
+  "Shelf"
+ ],
+ "52": [
+  "filterValues",
+  "keep"
+ ],
+ "53": [
+  "getField",
+  "sortBy"
+ ],
+ "54": [
+  "next",
+  "single"
+ ],
+ "55": [
+  "getOr"
+ ],
+ "56": [
+  "Queue",
+  "enqueue"
+ ],
+ "57": [
+  "User",
+  "email",
+  "UserPatch",
+  "updateUser",
+  "user"
+ ],
+ "58": [
+  "Note",
+  "NewNote",
+  "createNote"
+ ],
+ "59": [
+  "Options",
+  "retries",
+  "verbose",
+  "withDefaults",
+  "options"
+ ],
+ "60": [
+  "\"low\"",
+  "COLORS",
+  "colorOf"
+ ],
+ "61": [
+  "makeUser",
+  "age",
+  "active",
+  "User",
+  "UserArgs",
+  "build"
+ ],
+ "62": [
+  "Event",
+  "\"click\"",
+  "\"scroll\"",
+  "\"keydown\"",
+  "\"keyup\"",
+  "KeyEvent",
+  "OtherEvent",
+  "isKeyEvent",
+  "e"
+ ],
+ "63": [
+  "PRICES",
+  "basic",
+  "pro",
+  "Plan",
+  "Price",
+  "priceOf",
+  "plan"
+ ],
+ "64": [
+  "Validators",
+  "taskValidators"
+ ],
+ "65": [
+  "FirstArg",
+  "F",
+  "exemple",
+  "a",
+  "b",
+  "\"ok\""
+ ],
+ "66": [
+  "Wallet",
+  "balance",
+  "deposit"
+ ],
+ "67": [
+  "Animal",
+  "Dog",
+  "speak"
+ ],
+ "68": [
+  "FixedClock",
+  "Stamp",
+  "read"
+ ],
+ "69": [
+  "Shape",
+  "area",
+  "Square"
+ ],
+ "70": [
+  "Duration",
+  "minutes",
+  "plus"
+ ],
+ "71": [
+  "addTax",
+  "formatPrice"
+ ],
+ "72": [
+  "tasksFeature"
+ ],
+ "73": [],
+ "74": [
+  "validateRange"
+ ],
+ "75": [
+  "parseForm"
+ ],
+ "76": [
+  "ref",
+  "parsePayment"
+ ],
+ "77": [
+  "loadConfig",
+  "port",
+  "URL"
+ ],
+ "78": [
+  "normalizeEmail",
+  "parseAge"
+ ],
+ "79": [
+  "findInvalid"
+ ],
+ "80": [
+  "describeError",
+  "safely"
+ ],
+ "81": [
+  "AppError",
+  "NotFoundError",
+  "toLabel"
+ ],
+ "82": [
+  "loadUser",
+  "read",
+  "causeMessage"
+ ],
+ "83": [
+  "divide",
+  "show",
+  "r"
+ ],
+ "84": [
+  "tryParseNumber"
+ ],
+ "85": [
+  "Code",
+  "\"UNAUTHORIZED\"",
+  "\"TOO_MANY\"",
+  "toResponse",
+  "any"
+ ],
+ "86": [
+  "badge",
+  "props",
+  "count"
+ ],
+ "87": [
+  "SIZES",
+  "\"s\"",
+  "\"m\"",
+  "\"l\"",
+  "pickSize",
+  "current"
+ ],
+ "88": [
+  "createToggle"
+ ],
+ "89": [
+  "apply"
+ ],
+ "90": [
+  "THEMES",
+  "fond",
+  "clair",
+  "sombre",
+  "fondDe",
+  "nom"
+ ],
+ "91": [
+  "Product",
+  "product",
+  "parsePrice"
+ ],
+ "92": [
+  "Line",
+  "line",
+  "prix",
+  "quantiy"
+ ],
+ "93": [
+  "User",
+  "nameOr",
+  "users",
+  "u",
+  "requireUser"
+ ],
+ "94": [],
+ "95": [
+  "diagnostic",
+  "\"autre\""
+ ],
+ "96": [
+  "Light",
+  "\"red\"",
+  "NEXT",
+  "red",
+  "canGo"
+ ],
+ "97": [
+  "Order",
+  "state",
+  "\"new\"",
+  "\"paid\"",
+  "\"sent\"",
+  "advance",
+  "order"
+ ],
+ "98": [
+  "register"
+ ],
+ "99": [
+  "splitBill",
+  "net"
+ ],
+ "100": [
+  "condition",
+  "runAll",
+  "steps"
  ]
 };

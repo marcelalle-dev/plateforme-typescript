@@ -255,6 +255,11 @@ code { font: 500 0.88em/1.4 var(--mono); background: color-mix(in srgb, var(--ts
 .liste-simple li { margin-bottom: 6px; }
 .rappel { margin: 0 0 18px; padding: 10px 14px; background: var(--marqueur); color: var(--sur-marqueur); border-radius: 7px; font-weight: 700; }
 .rappel a { color: inherit; }
+.note-bibliotheque { margin-top: 18px; padding: 14px 16px; border: 1px solid var(--trait); border-radius: 7px; }
+.note-bibliotheque h3 { margin: 0 0 6px; }
+.note-bibliotheque p { margin: 0 0 10px; }
+.note-bibliotheque pre { margin: 0; padding: 10px 12px; overflow-x: auto; background: var(--code-fond); color: var(--code-texte); border-radius: 5px; }
+.note-bibliotheque pre code { display: block; padding: 0; background: none; color: inherit; }
 .section-courte { margin-bottom: 24px; }
 
 /* Accès */

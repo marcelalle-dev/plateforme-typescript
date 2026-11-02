@@ -240,4 +240,296 @@ export const ENRICHISSEMENT = {
       ],
     },
   },
+  51: {
+    essai: 'Retirez `budget: 75_000` à la ligne 33 : le dépôt a été créé pour des `Offer`, et l’erreur TS2345 apparaît.',
+    avant: [[47, 'les fonctions génériques'], [48, 'la contrainte `extends`']],
+    apres: [[56, 'une autre classe générique'], [68, '`implements` en détail']],
+  },
+  52: {
+    essai: 'Écrivez `label.foo` à la ligne 15 : `T` a été déduit comme `string`, et l’erreur TS2339 apparaît.',
+    avant: [[47, 'un seul paramètre de type']],
+    apres: [[55, 'trois paramètres de type dans `mapResult`']],
+  },
+  53: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 24 : l’erreur TS2345 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[48, 'les contraintes sur un générique']],
+    apres: [[63, '`keyof typeof` sur un objet'], [64, '`keyof` dans un type mappé']],
+    approfondir: {
+      titre: 'Que signifie `K extends keyof T` ?',
+      textes: [
+        'Imaginez un tableau et le nom de ses colonnes. `keyof T` est la liste de ces noms, sous forme d’union. `K extends keyof T` signifie : « `K` doit être l’une de ces colonnes ».',
+        '`T[K]` est alors le type de la colonne choisie. C’est ce lien qui donne un résultat précis : la colonne `budget` donne des `number`, et la colonne `title` donne des `string`.',
+      ],
+    },
+  },
+  54: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 9 : l’erreur TS18046 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[46, 'un type générique']],
+    apres: [[55, 'une valeur par défaut pour le type de l’erreur']],
+  },
+  55: {
+    essai: 'Écrivez `doubled.value` à la ligne 28 : dans ce cas, le résultat est un échec, et l’erreur TS2339 apparaît.',
+    avant: [[24, 'l’union discriminée'], [54, 'le paramètre de type par défaut']],
+    apres: [[83, 'renvoyer un résultat plutôt que lever une erreur'], [84, 'convertir une exception en résultat']],
+    approfondir: {
+      titre: 'Pourquoi renvoyer un `Result` ?',
+      textes: [
+        'Pensez à un colis livré avec un bordereau : soit « livré », avec le contenu, soit « échec », avec la raison. Celui qui le reçoit doit lire le bordereau avant d’ouvrir le colis.',
+        'Dans le code, c’est `ok` qui joue ce rôle. Le compilateur refuse de lire `value` avant le test. `mapResult` applique sa fonction au contenu, et laisse passer un échec sans y toucher.',
+      ],
+    },
+  },
+  56: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 24 : l’erreur TS2345 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[51, 'une classe générique et ses méthodes']],
+    apres: [[66, 'les classes en détail']],
+  },
+  57: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 29 : l’erreur TS2353 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[11, 'les champs facultatifs']],
+    apres: [[58, '`Omit`, l’inverse de `Pick`'], [64, 'comment ces types sont construits']],
+  },
+  58: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 30 : l’erreur TS2353 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[57, '`Pick`']],
+    apres: [[59, '`Required` et `Readonly`']],
+  },
+  59: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 15 : l’erreur TS2540 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[12, '`readonly` sur un champ'], [57, '`Partial`']],
+    apres: [[64, 'écrire soi-même un tel type']],
+  },
+  60: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 27 : l’erreur TS2741 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[17, 'les dictionnaires'], [18, 'l’union des statuts']],
+    apres: [[63, 'les clés d’un objet constant'], [96, 'le plan des transitions']],
+  },
+  61: {
+    essai: 'Écrivez `[80_000]` à la ligne 14 : `Parameters` exige les deux arguments, et l’erreur TS2322 apparaît.',
+    avant: [[32, '`typeof` dans un type']],
+    apres: [[65, 'comment ces types utilisent `infer`']],
+  },
+  62: {
+    essai: 'Gardez seulement `"closed"` à la ligne 17 : `FinalStatus` change, et la vérification de la ligne 28 donne l’erreur TS2344.',
+    avant: [[18, 'l’union des statuts'], [29, '`Equal` et `Expect`']],
+    apres: [[65, 'les types conditionnels qu’ils utilisent']],
+  },
+  63: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 11 : l’erreur TS2345 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[31, '`as const`'], [60, '`Record`']],
+    apres: [[64, '`keyof` dans un type mappé']],
+  },
+  64: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 17 : l’erreur TS2540 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[53, '`keyof`'], [59, '`Readonly`']],
+    apres: [[65, 'les types conditionnels']],
+    approfondir: {
+      titre: 'Qu’est-ce qu’un type mappé ?',
+      textes: [
+        'C’est un tampon appliqué à chaque ligne d’un formulaire. `[K in keyof T]` parcourt les champs un par un, et décrit ce que devient chacun d’eux.',
+        '`-readonly` retire la protection du champ, et `| null` accepte une case vide. `Partial` et `Readonly` sont écrits de cette façon dans TypeScript.',
+      ],
+    },
+  },
+  65: {
+    essai: 'Écrivez `? U : never` à la ligne 6 : la vérification de la ligne 11 donne l’erreur TS2344.',
+    avant: [[29, '`Equal` et `Expect`'], [61, '`ReturnType`']],
+    apres: [[78, 'les types d’entrée et de sortie']],
+    approfondir: {
+      titre: 'Comment lire `T extends Promise<infer U> ? U : T` ?',
+      textes: [
+        'C’est un `if` sur les types : « si `T` a la forme d’une promesse, alors donne son contenu, sinon donne `T` ». Il est calculé à la compilation.',
+        '`infer U` est comme un trou dans un moule : le compilateur compare `T` au moule, et nomme `U` ce qui remplit le trou. Ce nom n’existe que dans la branche « alors ».',
+      ],
+    },
+  },
+  66: {
+    essai: 'Écrivez `account.#held = 0;` à la ligne 28 : un champ `#` est refusé hors de sa classe, avec l’erreur TS18013.',
+    avant: [[56, 'une première classe']],
+    apres: [[67, '`private` et `protected`'], [70, 'un objet-valeur']],
+    approfondir: {
+      titre: 'Quelle différence entre `#held` et `private` ?',
+      textes: [
+        '`private` est un panneau « entrée interdite » : le compilateur le fait respecter, mais à l’exécution, la porte reste ouverte.',
+        '`#held` est une vraie serrure : même en JavaScript, sans le compilateur, le code extérieur ne peut pas y accéder.',
+      ],
+    },
+  },
+  67: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 23 : l’erreur TS2341 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[66, 'une première classe complète']],
+    apres: [[69, 'une classe abstraite et ses filles']],
+  },
+  68: {
+    essai: 'Écrivez `{}` à la place de `new FakeGateway()`, à la ligne 28 : cet objet n’a pas de méthode `charge`, et l’erreur TS2345 apparaît.',
+    avant: [[51, 'une interface et sa classe']],
+    apres: [[69, 'une classe abstraite']],
+    approfondir: {
+      titre: 'Pourquoi dépendre d’une interface ?',
+      textes: [
+        'Une prise électrique ne connaît pas l’appareil qu’on y branche : elle connaît seulement la forme de la fiche. `PaymentGateway` est cette forme.',
+        '`CheckoutService` fonctionne donc avec une fausse passerelle pendant les tests, puis avec un vrai service de paiement, sans changer une ligne.',
+      ],
+    },
+  },
+  69: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 31 : l’erreur TS2511 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[67, 'l’héritage'], [68, 'les interfaces']],
+    apres: [[81, 'hériter de `Error`']],
+  },
+  70: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 51 : l’erreur TS2673 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[66, 'les classes']],
+    apres: [[99, 'calculer de l’argent sans perte']],
+  },
+  71: {
+    essai: 'Écrivez `describePayout(80_000)` à la ligne 28 : il manque le taux, et l’erreur TS2554 apparaît.',
+    apres: [[72, 'ranger les types par fonctionnalité'], [95, 'l’erreur d’un import incorrect']],
+  },
+  72: {
+    essai: 'Écrivez `offer.titre` à la ligne 17 : le type vient de `Offer`, et l’erreur TS2551 propose un nom proche.',
+    avant: [[71, 'les modules']],
+    apres: [[96, 'un projet organisé par domaine']],
+  },
+  73: {
+    avant: [[14, '`unknown` et la validation']],
+    apres: [[74, 'des règles personnalisées']],
+    approfondir: {
+      titre: 'Pourquoi déduire le type depuis un schéma ?',
+      textes: [
+        'Un type n’existe qu’à la compilation : il ne peut pas contrôler une donnée reçue à l’exécution. Un schéma, lui, reste dans le programme et vérifie vraiment.',
+        '`z.infer` évite d’écrire deux fois la même chose : on décrit la forme une seule fois, et on obtient à la fois le contrôle et le type.',
+      ],
+    },
+  },
+  74: {
+    avant: [[73, 'les schémas zod']],
+    apres: [[75, 'les données d’un formulaire']],
+  },
+  75: {
+    avant: [[74, 'valider un formulaire']],
+    apres: [[78, '`transform`']],
+  },
+  76: {
+    avant: [[24, 'l’union discriminée'], [73, 'les schémas zod']],
+    apres: [[79, 'valider une réponse d’API']],
+  },
+  77: {
+    avant: [[73, 'les schémas zod']],
+    apres: [[100, 'une validation complète']],
+  },
+  78: {
+    avant: [[75, 'la conversion avant validation'], [65, 'les types calculés']],
+    apres: [[79, 'valider une liste']],
+  },
+  79: {
+    avant: [[73, 'les schémas zod'], [43, 'les fonctions `async`']],
+    apres: [[100, 'le projet complet']],
+  },
+  80: {
+    essai: 'Écrivez `true` à la place du test, à la ligne 2 : `error` reste `unknown`, et l’erreur TS18046 apparaît.',
+    avant: [[14, '`unknown`'], [21, '`instanceof`']],
+    apres: [[81, 'des erreurs métier'], [84, 'transformer une erreur en résultat']],
+  },
+  81: {
+    essai: 'Retirez `super(message);` à la ligne 6 : une classe fille doit appeler le constructeur parent, et l’erreur TS2377 apparaît.',
+    avant: [[69, 'l’héritage'], [80, 'lire une erreur inconnue']],
+    apres: [[82, 'conserver la cause'], [97, 'une erreur métier dans TaskD']],
+  },
+  82: {
+    essai: 'Écrivez `true` à la place du test, à la ligne 16 : `error` reste `unknown`, et l’erreur TS18046 apparaît.',
+    avant: [[81, 'les erreurs métier']],
+    apres: [[85, 'traduire les erreurs']],
+  },
+  83: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 16 : l’erreur TS2339 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[24, 'l’union discriminée'], [55, 'le type `Result`']],
+    apres: [[84, 'convertir une exception en résultat']],
+  },
+  84: {
+    essai: 'Écrivez `result.value` à la ligne 29 : le résultat est un échec dans ce cas, et l’erreur TS2339 apparaît.',
+    avant: [[55, 'le type `Result`'], [83, 'renvoyer un résultat']],
+    apres: [[85, 'traduire les erreurs en HTTP']],
+  },
+  85: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 23 : l’erreur TS2741 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[60, '`Record`'], [81, 'les erreurs métier']],
+    apres: [[89, 'un contrôleur HTTP']],
+  },
+  86: {
+    avant: [[11, 'les types d’objet']],
+    apres: [[87, 'l’état d’un composant']],
+  },
+  87: {
+    avant: [[86, 'les propriétés d’un composant'], [27, 'les fonctions de garde']],
+    apres: [[88, 'un hook personnalisé']],
+  },
+  88: {
+    avant: [[87, '`useState`']],
+    apres: [[90, '`satisfies`']],
+  },
+  89: {
+    avant: [[85, 'les statuts HTTP'], [79, 'valider une donnée externe']],
+    apres: [[100, 'le projet complet']],
+  },
+  90: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 28 : l’erreur TS2322 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[31, '`as const`'], [60, '`Record`']],
+    apres: [[96, 'le domaine de TaskD']],
+    approfondir: {
+      titre: 'Quelle différence entre `: Type` et `satisfies Type` ?',
+      textes: [
+        'Une annotation, c’est ranger un objet dans une boîte étiquetée : il est contrôlé, mais on ne voit plus que l’étiquette. Les détails précis sont perdus.',
+        '`satisfies` est un contrôle au guichet : l’objet est vérifié, puis il repart tel quel. On obtient donc le contrôle, et on garde les types exacts.',
+      ],
+    },
+  },
+  91: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 3 : l’erreur TS2322 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[14, '`unknown`']],
+    apres: [[92, 'une autre erreur fréquente']],
+  },
+  92: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 4 : l’erreur TS2551 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[91, 'la structure d’un message']],
+    apres: [[93, 'une valeur peut-être absente']],
+  },
+  93: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 5 : l’erreur TS18048 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[2, 'les valeurs absentes'], [92, 'lire un message']],
+    apres: [[94, 'les erreurs d’arguments']],
+  },
+  94: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 5 : l’erreur TS2345 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[1, 'les paramètres typés'], [93, 'lire un message']],
+    apres: [[95, 'les erreurs d’import']],
+  },
+  95: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 1 : l’erreur TS2307 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[71, 'les modules']],
+    apres: [[96, 'le projet TaskD']],
+  },
+  96: {
+    essai: 'Retirez le commentaire `@ts-expect-error` de la ligne 89 : l’erreur TS2322 apparaît sur la ligne suivante. Lisez son explication.',
+    avant: [[12, '`readonly`'], [24, 'l’union discriminée'], [60, '`Record`']],
+    apres: [[97, 'appliquer les transitions']],
+  },
+  97: {
+    essai: 'Écrivez `task.status = to; return task;` à la ligne 69 : le champ est en lecture seule, et l’erreur TS2540 apparaît.',
+    avant: [[96, 'le plan des transitions'], [81, 'les erreurs métier']],
+    apres: [[98, 'postuler à une tâche']],
+  },
+  98: {
+    essai: 'Écrivez `"publishd"` à la ligne 59 : ce statut n’existe pas, et l’erreur TS2367 signale une comparaison impossible.',
+    avant: [[97, 'les transitions']],
+    apres: [[99, 'la commission et le paiement']],
+  },
+  99: {
+    essai: 'Écrivez `"hled"` à la ligne 57 : ce statut n’existe pas, et l’erreur TS2367 signale une comparaison impossible.',
+    avant: [[98, 'les règles métier'], [70, 'un montant bien traité']],
+    apres: [[100, 'assembler le projet']],
+  },
+  100: {
+    avant: [[73, 'les schémas zod'], [99, 'la commission et le paiement']],
+  },
 };

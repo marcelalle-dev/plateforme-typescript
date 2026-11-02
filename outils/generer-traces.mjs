@@ -12,7 +12,8 @@ import { SOURCES } from "../data/sources.js";
 process.env.TZ = "UTC";
 const ici = dirname(fileURLToPath(import.meta.url));
 const ts = createRequire(import.meta.url)(join(ici, "..", "vendor", "typescript.js"));
-const MAX_ETAPES = 120;
+const MAX_ETAPES = 160;
+const requis = createRequire(join(ici, "..", "..", "src", "x.js"));
 
 function nomsDe(nom, noms = []) {
   if (ts.isIdentifier(nom)) noms.push(nom.text);
@@ -29,7 +30,7 @@ function instrumenter(source) {
     const variables = (pile) => f.createArrayLiteralExpression(
       [...new Set(pile.flatMap((s) => [...s]))].map((nom) => f.createArrayLiteralExpression([
         f.createStringLiteral(nom),
-        f.createArrowFunction(undefined, undefined, [], undefined, undefined, f.createIdentifier(nom)),
+        f.createArrowFunction(undefined, undefined, [], undefined, undefined, nom === "this" ? f.createThis() : f.createIdentifier(nom)),
       ])),
     );
     const appel = (nomFn, n, genre, pile, valeur) => f.createCallExpression(f.createIdentifier(nomFn), undefined, [
@@ -43,6 +44,7 @@ function instrumenter(source) {
 
     function fonction(n, pile) {
       const portee = new Set(n.parameters.flatMap((p) => nomsDe(p.name)));
+      if (!ts.isArrowFunction(n) && !ts.isFunctionDeclaration(n)) portee.add("this");
       const interne = pile.length === 1 ? [portee] : [...pile, portee];
       let corps;
       if (ts.isBlock(n.body)) {
@@ -57,6 +59,11 @@ function instrumenter(source) {
           f.createReturnStatement(temp),
         ], true);
       }
+      if (ts.isMethodDeclaration(n)) {
+        return f.updateMethodDeclaration(n, n.modifiers, n.asteriskToken, n.name, n.questionToken, n.typeParameters, n.parameters, n.type, corps);
+      }
+      if (ts.isConstructorDeclaration(n)) return f.updateConstructorDeclaration(n, n.modifiers, n.parameters, corps);
+      if (ts.isGetAccessorDeclaration(n)) return f.updateGetAccessorDeclaration(n, n.modifiers, n.name, n.parameters, n.type, corps);
       if (ts.isArrowFunction(n)) {
         return f.updateArrowFunction(n, n.modifiers, n.typeParameters, n.parameters, n.type, n.equalsGreaterThanToken, corps);
       }
@@ -83,8 +90,17 @@ function instrumenter(source) {
       return sortie;
     }
 
+    function classe(s, pile) {
+      const membres = s.members.map((m) => {
+        const avecCorps = (ts.isMethodDeclaration(m) || ts.isConstructorDeclaration(m) || ts.isGetAccessorDeclaration(m)) && m.body;
+        return avecCorps ? fonction(m, pile) : m;
+      });
+      return f.updateClassDeclaration(s, s.modifiers, s.name, s.typeParameters, s.heritageClauses, membres);
+    }
+
     function instruction(s, pile, portee) {
-      if (ts.isTypeAliasDeclaration(s) || ts.isInterfaceDeclaration(s) || ts.isExportDeclaration(s)) return [s];
+      if (ts.isTypeAliasDeclaration(s) || ts.isInterfaceDeclaration(s) || ts.isExportDeclaration(s) || ts.isImportDeclaration(s)) return [s];
+      if (ts.isClassDeclaration(s)) return [classe(s, pile)];
       if (ts.isFunctionDeclaration(s)) return s.body ? [fonction(s, pile)] : [s];
       if (ts.isVariableStatement(s)) {
         const visite = expression(s, pile);
@@ -152,12 +168,14 @@ function formater(valeur) {
   return texte.length > 140 ? `${texte.slice(0, 137)}...` : texte;
 }
 
-async function tracer({ id, ts: code, sortie: attendue }) {
-  const source = ts.createSourceFile("/e.ts", code, ts.ScriptTarget.ES2022, true);
+async function tracer({ id, ts: code, tsx, sortie: attendue }) {
+  const nomFichier = tsx ? "/e.tsx" : "/e.ts";
+  const source = ts.createSourceFile(nomFichier, code, ts.ScriptTarget.ES2022, true);
   const js = ts.transpileModule(code, {
-    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.ESNext },
+    fileName: nomFichier,
+    compilerOptions: { target: ts.ScriptTarget.ES2022, module: ts.ModuleKind.CommonJS, esModuleInterop: true, jsx: ts.JsxEmit.ReactJSX },
     transformers: { before: [instrumenter(source)] },
-  }).outputText.replace(/^\s*export\s*\{\s*\}\s*;?\s*$/gm, "");
+  }).outputText;
 
   const etapes = [];
   const sorties = [];
@@ -196,7 +214,7 @@ async function tracer({ id, ts: code, sortie: attendue }) {
     },
   };
   const Asynchrone = Object.getPrototypeOf(async function () {}).constructor;
-  await new Asynchrone("console", "__pas", "__test", js)(consoleTrace, __pas, __test);
+  await new Asynchrone("console", "__pas", "__test", "require", "exports", js)(consoleTrace, __pas, __test, requis, {});
   actif = false;
 
   const obtenue = sorties.join("\n");

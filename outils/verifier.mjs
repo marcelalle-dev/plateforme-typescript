@@ -35,8 +35,8 @@ const stats = { questions: 0, predictions: 0, erreurs: 0, mots: 0 };
 const motsUtilises = new Set();
 const motsDejaVus = new Set();
 
-function controlerMots(code, signaler, origine) {
-  for (const mot of extraireMots(ts, code)) {
+function controlerMots(code, signaler, origine, tsx = false) {
+  for (const mot of extraireMots(ts, code, tsx)) {
     motsUtilises.add(cleMot(mot));
     if (!definition(mot)) signaler(`mot sans explication (${origine}) : ${mot}`);
   }
@@ -56,14 +56,15 @@ for (const ex of EXERCICES) {
   for (const champ of CHAMPS) if (!ex[champ] || ex[champ].length === 0) signaler(`champ absent : ${champ}`);
   if (!ex.lignes) continue;
 
-  controlerMots(ex.ts, signaler, "cours");
-  const motsExercice = extraireMots(ts, ex.ts);
+  controlerMots(ex.ts, signaler, "cours", ex.tsx);
+  const motsExercice = extraireMots(ts, ex.ts, ex.tsx);
   for (const [mot, sens] of Object.entries(CONTEXTE)) {
     if (sens[ex.id] && !motsExercice.includes(mot)) signaler(`sens particulier d'un mot absent du code : ${mot}`);
   }
-  if (!ex.essai) signaler("essai du code absent");
+  if (!ex.essai && !ex.bibliotheque) signaler("essai du code absent");
+  if (ex.essai && ex.bibliotheque) signaler("essai impossible : cet exercice utilise une bibliothèque");
   for (const [lien] of [...(ex.avant ?? []), ...(ex.apres ?? [])]) {
-    if (lien < 1 || lien > 50 || lien === ex.id) signaler(`lien invalide vers l'exercice ${lien}`);
+    if (lien < 1 || lien > 100 || lien === ex.id) signaler(`lien invalide vers l'exercice ${lien}`);
   }
   for (const [lien] of ex.avant ?? []) if (lien > ex.id) signaler(`« d'où vient » pointe vers un exercice plus loin : ${lien}`);
   for (const [lien] of ex.apres ?? []) if (lien < ex.id) signaler(`« où elle resservira » pointe en arrière : ${lien}`);
@@ -76,7 +77,7 @@ for (const ex of EXERCICES) {
   for (const [titre] of ex.erreurs ?? []) {
     for (const m of titre.matchAll(/TS(\d+)/g)) if (!codeTraduit(Number(m[1]))) signaler(`erreur non traduite : TS${m[1]}`);
   }
-  const attendus = extraireMots(ts, ex.ts).filter((mot) => !motsDejaVus.has(mot));
+  const attendus = extraireMots(ts, ex.ts, ex.tsx).filter((mot) => !motsDejaVus.has(mot));
   attendus.forEach((mot) => motsDejaVus.add(mot));
   stats.mots += attendus.length;
   if (!seul && JSON.stringify(attendus) !== JSON.stringify(MOTS_NOUVEAUX[ex.id])) signaler("data/mots.js n'est pas à jour");

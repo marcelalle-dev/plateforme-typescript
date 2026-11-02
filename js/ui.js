@@ -34,7 +34,7 @@ export function riche(balise, texte, attributs = {}) {
 
 const MOTS_CLES = new Set("abstract as asserts async await break case catch class const continue default delete do else export extends false finally for from function if implements import in instanceof interface is keyof let new null of readonly return satisfies static super switch this throw true try type typeof undefined var void while".split(" "));
 const TYPES = new Set("string number boolean unknown any never object bigint symbol".split(" "));
-const JETONS = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(`(?:\\.|[^`\\])*`)|((?<=[(,=]\s*)\/(?![/*])(?:\\.|\[[^\]\n]*\]|[^/\\\n])+\/[gimsuy]*)|(\b\d[\d_]*(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|(=>|\?\?|\?\.|===|!==|\|\||&&|\.\.\.|<=|>=|\+=|[!|&?])/g;
+const JETONS = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(`(?:\\.|[^`\\])*`)|((?<=[(,=!]\s*)\/(?![/*])(?:\\.|\[[^\]\n]*\]|[^/\\\n])+\/[gimsuy]*)|(\b\d[\d_]*(?:\.\d+)?\b)|(#?[A-Za-z_$][\w$]*)|(=>|\?\?|\?\.|===|!==|\|\||&&|\.\.\.|<=|>=|\+=|[!|&?])/g;
 const DIRECTIVE = "@ts-expect-error";
 
 function attribut(texte) {

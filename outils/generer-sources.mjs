@@ -3,7 +3,7 @@
 //   - le code JavaScript, le titre et le niveau viennent de ../docs/*.docx
 //   - la sortie vient de l'exécution réelle de chaque exercice (fuseau UTC)
 // Lancer : node outils/generer-sources.mjs
-import { readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { inflateRawSync } from "node:zlib";
 import { dirname, join } from "node:path";
@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 
 const ici = dirname(fileURLToPath(import.meta.url));
 const racine = join(ici, "..", "..");
-const PLAGES = ["001-010", "011-020", "021-030", "031-040", "041-050"];
+const PLAGES = ["001-010", "011-020", "021-030", "031-040", "041-050", "051-060", "061-070", "071-080", "081-090", "091-100"];
 
 function lireDansZip(chemin, nom) {
   const zip = readFileSync(chemin);
@@ -68,25 +68,28 @@ for (const plage of PLAGES) {
 }
 
 const NIVEAUX = { "Débutant": "debutant", "Élémentaire": "elementaire", "Intermédiaire": "intermediaire", "Avancé": "avance" };
-const tsx = join(racine, "node_modules", "tsx", "dist", "cli.mjs");
+const lanceur = join(racine, "node_modules", "tsx", "dist", "cli.mjs");
 const sources = [];
 
-for (let id = 1; id <= 50; id += 1) {
+for (let id = 1; id <= 100; id += 1) {
   const nn = String(id).padStart(2, "0");
   const doc = blocsDoc.get(id);
   if (!doc) throw new Error(`Exercice ${id} absent des documents`);
   const js = doc.join("\n").replace(/\s+$/, "");
   const entete = /^\/\/ Exercice \d+ · (★+☆*) (\S+) — (.+)$/m.exec(js);
   if (!entete) throw new Error(`En-tête illisible pour l'exercice ${id}`);
-  const fichier = join(racine, "src", `exercice${nn}.ts`);
+  const tsx = existsSync(join(racine, "src", `exercice${nn}.tsx`));
+  const fichier = join(racine, "src", `exercice${nn}.${tsx ? "tsx" : "ts"}`);
   const ts = readFileSync(fichier, "utf8").replace(/\r\n/g, "\n").replace(/\s+$/, "");
-  const sortie = execFileSync(process.execPath, [tsx, fichier], {
+  const sortie = execFileSync(process.execPath, [lanceur, fichier], {
     env: { ...process.env, TZ: "UTC", NO_COLOR: "1" },
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
   });
   sources.push({
     id,
+    tsx,
+    bibliotheque: /^import (?!type ).*from "(?!\.)/m.test(ts),
     titre: entete[3].trim(),
     niveau: NIVEAUX[entete[2]],
     ts,

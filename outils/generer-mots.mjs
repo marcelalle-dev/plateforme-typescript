@@ -15,8 +15,8 @@ const nouveaux = {};
 
 const pratique = {};
 
-for (const { id, ts: code, pratique: exercice } of EXERCICES) {
-  nouveaux[id] = extraireMots(ts, code).filter((mot) => !vus.has(mot));
+for (const { id, ts: code, tsx, pratique: exercice } of EXERCICES) {
+  nouveaux[id] = extraireMots(ts, code, tsx).filter((mot) => !vus.has(mot));
   nouveaux[id].forEach((mot) => vus.add(mot));
   pratique[id] = extraireMots(ts, exercice.depart).filter((mot) => !vus.has(mot));
 }

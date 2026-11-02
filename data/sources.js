@@ -2,6 +2,8 @@
 export const SOURCES = [
  {
   "id": 1,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Premier programme strict",
   "niveau": "debutant",
   "ts": "\nfunction describePayout(amount: number, rate: number): string {\n  const fee = Math.round(amount * rate);\n  const payout = amount - fee;\n  return `Sur ${amount} XOF : commission ${fee} XOF, reversé ${payout} XOF`;\n}\n\nconsole.log(\"TaskD →\");\nconsole.log(describePayout(80_000, 0.1));\nconsole.log(describePayout(15_000, 0.12));\n\nexport {};",
@@ -10,6 +12,8 @@ export const SOURCES = [
  },
  {
   "id": 2,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "noUncheckedIndexedAccess en action",
   "niveau": "elementaire",
   "ts": "const scores: number[] = [45, 72, 90];\n\n// La ligne d'origine, refusée par le compilateur :\n// @ts-expect-error — number | undefined n'est pas assignable à number\nconst refused: number = scores[0];\n\n// 2a. Correction avec ?? (valeur de repli)\nconst first: number = scores[0] ?? 0;\n\n// 2b. Correction avec un test !== undefined\nconst maybeFirst = scores[0];\nif (maybeFirst !== undefined) {\n  // ici maybeFirst est de type number\n  console.log(`maybeFirst + 1 = ${maybeFirst + 1}`);\n}\n\n// 3. scores[5] n'existe peut-être pas\nconst sixth = scores[5];\nif (sixth !== undefined) {\n  console.log(`sixième élément : ${sixth}`);\n} else {\n  console.log(\"pas de sixième élément\");\n}\n\nconsole.log(`first + 1 = ${first + 1}`);\nconsole.log(`(refused vaut ${refused} à l'exécution)`);\n\nexport {};",
@@ -18,6 +22,8 @@ export const SOURCES = [
  },
  {
   "id": 3,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "noImplicitReturns",
   "niveau": "elementaire",
   "ts": "type Level = \"beginner\" | \"expert\";\n\n// Version d'origine (cas \"expert\" oublié) — refusée :\n// @ts-expect-error — TS7030 : tous les chemins ne renvoient pas de valeur\nfunction brokenLevelLabel(level: Level) {\n  if (level === \"beginner\") {\n    return \"Débutant\";\n  }\n}\n\n// Version annotée mais toujours incomplète — refusée :\n// @ts-expect-error — TS2366 : il manque un return final\nfunction brokenAnnotatedLevelLabel(level: Level): string {\n  if (level === \"beginner\") {\n    return \"Débutant\";\n  }\n}\n\n// 2. Version corrigée\nfunction levelLabel(level: Level): string {\n  if (level === \"beginner\") {\n    return \"Débutant\";\n  }\n  return \"Expert\";\n}\n\nconsole.log(`${levelLabel(\"beginner\")} / ${levelLabel(\"expert\")}`);\n// À l'exécution, la version cassée renvoie undefined pour \"expert\" :\nconsole.log(brokenLevelLabel(\"expert\"));\nvoid brokenAnnotatedLevelLabel;\n\nexport {};",
@@ -26,6 +32,8 @@ export const SOURCES = [
  },
  {
   "id": 4,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "strictNullChecks : l'absence de valeur",
   "niveau": "elementaire",
   "ts": "// @ts-expect-error — Type 'null' is not assignable to type 'Date'\nlet refused: Date = null;\n\nlet deadline: Date | null = null;\n\nfunction daysLeft(deadline: Date | null, now: Date): number | null {\n  if (deadline === null) {\n    return null;\n  }\n  return Math.ceil((deadline.getTime() - now.getTime()) / 86_400_000);\n}\n\nconst now = new Date(\"2026-11-20\");\nconsole.log(daysLeft(new Date(\"2026-11-30\"), now));\nconsole.log(daysLeft(null, now));\nconsole.log(deadline);\n\nvoid refused;\nexport {};",
@@ -34,6 +42,8 @@ export const SOURCES = [
  },
  {
   "id": 5,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "noImplicitAny",
   "niveau": "debutant",
   "ts": "// @ts-expect-error — TS7006 : Parameter 'value' implicitly has an 'any' type\nfunction doubleImplicit(value) {\n  return value * 2;\n}\n\nfunction double(value: number): number {\n  return value * 2;\n}\n\nconsole.log(double(21));\nconsole.log(double(Number(\"abc\"))); // Number(\"abc\") vaut NaN\n\nvoid doubleImplicit;\nexport {};",
@@ -42,6 +52,8 @@ export const SOURCES = [
  },
  {
   "id": 6,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "L'inférence de types",
   "niveau": "elementaire",
   "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\nconst title = \"Créer un logo\";\nlet budget = 75_000;\nconst isPublished = true;\nlet tags = [\"figma\"];\nconst range = [1, 2] as const;\n\ntype _title = Expect<Equal<typeof title, \"Créer un logo\">>;\ntype _budget = Expect<Equal<typeof budget, number>>;\ntype _isPublished = Expect<Equal<typeof isPublished, true>>;\ntype _tags = Expect<Equal<typeof tags, string[]>>;\ntype _range = Expect<Equal<typeof range, readonly [1, 2]>>;\n\n// Une prédiction fausse serait refusée :\n// @ts-expect-error — le type de title n'est pas string mais le littéral\ntype _wrong = Expect<Equal<typeof title, string>>;\n\nconst allOk: _title & _budget & _isPublished & _tags & _range = true;\nconsole.log(\"Tous les types inférés sont conformes :\", allOk, \"—\", title, budget, isPublished, tags, range);\n\nexport {};",
@@ -50,6 +62,8 @@ export const SOURCES = [
  },
  {
   "id": 7,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Tableaux typés",
   "niveau": "debutant",
   "ts": "function average(scores: number[]): number {\n  if (scores.length === 0) {\n    return 0;\n  }\n  const total = scores.reduce((sum, score) => sum + score, 0);\n  return Math.round(total / scores.length);\n}\n\nfunction longest(words: Array<string>): string {\n  let result = \"\";\n  for (const word of words) {\n    // strictement plus long : en cas d'égalité, on garde le premier\n    if (word.length > result.length) {\n      result = word;\n    }\n  }\n  return result;\n}\n\nconsole.log(average([45, 72, 90]), average([]), average([10]));\nconsole.log(longest([\"Figma\", \"Illustrator\", \"Photoshop\"]), \"|\", longest([]) === \"\");\n\nexport {};",
@@ -58,6 +72,8 @@ export const SOURCES = [
  },
  {
   "id": 8,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Tuples",
   "niveau": "elementaire",
   "ts": "type BudgetRange = [min: number, max: number];\n\nfunction describeRange(range: BudgetRange): string {\n  const [min, max] = range;\n  return `Entre ${min} et ${max} XOF`;\n}\n\nconsole.log(describeRange([50_000, 100_000]));\n\n// Un tuple a une longueur fixe : un seul élément ou trois éléments sont refusés.\n// @ts-expect-error — Source has 1 element(s) but target requires 2\nconst tooShort: BudgetRange = [50_000];\n// @ts-expect-error — Source has 3 element(s) but target allows only 2\nconst tooLong: BudgetRange = [1, 2, 3];\n\n// À l'exécution, les tableaux existent quand même (le typage disparaît) :\nconsole.log(tooShort.length, tooLong.length);\n\nexport {};",
@@ -66,6 +82,8 @@ export const SOURCES = [
  },
  {
   "id": 9,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Renvoyer un tuple",
   "niveau": "elementaire",
   "ts": "function splitName(fullName: string): [first: string, last: string] {\n  const parts = fullName.trim().split(/\\s+/);\n  if (parts.length < 2) {\n    return [parts[0] ?? \"\", \"\"];\n  }\n  const last = parts[parts.length - 1] ?? \"\";\n  // plusieurs prénoms : tous les mots sauf le dernier forment le prénom\n  const first = parts.slice(0, -1).join(\" \");\n  return [first, last];\n}\n\nconsole.log(splitName(\"Awa Sagbo\"));\nconsole.log(splitName(\"Kofi\"));\nconsole.log(splitName(\"Jean Dossou\"));\nconsole.log(splitName(\"Jean Marc Dossou\"));\n\nconst [first, last] = splitName(\"Mariam Bello\");\nconsole.log(`${last.toUpperCase()}, ${first}`);\n\nexport {};",
@@ -74,6 +92,8 @@ export const SOURCES = [
  },
  {
   "id": 10,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Décrire un objet avec type",
   "niveau": "debutant",
   "ts": "type Offer = {\n  id: string;\n  title: string;\n  budget: number;\n  currency: \"XOF\" | \"EUR\";\n  deadline: Date;\n  description?: string;\n};\n\nconst offer: Offer = {\n  id: \"off_1\",\n  title: \"Logo pour une boutique\",\n  budget: 75_000,\n  currency: \"XOF\",\n  deadline: new Date(\"2026-11-30\"),\n};\n\nconst withPriority: Offer = {\n  id: \"off_2\",\n  title: \"Affiche\",\n  budget: 20_000,\n  currency: \"XOF\",\n  deadline: new Date(\"2026-12-15\"),\n  description: \"Affiche A3\",\n  // Vérification des propriétés en trop sur un objet littéral :\n  // @ts-expect-error — Object literal may only specify known properties\n  priority: \"high\",\n};\n\nconsole.log(offer.title, offer.budget, offer.currency, offer.description ?? \"(sans description)\");\n// À l'exécution la propriété existe quand même (6 champs connus + priority = 7) ;\n// on compte ici les champs du type :\nconsole.log(Object.keys(withPriority).filter((key) => key !== \"priority\").length);\n\nexport {};",
@@ -82,6 +102,8 @@ export const SOURCES = [
  },
  {
   "id": 11,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Interfaces et héritage",
   "niveau": "elementaire",
   "ts": "interface Collaborator {\n  id: string;\n  fullName: string;\n  skills: string[];\n}\n\ninterface Freelancer extends Collaborator {\n  dailyRate: number;\n}\n\nfunction describe(c: Collaborator): string {\n  return `${c.fullName} (${c.skills.join(\", \")})`;\n}\n\nconst awa: Freelancer = {\n  id: \"c1\",\n  fullName: \"Awa Sagbo\",\n  skills: [\"Figma\", \"Illustrator\"],\n  dailyRate: 25_000,\n};\n\n// Un Freelancer possède tous les champs d'un Collaborator : il est accepté.\nconsole.log(describe(awa));\nconsole.log(`Tarif journalier : ${awa.dailyRate} XOF`);\n\nexport {};",
@@ -90,6 +112,8 @@ export const SOURCES = [
  },
  {
   "id": 12,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "readonly et propriétés optionnelles",
   "niveau": "elementaire",
   "ts": "type Task = {\n  id: string;\n  name: string;\n  readonly createdAt: Date;\n  description?: string;\n};\n\nconst task: Task = { id: \"t1\", name: \"Flyer\", createdAt: new Date() };\n\n// 1) readonly : la réaffectation est refusée\n// @ts-expect-error — Cannot assign to 'createdAt' because it is a read-only property\ntask.createdAt = new Date();\n\nfunction describeTask(task: Task): string {\n  return `${task.name} : ${task.description ?? \"(aucune description)\"}`;\n}\n\nconsole.log(describeTask(task));\nconsole.log(describeTask({ ...task, description: \"Flyer A5 recto-verso\" }));\n\n// Avec `description: string | undefined`, la clé serait obligatoire :\ntype StrictTask = { name: string; description: string | undefined };\n// @ts-expect-error — Property 'description' is missing\nconst missing: StrictTask = { name: \"Flyer\" };\nvoid missing;\n\nexport {};",
@@ -98,6 +122,8 @@ export const SOURCES = [
  },
  {
   "id": 13,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "type ou interface ?",
   "niveau": "elementaire",
   "ts": "type Currency = \"XOF\" | \"EUR\";\n\ninterface AppConfig {\n  apiUrl: string;\n}\ninterface AppConfig {\n  timeoutMs: number;\n}\n\n// L'objet doit avoir les champs des deux déclarations :\nconst config: AppConfig = { apiUrl: \"https://api.taskd.example\", timeoutMs: 3000 };\n\n// @ts-expect-error — Property 'timeoutMs' is missing\nconst incomplete: AppConfig = { apiUrl: \"https://api.taskd.example\" };\n\nconst currency: Currency = \"XOF\";\nconsole.log(config);\nconsole.log(currency);\nconsole.log(Object.keys(incomplete));\n\nexport {};",
@@ -106,6 +132,8 @@ export const SOURCES = [
  },
  {
   "id": 14,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "unknown : lire un budget venu de l'extérieur",
   "niveau": "intermediaire",
   "ts": "function parseBudget(input: unknown): number {\n  if (typeof input === \"number\") {\n    if (Number.isFinite(input) && input > 0) {\n      return input;\n    }\n    throw new Error(\"Budget invalide\");\n  }\n  if (typeof input === \"string\") {\n    // supprime les espaces ordinaires, insécables ( ) et fines insécables ( )\n    const cleaned = input.replace(/[\\s  ]/g, \"\");\n    if (/^\\d+$/.test(cleaned)) {\n      const value = Number(cleaned);\n      if (value > 0) {\n        return value;\n      }\n    }\n  }\n  throw new Error(\"Budget invalide\");\n}\n\nconst inputs: unknown[] = [75000, \"75 000\", \" 120000 \", \"\", \"abc\", -5, null, NaN, \"50 000\"];\n\nfor (const input of inputs) {\n  try {\n    console.log(`${JSON.stringify(input)} → ${parseBudget(input)}`);\n  } catch (error) {\n    const message = error instanceof Error ? error.message : String(error);\n    console.log(`${JSON.stringify(input)} → ${message}`);\n  }\n}\n\nexport {};",
@@ -114,6 +142,8 @@ export const SOURCES = [
  },
  {
   "id": 15,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Remplacer any par unknown",
   "niveau": "intermediaire",
   "ts": "function readTitle(payload: unknown): string {\n  if (\n    typeof payload === \"object\" &&\n    payload !== null &&\n    \"title\" in payload &&\n    typeof payload.title === \"string\"\n  ) {\n    return payload.title.trim();\n  }\n  throw new Error(\"Payload invalide\");\n}\n\nconst payloads: unknown[] = [{ title: \" Logo \" }, {}, null, { title: 42 }];\n\nfor (const payload of payloads) {\n  try {\n    console.log(`${JSON.stringify(payload)} → ${JSON.stringify(readTitle(payload))}`);\n  } catch (error) {\n    const message = error instanceof Error ? error.message : String(error);\n    console.log(`${JSON.stringify(payload)} → ${message}`);\n  }\n}\n\nexport {};",
@@ -122,6 +152,8 @@ export const SOURCES = [
  },
  {
   "id": 16,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Le type never",
   "niveau": "intermediaire",
   "ts": "function fail(message: string): never {\n  throw new Error(message);\n}\n\nfunction requireBudget(input: { budget?: number }): number {\n  return input.budget ?? fail(\"budget manquant\");\n}\n\nconsole.log(requireBudget({ budget: 50_000 }));\n\ntry {\n  requireBudget({});\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
@@ -130,6 +162,8 @@ export const SOURCES = [
  },
  {
   "id": 17,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Signatures d'index",
   "niveau": "intermediaire",
   "ts": "function getLabel(labels: Record<string, string>, key: string, fallback: string): string {\n  return labels[key] ?? fallback;\n}\n\nconst labels: Record<string, string> = { draft: \"Brouillon\", closed: \"Clôturée\" };\n\nconsole.log(getLabel(labels, \"draft\", \"Inconnu\"));\nconsole.log(getLabel(labels, \"archived\", \"Inconnu\"));\n\n// @ts-expect-error — TS18048 : 'labels[\"draft\"]' is possibly 'undefined'\nlabels[\"draft\"].toUpperCase();\n\n// Corrections possibles :\nconsole.log(labels[\"draft\"]?.toUpperCase());\nconst draft = labels[\"draft\"];\nif (draft !== undefined) {\n  console.log(draft.toUpperCase());\n}\n\nexport {};",
@@ -138,6 +172,8 @@ export const SOURCES = [
  },
  {
   "id": 18,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Un type union pour les statuts",
   "niveau": "debutant",
   "ts": "type TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\nfunction isFinal(status: TaskStatus): boolean {\n  return status === \"closed\" || status === \"cancelled\";\n}\n\nlet status: TaskStatus = \"draft\";\n// @ts-expect-error — Type '\"finished\"' is not assignable to type 'TaskStatus'\nstatus = \"finished\";\n\nconsole.log(isFinal(\"closed\"), isFinal(\"draft\"), isFinal(\"cancelled\"), status);\n\nexport {};",
@@ -146,6 +182,8 @@ export const SOURCES = [
  },
  {
   "id": 19,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Rétrécir avec === et typeof",
   "niveau": "elementaire",
   "ts": "function formatDeadline(deadline: Date | string | null): string {\n  if (deadline === null) {\n    return \"Sans échéance\";\n  }\n  if (typeof deadline === \"string\") {\n    // ici deadline : string\n    return new Date(deadline).toLocaleDateString(\"fr-FR\");\n  }\n  // ici deadline : Date\n  return deadline.toLocaleDateString(\"fr-FR\");\n}\n\nconsole.log(formatDeadline(null));\nconsole.log(formatDeadline(\"2026-11-30\"));\nconsole.log(formatDeadline(new Date(\"2027-01-05\")));\n\nexport {};",
@@ -154,6 +192,8 @@ export const SOURCES = [
  },
  {
   "id": 20,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Rétrécir une union string | number",
   "niveau": "elementaire",
   "ts": "function padId(id: string | number): string {\n  if (typeof id === \"number\") {\n    return String(id).padStart(5, \"0\");\n  }\n  return id.toUpperCase();\n}\n\nconsole.log(padId(42), padId(\"ab1\"), padId(123456));\n\nexport {};",
@@ -162,6 +202,8 @@ export const SOURCES = [
  },
  {
   "id": 21,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Rétrécir avec instanceof",
   "niveau": "elementaire",
   "ts": "function describeFailure(error: unknown): string {\n  if (error instanceof Error) {\n    return error.message;\n  }\n  if (typeof error === \"string\") {\n    return error;\n  }\n  if (error instanceof Date) {\n    return \"Date inattendue\";\n  }\n  return \"Erreur inconnue\";\n}\n\nconsole.log(describeFailure(new Error(\"réseau\")));\nconsole.log(describeFailure(\"timeout\"));\nconsole.log(describeFailure(new Date(0)));\nconsole.log(describeFailure(42));\n\nexport {};",
@@ -170,6 +212,8 @@ export const SOURCES = [
  },
  {
   "id": 22,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Rétrécir avec in",
   "niveau": "elementaire",
   "ts": "type Offer = { title: string; budget: number };\ntype Application = { collaboratorId: string; message: string };\n\nfunction describeItem(item: Offer | Application): string {\n  if (\"budget\" in item) {\n    // ici item : Offer\n    return `Offre « ${item.title} » à ${item.budget} XOF`;\n  }\n  // ici item : Application\n  return `Candidature de ${item.collaboratorId} : ${item.message}`;\n}\n\nconsole.log(describeItem({ title: \"Logo\", budget: 75_000 }));\nconsole.log(describeItem({ collaboratorId: \"c1\", message: \"Disponible dès lundi\" }));\n\nexport {};",
@@ -178,6 +222,8 @@ export const SOURCES = [
  },
  {
   "id": 23,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "|| contre ?? : le piège du zéro",
   "niveau": "intermediaire",
   "ts": "function displayBudgetOr(budget: number | null | undefined): string {\n  return String(budget || \"Sur devis\");\n}\n\nfunction displayBudgetNullish(budget: number | null | undefined): string {\n  return String(budget ?? \"Sur devis\");\n}\n\nconst budgets = [50_000, 0, null, undefined];\n\nconsole.log(budgets.map((budget) => String(budget)).join(\" \"));\nconsole.log(budgets.map((budget) => `||: ${displayBudgetOr(budget)}`).join(\" \"));\nconsole.log(budgets.map((budget) => `??: ${displayBudgetNullish(budget)}`).join(\" \"));\n\nexport {};",
@@ -186,6 +232,8 @@ export const SOURCES = [
  },
  {
   "id": 24,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Une union discriminée : les paiements",
   "niveau": "intermediaire",
   "ts": "type Payment =\n  | { status: \"pending\"; amount: number; requestedAt: Date }\n  | { status: \"held\"; amount: number; heldAt: Date; providerRef: string }\n  | { status: \"released\"; amount: number; releasedAt: Date; fee: number }\n  | { status: \"refunded\"; amount: number; refundedAt: Date; reason: string };\n\nfunction describePayment(payment: Payment): string {\n  switch (payment.status) {\n    case \"pending\":\n      // @ts-expect-error — providerRef n'existe pas dans le cas pending\n      void payment.providerRef;\n      return `En attente (${payment.amount} XOF)`;\n    case \"held\":\n      return `Bloqué en séquestre (réf. ${payment.providerRef})`;\n    case \"released\":\n      return `Libéré, commission de ${payment.fee} XOF`;\n    case \"refunded\":\n      return `Remboursé : ${payment.reason}`;\n  }\n}\n\nconst now = new Date();\nconsole.log(describePayment({ status: \"held\", amount: 100_000, heldAt: now, providerRef: \"KKP-123\" }));\nconsole.log(describePayment({ status: \"released\", amount: 100_000, releasedAt: now, fee: 5_000 }));\nconsole.log(describePayment({ status: \"refunded\", amount: 100_000, refundedAt: now, reason: \"litige\" }));\n\nexport {};",
@@ -194,6 +242,8 @@ export const SOURCES = [
  },
  {
   "id": 25,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Vérifier que tous les cas sont traités (never)",
   "niveau": "intermediaire",
   "ts": "type Payment =\n  | { status: \"pending\"; amount: number; requestedAt: Date }\n  | { status: \"held\"; amount: number; heldAt: Date; providerRef: string }\n  | { status: \"released\"; amount: number; releasedAt: Date; fee: number }\n  | { status: \"refunded\"; amount: number; refundedAt: Date; reason: string }\n  | { status: \"failed\"; amount: number; failedAt: Date; code: string };\n\nfunction assertNever(value: never): never {\n  throw new Error(`Cas non traité : ${JSON.stringify(value)}`);\n}\n\n// Version complète\nfunction label(payment: Payment): string {\n  switch (payment.status) {\n    case \"pending\":\n      return \"En attente\";\n    case \"held\":\n      return \"Bloqué\";\n    case \"released\":\n      return \"Libéré\";\n    case \"refunded\":\n      return \"Remboursé\";\n    case \"failed\":\n      return `Échec (${payment.code})`;\n    default:\n      return assertNever(payment);\n  }\n}\n\n// Version où le cas failed est oublié volontairement\nfunction labelMissingCase(payment: Payment): string {\n  switch (payment.status) {\n    case \"pending\":\n      return \"En attente\";\n    case \"held\":\n      return \"Bloqué\";\n    case \"released\":\n      return \"Libéré\";\n    case \"refunded\":\n      return \"Remboursé\";\n    default:\n      // @ts-expect-error — TS2345 : le cas failed n'est pas traité\n      return assertNever(payment);\n  }\n}\n\nconst failedAt = new Date(\"2026-10-19T10:00:00Z\");\nconsole.log(label({ status: \"failed\", amount: 1, failedAt, code: \"CARD_DECLINED\" }));\nconsole.log(label({ status: \"held\", amount: 1, heldAt: failedAt, providerRef: \"KKP-1\" }));\n\ntry {\n  labelMissingCase({ status: \"failed\", amount: 1, failedAt, code: \"E\" });\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
@@ -202,6 +252,8 @@ export const SOURCES = [
  },
  {
   "id": 26,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "L'exhaustivité par affectation à never",
   "niveau": "intermediaire",
   "ts": "type TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\ntype BadgeColor = \"green\" | \"orange\" | \"grey\";\n\nfunction badgeColor(status: TaskStatus): BadgeColor {\n  switch (status) {\n    case \"validated\":\n    case \"closed\":\n      return \"green\";\n    case \"disputed\":\n      return \"orange\";\n    case \"draft\":\n    case \"published\":\n    case \"in_selection\":\n    case \"assigned\":\n    case \"in_progress\":\n    case \"delivered\":\n    case \"cancelled\":\n      return \"grey\";\n    default: {\n      const unreachable: never = status;\n      return unreachable;\n    }\n  }\n}\n\n// Avec un 11ᵉ statut (\"archived\"), le default n'est plus inatteignable :\n// TS2322 — Type '\"archived\"' is not assignable to type 'never'.\ntype TaskStatusWithArchived = TaskStatus | \"archived\";\n\nfunction badgeColorWithArchived(status: TaskStatusWithArchived): BadgeColor {\n  switch (status) {\n    case \"validated\":\n    case \"closed\":\n      return \"green\";\n    case \"disputed\":\n      return \"orange\";\n    case \"draft\":\n    case \"published\":\n    case \"in_selection\":\n    case \"assigned\":\n    case \"in_progress\":\n    case \"delivered\":\n    case \"cancelled\":\n      return \"grey\";\n    default: {\n      // @ts-expect-error — Type '\"archived\"' is not assignable to type 'never'\n      const unreachable: never = status;\n      return unreachable;\n    }\n  }\n}\nvoid badgeColorWithArchived;\n\nconst statuses: TaskStatus[] = [\n  \"draft\", \"published\", \"in_selection\", \"assigned\", \"in_progress\",\n  \"delivered\", \"validated\", \"closed\", \"disputed\", \"cancelled\",\n];\n\nconsole.log(statuses.join(\" \"));\nconsole.log(statuses.map(badgeColor).join(\" \"));\n\nexport {};",
@@ -210,6 +262,8 @@ export const SOURCES = [
  },
  {
   "id": 27,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Une fonction de garde",
   "niveau": "intermediaire",
   "ts": "type ApiError = { error: string; statusCode: number };\n\nfunction isApiError(value: unknown): value is ApiError {\n  return (\n    typeof value === \"object\" &&\n    value !== null &&\n    \"error\" in value &&\n    typeof value.error === \"string\" &&\n    \"statusCode\" in value &&\n    typeof value.statusCode === \"number\"\n  );\n}\n\nconst values: unknown[] = [\n  null,\n  \"oops\",\n  { error: \"x\" },\n  { error: \"Introuvable\", statusCode: 404 },\n  { statusCode: 500 },\n];\n\nfor (const value of values) {\n  console.log(`${JSON.stringify(value)} → ${isApiError(value)}`);\n}\n\nconst response: unknown = { error: \"Introuvable\", statusCode: 404 };\nif (isApiError(response)) {\n  // ici response : ApiError\n  console.log(`Erreur ${response.statusCode} : ${response.error}`);\n}\n\nexport {};",
@@ -218,6 +272,8 @@ export const SOURCES = [
  },
  {
   "id": 28,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Garde pour un tableau",
   "niveau": "intermediaire",
   "ts": "function isStringArray(value: unknown): value is string[] {\n  return Array.isArray(value) && value.every((item) => typeof item === \"string\");\n}\n\nfunction joinSkills(input: unknown): string {\n  if (isStringArray(input)) {\n    return input.join(\", \");\n  }\n  return \"(aucune)\";\n}\n\nconsole.log(joinSkills([\"Figma\", \"Illustrator\"]));\nconsole.log(joinSkills([\"Figma\", 42]));\nconsole.log(joinSkills(\"Figma\"));\nconsole.log(joinSkills(null));\n\nexport {};",
@@ -226,6 +282,8 @@ export const SOURCES = [
  },
  {
   "id": 29,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Filtrer avec une garde générique",
   "niveau": "intermediaire",
   "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\nfunction isDefined<T>(value: T | null | undefined): value is T {\n  return value !== null && value !== undefined;\n}\n\nconst ids: (string | undefined)[] = [\"a1\", undefined, \"b2\", undefined, \"c3\"];\n\n// Grâce au prédicat de type, filter renvoie string[] et non (string | undefined)[]\nconst definedIds = ids.filter(isDefined);\n\ntype _check = Expect<Equal<typeof definedIds, string[]>>;\nconst checked: _check = true;\n\nconsole.log(definedIds, checked);\n\nexport {};",
@@ -234,6 +292,8 @@ export const SOURCES = [
  },
  {
   "id": 30,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Une fonction d'assertion",
   "niveau": "avance",
   "ts": "type OfferShape = { id: string; budget: number };\n\nfunction assertIsOffer(value: unknown): asserts value is OfferShape {\n  if (\n    typeof value !== \"object\" ||\n    value === null ||\n    !(\"id\" in value) ||\n    typeof value.id !== \"string\" ||\n    !(\"budget\" in value) ||\n    typeof value.budget !== \"number\"\n  ) {\n    throw new Error(\"Offre invalide\");\n  }\n}\n\nfunction handle(payload: unknown): void {\n  assertIsOffer(payload);\n  // après l'appel, payload : OfferShape — sans if\n  console.log(`Offre ${payload.id} : ${payload.budget} XOF`);\n}\n\nhandle({ id: \"off_1\", budget: 75_000 });\n\ntry {\n  handle({ id: \"off_2\", budget: \"beaucoup\" });\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
@@ -242,6 +302,8 @@ export const SOURCES = [
  },
  {
   "id": 31,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "as const : un objet qui devient une union",
   "niveau": "intermediaire",
   "ts": "const STATUS = { DRAFT: \"draft\", PUBLISHED: \"published\", CLOSED: \"closed\" } as const;\n\ntype Status = (typeof STATUS)[keyof typeof STATUS]; // \"draft\" | \"published\" | \"closed\"\n\nconst STATUS_VALUES: readonly string[] = Object.values(STATUS);\n\nfunction isStatus(value: string): value is Status {\n  return STATUS_VALUES.includes(value);\n}\n\nfor (const value of [\"draft\", \"finished\", \"closed\"]) {\n  console.log(`${value} → ${isStatus(value)}`);\n}\n\nconst ok: Status = STATUS.PUBLISHED;\n// @ts-expect-error — \"finished\" ne fait pas partie de Status\nconst refused: Status = \"finished\";\nconsole.log(ok, refused);\n\nexport {};",
@@ -250,6 +312,8 @@ export const SOURCES = [
  },
  {
   "id": 32,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Types littéraux de gabarit",
   "niveau": "intermediaire",
   "ts": "type TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\ntype TaskEvent = `task:${TaskStatus}`;\n\nfunction eventName(status: TaskStatus): TaskEvent {\n  return `task:${status}`;\n}\n\nconsole.log(eventName(\"assigned\"));\n\nconst events: TaskEvent[] = [\"task:draft\", \"task:closed\"];\nconsole.log(events);\n\n// @ts-expect-error — \"task:finished\" n'appartient pas à TaskEvent\nconst refused: TaskEvent = \"task:finished\";\nconsole.log(refused);\n\nexport {};",
@@ -258,6 +322,8 @@ export const SOURCES = [
  },
  {
   "id": 33,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Intersection de types",
   "niveau": "intermediaire",
   "ts": "type Task = { id: string; name: string };\ntype Audited = { updatedAt: Date; updatedBy: string };\ntype AuditedTask = Task & Audited;\n\nfunction withAudit(task: Task, by: string, at: Date): AuditedTask {\n  // nouvel objet : l'original n'est pas modifié\n  return { ...task, updatedAt: at, updatedBy: by };\n}\n\nconst task: Task = { id: \"t1\", name: \"Flyer\" };\nconst audited = withAudit(task, \"david\", new Date(\"2026-10-19T10:00:00Z\"));\n\nconsole.log(audited.name, audited.updatedBy, audited.updatedAt.toISOString());\nconsole.log(Object.keys(task));\n\n// Un Task seul n'est pas un AuditedTask : il manque updatedAt et updatedBy.\n// @ts-expect-error — Type 'Task' is missing the properties updatedAt, updatedBy\nconst notAudited: AuditedTask = task;\nconsole.log(Object.keys(notAudited));\n\nexport {};",
@@ -266,6 +332,8 @@ export const SOURCES = [
  },
  {
   "id": 34,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Paramètres typés et valeur de retour",
   "niveau": "debutant",
   "ts": "type CartLine = { price: number; quantity: number };\n\nfunction computeTotal(items: CartLine[]): number {\n  return items.reduce((total, item) => total + item.price * item.quantity, 0);\n}\n\nconst cart: CartLine[] = [\n  { price: 5_000, quantity: 2 },\n  { price: 2_500, quantity: 3 },\n  { price: 4_000, quantity: 1 },\n];\n\nconsole.log(computeTotal(cart));\nconsole.log(computeTotal([]));\n\nexport {};",
@@ -274,6 +342,8 @@ export const SOURCES = [
  },
  {
   "id": 35,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Paramètre optionnel et valeur par défaut",
   "niveau": "elementaire",
   "ts": "function formatAmount(amount: number, currency: \"XOF\" | \"EUR\" = \"XOF\"): string {\n  const digits = String(amount).replace(/\\B(?=(\\d{3})+(?!\\d))/g, \" \");\n  return `${digits} ${currency}`;\n}\n\nconsole.log(formatAmount(50_000));\nconsole.log(formatAmount(1_250_000, \"EUR\"));\nconsole.log(formatAmount(999));\n// @ts-expect-error — \"USD\" n'est pas une devise autorisée\nconsole.log(formatAmount(10, \"USD\"));\n\nexport {};",
@@ -282,6 +352,8 @@ export const SOURCES = [
  },
  {
   "id": 36,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Fonctions fléchées typées",
   "niveau": "debutant",
   "ts": "const isBudgetValid = (min: number, max: number): boolean => 0 < min && min <= max;\n\nconst clamp = (value: number, low: number, high: number): number =>\n  Math.min(Math.max(value, low), high);\n\nconsole.log(isBudgetValid(10_000, 20_000), isBudgetValid(0, 5_000), isBudgetValid(20_000, 10_000));\nconsole.log(clamp(5, 10, 20), clamp(15, 10, 20), clamp(25, 10, 20));\n\nexport {};",
@@ -290,6 +362,8 @@ export const SOURCES = [
  },
  {
   "id": 37,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Un paramètre objet",
   "niveau": "intermediaire",
   "ts": "type Offer = { id: string; title: string; skills: string[]; budget: number };\n\ntype SearchOffersParams = {\n  query?: string;\n  skills?: string[];\n  minBudget?: number;\n  page?: number;\n};\n\nconst PAGE_SIZE = 2;\n\nconst offers: Offer[] = [\n  { id: \"o1\", title: \"Logo boutique\", skills: [\"Figma\", \"Illustrator\"], budget: 75_000 },\n  { id: \"o2\", title: \"Refonte du site\", skills: [\"Figma\", \"React\"], budget: 300_000 },\n  { id: \"o3\", title: \"Affiche concert\", skills: [\"Photoshop\"], budget: 40_000 },\n  { id: \"o4\", title: \"Logo association\", skills: [\"Illustrator\"], budget: 30_000 },\n];\n\nfunction searchOffers({ query = \"\", skills = [], minBudget = 0, page = 1 }: SearchOffersParams): Offer[] {\n  const needle = query.toLowerCase();\n  const matching = offers.filter(\n    (offer) =>\n      offer.title.toLowerCase().includes(needle) &&\n      (skills.length === 0 || offer.skills.some((skill) => skills.includes(skill))) &&\n      offer.budget >= minBudget,\n  );\n  const start = (page - 1) * PAGE_SIZE;\n  return matching.slice(start, start + PAGE_SIZE);\n}\n\nconst titles = (list: Offer[]): string[] => list.map((offer) => offer.title);\n\nconsole.log(titles(searchOffers({ skills: [\"Figma\"], page: 1 })));\nconsole.log(titles(searchOffers({ query: \"logo\" })));\nconsole.log(titles(searchOffers({})));\nconsole.log(titles(searchOffers({ page: 2 })));\n\nexport {};",
@@ -298,6 +372,8 @@ export const SOURCES = [
  },
  {
   "id": 38,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Paramètres du reste (...rest)",
   "niveau": "elementaire",
   "ts": "function sum(...numbers: number[]): number {\n  return numbers.reduce((total, n) => total + n, 0);\n}\n\nfunction announce(prefix: string, ...names: string[]): string {\n  return `${prefix} ${names.join(\", \")}`;\n}\n\nconst amounts = [10, 20, 30];\n\nconsole.log(sum(1, 2, 3));\nconsole.log(sum(...amounts));\nconsole.log(sum());\nconsole.log(announce(\"Bienvenue\", \"Awa\", \"Kofi\"));\n\nexport {};",
@@ -306,6 +382,8 @@ export const SOURCES = [
  },
  {
   "id": 39,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Surcharges de fonctions",
   "niveau": "avance",
   "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\n// Signatures de surcharge (visibles par les appelants)\nfunction convertDate(value: Date): string;\nfunction convertDate(value: string): Date;\n// Signature d'implémentation (invisible de l'extérieur)\nfunction convertDate(value: Date | string): string | Date {\n  if (typeof value === \"string\") {\n    return new Date(value);\n  }\n  return value.toISOString().slice(0, 10); // AAAA-MM-JJ\n}\n\ntry {\n  // @ts-expect-error — No overload matches this call\n  convertDate(42);\n} catch {\n  console.log(\"le code JavaScript compilé échoue aussi : 42 n'est pas une date\");\n}\n\nconst asText = convertDate(new Date(\"2026-11-30\"));\nconst asDate = convertDate(\"2026-11-30\");\n\n// TypeScript connaît le type de retour selon l'argument :\ntype _text = Expect<Equal<typeof asText, string>>;\ntype _date = Expect<Equal<typeof asDate, Date>>;\nconst checks: [_text, _date] = [true, true];\n\nconsole.log(asText);\nconsole.log(asDate.getFullYear());\nconsole.log(checks);\n\nexport {};",
@@ -314,6 +392,8 @@ export const SOURCES = [
  },
  {
   "id": 40,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Typer une fonction passée en paramètre",
   "niveau": "elementaire",
   "ts": "type Decision = \"accept\" | \"reject\";\ntype OnCandidateDecision = (candidateId: string, decision: Decision) => void;\n\nfunction renderDecisionButtons(candidateId: string, onDecision: OnCandidateDecision): void {\n  // simule un clic sur « Accepter » puis sur « Refuser »\n  onDecision(candidateId, \"accept\");\n  onDecision(candidateId, \"reject\");\n}\n\nrenderDecisionButtons(\"cand_7\", (candidateId, decision) => {\n  // les paramètres sont typés par le contexte : string et Decision\n  console.log(`Candidat ${candidateId} : ${decision}`);\n});\n\nrenderDecisionButtons(\"cand_8\", (candidateId, decision) => console.log(candidateId, decision));\n\nconst numericHandler = (candidateId: string, decision: number): void => console.log(candidateId, decision + 1);\n// @ts-expect-error — decision: number n'est pas compatible avec Decision\nconst refused: OnCandidateDecision = numericHandler;\nvoid refused;\n\nexport {};",
@@ -322,6 +402,8 @@ export const SOURCES = [
  },
  {
   "id": 41,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Fonctions d'ordre supérieur",
   "niveau": "intermediaire",
   "ts": "type NumberFn = (x: number) => number;\n\nfunction makeDiscount(rate: number): (amount: number) => number {\n  return (amount) => Math.round(amount * (1 - rate));\n}\n\nfunction compose(f: NumberFn, g: NumberFn): NumberFn {\n  return (x) => g(f(x));\n}\n\nconst tenPercent = makeDiscount(0.1);\nconst fivePercent = makeDiscount(0.05);\nconst both = compose(tenPercent, fivePercent);\n\nconsole.log(tenPercent(100_000));\nconsole.log(fivePercent(100_000));\nconsole.log(both(100_000));\n\nexport {};",
@@ -330,6 +412,8 @@ export const SOURCES = [
  },
  {
   "id": 42,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "void : ce qu'il autorise vraiment",
   "niveau": "intermediaire",
   "ts": "type Callback = () => void;\n\nconst returnsSeven: Callback = () => 7; // 1) accepté\n\n// @ts-expect-error — 2) Type 'number' is not assignable to type 'void'\nfunction explicitVoid(): void { return 7; }\nvoid explicitVoid;\n\n// La valeur existe bien à l'exécution, même si le type dit void :\nconsole.log(\"retour réel :\", returnsSeven());\n\n// 3) accepté : le résultat de n * 2 est ignoré\n[1, 2, 3].forEach((n) => n * 2);\n\nconst doubled: number[] = [];\n[1, 2, 3].forEach((n) => doubled.push(n * 2)); // push renvoie un number, ignoré\nconsole.log(doubled);\n\nexport {};",
@@ -338,6 +422,8 @@ export const SOURCES = [
  },
  {
   "id": 43,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Fonctions asynchrones et Promise",
   "niveau": "intermediaire",
   "ts": "type Offer = { id: string; title: string; budget: number };\n\nconst offersDb = new Map<string, Offer>([\n  [\"off_1\", { id: \"off_1\", title: \"Logo boutique\", budget: 75_000 }],\n]);\n\nconst wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));\n\nasync function fetchOffer(id: string): Promise<Offer> {\n  await wait(5);\n  const offer = offersDb.get(id);\n  if (offer === undefined) {\n    throw new Error(`Offre introuvable (${id})`);\n  }\n  return offer;\n}\n\n// 1) avec await\nconst offer = await fetchOffer(\"off_1\");\nconsole.log(offer.title);\n\n// 2) await oublié\nconst pending = fetchOffer(\"off_1\");\n// @ts-expect-error — TS2339 : 'title' n'existe pas sur Promise<Offer>\nconsole.log(pending.title);\nawait pending;\n\n// 3) identifiant inconnu\ntry {\n  await fetchOffer(\"off_404\");\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
@@ -346,6 +432,8 @@ export const SOURCES = [
  },
  {
   "id": 44,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Promise.all et types des résultats",
   "niveau": "intermediaire",
   "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\ntype Offer = { id: string; title: string };\ntype Collaborator = { id: string; fullName: string };\n\nconst wait = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms));\n\nasync function fetchOffer(id: string): Promise<Offer> {\n  await wait(10);\n  return { id, title: \"Logo boutique\" };\n}\n\nasync function fetchCollaborator(id: string): Promise<Collaborator> {\n  await wait(10);\n  return { id, fullName: \"Awa Sagbo\" };\n}\n\nconst [offer, collaborator] = await Promise.all([fetchOffer(\"off_1\"), fetchCollaborator(\"c1\")]);\n\ntype _offer = Expect<Equal<typeof offer, Offer>>;\ntype _collaborator = Expect<Equal<typeof collaborator, Collaborator>>;\nconst checks: [_offer, _collaborator] = [true, true];\n\nconsole.log(`${offer.title} — ${collaborator.fullName}`);\nconsole.log(checks);\n\nexport {};",
@@ -354,6 +442,8 @@ export const SOURCES = [
  },
  {
   "id": 45,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Un délai maximum générique : withTimeout",
   "niveau": "avance",
   "ts": "function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {\n  let timer: ReturnType<typeof setTimeout> | undefined;\n  const timeout = new Promise<never>((_, reject) => {\n    timer = setTimeout(() => reject(new Error(`Délai dépassé (${ms} ms)`)), ms);\n  });\n  // annule le minuteur dès que l'une des deux promesses se termine\n  return Promise.race([promise, timeout]).finally(() => clearTimeout(timer));\n}\n\nconst delay = <T>(ms: number, value: T): Promise<T> =>\n  new Promise((resolve) => setTimeout(() => resolve(value), ms));\n\ntry {\n  console.log(await withTimeout(delay(5, \"terminé après 5 ms\"), 50));\n  console.log(await withTimeout(delay(200, \"terminé après 200 ms\"), 20));\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
@@ -362,6 +452,8 @@ export const SOURCES = [
  },
  {
   "id": 46,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Un type générique : Page<T>",
   "niveau": "elementaire",
   "ts": "type Page<T> = { items: T[]; page: number; pageSize: number; total: number };\n\nfunction paginate<T>(all: T[], page: number, pageSize: number): Page<T> {\n  const start = (page - 1) * pageSize;\n  return { items: all.slice(start, start + pageSize), page, pageSize, total: all.length };\n}\n\nconsole.log(paginate([1, 2, 3, 4, 5, 6, 7], 2, 3));\n\ntype Offer = { id: string; title: string };\nconst offers: Offer[] = [\n  { id: \"o1\", title: \"Logo\" },\n  { id: \"o2\", title: \"Affiche\" },\n  { id: \"o3\", title: \"Site\" },\n];\n\nconst offerPage = paginate(offers, 1, 2); // Page<Offer>\n// L'autocomplétion propose .title : items[0] est de type Offer | undefined\nconsole.log(`${offerPage.items[0]?.title} / ${offerPage.total} offres`);\n\nexport {};",
@@ -370,6 +462,8 @@ export const SOURCES = [
  },
  {
   "id": 47,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Premier et dernier éléments",
   "niveau": "elementaire",
   "ts": "function first<T>(items: readonly T[]): T | undefined {\n  return items[0];\n}\n\nfunction last<T>(items: readonly T[]): T | undefined {\n  return items[items.length - 1];\n}\n\nfunction firstOr<T>(items: readonly T[], fallback: T): T {\n  return items[0] ?? fallback;\n}\n\nconst empty: number[] = [];\n\nconsole.log(first([10, 20, 30]), last([10, 20, 30]));\nconsole.log(first([\"a\", \"b\"]) + \"\" + last([\"a\", \"b\"]));\nconsole.log(first(empty), last(empty));\nconsole.log(firstOr([], \"par défaut\"), firstOr([\"x\", \"y\"], \"par défaut\"));\n\nexport {};",
@@ -378,6 +472,8 @@ export const SOURCES = [
  },
  {
   "id": 48,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Contraindre un générique : findById",
   "niveau": "intermediaire",
   "ts": "function findById<T extends { id: string }>(items: T[], id: string): T | undefined {\n  return items.find((item) => item.id === id);\n}\n\ntype Offer = { id: string; title: string; budget: number };\ntype Collaborator = { id: string; fullName: string };\n\nconst offers: Offer[] = [\n  { id: \"o1\", title: \"Logo\", budget: 75_000 },\n  { id: \"o2\", title: \"Affiche\", budget: 40_000 },\n];\nconst collaborators: Collaborator[] = [{ id: \"c1\", fullName: \"Awa Sagbo\" }];\n\nconsole.log(findById(offers, \"o2\")?.title);\nconsole.log(findById(collaborators, \"c1\")?.fullName);\nconsole.log(findById(offers, \"o9\"));\n\n// @ts-expect-error — number ne satisfait pas la contrainte { id: string }\nfindById([1, 2, 3], \"1\");\n\nexport {};",
@@ -386,6 +482,8 @@ export const SOURCES = [
  },
  {
   "id": 49,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Regrouper des éléments : groupBy",
   "niveau": "intermediaire",
   "ts": "function groupBy<T, K extends string>(items: T[], getKey: (item: T) => K): Partial<Record<K, T[]>> {\n  const groups: Partial<Record<K, T[]>> = {};\n  for (const item of items) {\n    const key = getKey(item);\n    const group = groups[key];\n    if (group === undefined) {\n      groups[key] = [item];\n    } else {\n      group.push(item);\n    }\n  }\n  return groups;\n}\n\ntype TaskStatus = \"draft\" | \"published\" | \"closed\";\ntype Task = { id: string; name: string; status: TaskStatus };\n\nconst tasks: Task[] = [\n  { id: \"t1\", name: \"Affiche\", status: \"draft\" },\n  { id: \"t2\", name: \"Logo\", status: \"published\" },\n  { id: \"t3\", name: \"Flyer\", status: \"published\" },\n  { id: \"t4\", name: \"Site\", status: \"closed\" },\n  { id: \"t5\", name: \"Carte\", status: \"published\" },\n];\n\nconst byStatus = groupBy(tasks, (task) => task.status);\n\nfor (const [status, group] of Object.entries(byStatus)) {\n  if (group !== undefined) {\n    console.log(status.padEnd(10), group.length, group.map((task) => task.name));\n  }\n}\n\nexport {};",
@@ -394,10 +492,512 @@ export const SOURCES = [
  },
  {
   "id": 50,
+  "tsx": false,
+  "bibliotheque": false,
   "titre": "Un client d'API générique",
   "niveau": "avance",
   "ts": "type Fetcher = (path: string) => Promise<unknown>;\n\ntype Offer = { id: string; title: string; budget: number };\n\nasync function apiGet<T>(path: string, fetcher: Fetcher, parse: (raw: unknown) => T): Promise<T> {\n  const raw = await fetcher(path);\n  return parse(raw);\n}\n\nfunction parseOffer(raw: unknown): Offer {\n  if (\n    typeof raw === \"object\" &&\n    raw !== null &&\n    \"id\" in raw &&\n    typeof raw.id === \"string\" &&\n    \"title\" in raw &&\n    typeof raw.title === \"string\" &&\n    \"budget\" in raw &&\n    typeof raw.budget === \"number\"\n  ) {\n    return { id: raw.id, title: raw.title, budget: raw.budget };\n  }\n  throw new Error(\"Réponse d'API invalide pour une offre\");\n}\n\n// Faux serveurs : aucune requête réseau\nconst goodFetcher: Fetcher = async () => ({ id: \"off_1\", title: \"Logo\", budget: 75_000 });\nconst badFetcher: Fetcher = async () => ({ id: \"off_1\", title: \"Logo\", budget: \"75000\" });\n\nconst offer = await apiGet(\"/offers/off_1\", goodFetcher, parseOffer); // offer : Offer\nconsole.log(offer.title, offer.budget);\n\ntry {\n  await apiGet(\"/offers/off_1\", badFetcher, parseOffer);\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
   "js": "// Exercice 50 · ★★★★ Avancé — Un client d'API générique\nasync function apiGet(path, fetcher, parse) {\n    const raw = await fetcher(path);\n    return parse(raw);\n}\nfunction parseOffer(raw) {\n    if (typeof raw === \"object\" &&\n        raw !== null &&\n        \"id\" in raw &&\n        typeof raw.id === \"string\" &&\n        \"title\" in raw &&\n        typeof raw.title === \"string\" &&\n        \"budget\" in raw &&\n        typeof raw.budget === \"number\") {\n        return { id: raw.id, title: raw.title, budget: raw.budget };\n    }\n    throw new Error(\"Réponse d'API invalide pour une offre\");\n}\n// Faux serveurs : aucune requête réseau\nconst goodFetcher = async () => ({ id: \"off_1\", title: \"Logo\", budget: 75_000 });\nconst badFetcher = async () => ({ id: \"off_1\", title: \"Logo\", budget: \"75000\" });\nconst offer = await apiGet(\"/offers/off_1\", goodFetcher, parseOffer); // offer : Offer\nconsole.log(offer.title, offer.budget);\ntry {\n    await apiGet(\"/offers/off_1\", badFetcher, parseOffer);\n}\ncatch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n}\nexport {};",
   "sortie": "Logo 75000\nRéponse d'API invalide pour une offre"
+ },
+ {
+  "id": 51,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Un dépôt générique en mémoire",
+  "niveau": "avance",
+  "ts": "interface Repository<T extends { id: string }> {\n  add(item: T): void;\n  findById(id: string): T | undefined;\n  list(): T[];\n  remove(id: string): boolean;\n}\n\nclass InMemoryRepository<T extends { id: string }> implements Repository<T> {\n  private readonly items = new Map<string, T>();\n\n  add(item: T): void {\n    this.items.set(item.id, item);\n  }\n\n  findById(id: string): T | undefined {\n    return this.items.get(id);\n  }\n\n  list(): T[] {\n    return [...this.items.values()];\n  }\n\n  remove(id: string): boolean {\n    // Map.delete renvoie déjà true si la clé existait\n    return this.items.delete(id);\n  }\n}\n\ntype Offer = { id: string; title: string; budget: number };\ntype Collaborator = { id: string; fullName: string };\n\nconst offers = new InMemoryRepository<Offer>();\noffers.add({ id: \"o1\", title: \"Logo\", budget: 75_000 });\noffers.add({ id: \"o2\", title: \"Affiche\", budget: 40_000 });\n\nconsole.log(offers.list().map((offer) => offer.title));\nconsole.log(offers.remove(\"o2\"), offers.remove(\"o2\"));\nconsole.log(offers.list().length);\n\nconst collaborators = new InMemoryRepository<Collaborator>();\ncollaborators.add({ id: \"c1\", fullName: \"Awa Sagbo\" });\nconsole.log(collaborators.findById(\"c1\")?.fullName);\n\nexport {};",
+  "js": "// Exercice 51 · ★★★★ Avancé — Un dépôt générique en mémoire\nclass InMemoryRepository {\n    items = new Map();\n    add(item) {\n        this.items.set(item.id, item);\n    }\n    findById(id) {\n        return this.items.get(id);\n    }\n    list() {\n        return [...this.items.values()];\n    }\n    remove(id) {\n        // Map.delete renvoie déjà true si la clé existait\n        return this.items.delete(id);\n    }\n}\nconst offers = new InMemoryRepository();\noffers.add({ id: \"o1\", title: \"Logo\", budget: 75_000 });\noffers.add({ id: \"o2\", title: \"Affiche\", budget: 40_000 });\nconsole.log(offers.list().map((offer) => offer.title));\nconsole.log(offers.remove(\"o2\"), offers.remove(\"o2\"));\nconsole.log(offers.list().length);\nconst collaborators = new InMemoryRepository();\ncollaborators.add({ id: \"c1\", fullName: \"Awa Sagbo\" });\nconsole.log(collaborators.findById(\"c1\")?.fullName);\nexport {};",
+  "sortie": "[ 'Logo', 'Affiche' ]\ntrue false\n1\nAwa Sagbo"
+ },
+ {
+  "id": 52,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Deux paramètres de type : mapValues",
+  "niveau": "intermediaire",
+  "ts": "function mapValues<T, U>(obj: Record<string, T>, fn: (value: T) => U): Record<string, U> {\n  const result: Record<string, U> = {};\n  for (const [key, value] of Object.entries(obj)) {\n    result[key] = fn(value);\n  }\n  return result;\n}\n\nconst XOF_PER_EUR = 655;\n\nconst budgetsXof: Record<string, number> = { logo: 75_000, site: 300_000, affiche: 40_000 };\nconst budgetsEur = mapValues(budgetsXof, (xof) => Math.round(xof / XOF_PER_EUR)); // Record<string, number>\n\nconst labels: Record<string, string> = { draft: \"Brouillon\", closed: \"Clôturée\" };\nconst lengths = mapValues(labels, (label) => label.length); // T = string, U = number\n\nconsole.log(budgetsEur);\nconsole.log(lengths);\n\nexport {};",
+  "js": "// Exercice 52 · ★★★☆ Intermédiaire — Deux paramètres de type : mapValues\nfunction mapValues(obj, fn) {\n    const result = {};\n    for (const [key, value] of Object.entries(obj)) {\n        result[key] = fn(value);\n    }\n    return result;\n}\nconst XOF_PER_EUR = 655;\nconst budgetsXof = { logo: 75_000, site: 300_000, affiche: 40_000 };\nconst budgetsEur = mapValues(budgetsXof, (xof) => Math.round(xof / XOF_PER_EUR)); // Record<string, number>\nconst labels = { draft: \"Brouillon\", closed: \"Clôturée\" };\nconst lengths = mapValues(labels, (label) => label.length); // T = string, U = number\nconsole.log(budgetsEur);\nconsole.log(lengths);\nexport {};",
+  "sortie": "{ logo: 115, site: 458, affiche: 61 }\n{ draft: 9, closed: 8 }"
+ },
+ {
+  "id": 53,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "keyof : extraire une colonne",
+  "niveau": "avance",
+  "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\nfunction pluck<T, K extends keyof T>(items: T[], key: K): T[K][] {\n  return items.map((item) => item[key]);\n}\n\ntype Offer = { id: string; title: string; budget: number };\n\nconst offers: Offer[] = [\n  { id: \"o1\", title: \"Logo\", budget: 75_000 },\n  { id: \"o2\", title: \"Affiche\", budget: 40_000 },\n];\n\nconst titles = pluck(offers, \"title\");\nconst budgets = pluck(offers, \"budget\");\n\n// Le type du résultat suit la propriété choisie\ntype _titles = Expect<Equal<typeof titles, string[]>>;\ntype _budgets = Expect<Equal<typeof budgets, number[]>>;\nconst checks: [_titles, _budgets] = [true, true];\n\n// @ts-expect-error — \"price\" n'est pas une clé de Offer\npluck(offers, \"price\");\n\nconsole.log(titles);\nconsole.log(budgets);\nconsole.log(checks);\n\nexport {};",
+  "js": "// Exercice 53 · ★★★★ Avancé — keyof : extraire une colonne\nfunction pluck(items, key) {\n    return items.map((item) => item[key]);\n}\nconst offers = [\n    { id: \"o1\", title: \"Logo\", budget: 75_000 },\n    { id: \"o2\", title: \"Affiche\", budget: 40_000 },\n];\nconst titles = pluck(offers, \"title\");\nconst budgets = pluck(offers, \"budget\");\nconst checks = [true, true];\n// @ts-expect-error — \"price\" n'est pas une clé de Offer\npluck(offers, \"price\");\nconsole.log(titles);\nconsole.log(budgets);\nconsole.log(checks);\nexport {};",
+  "sortie": "[ 'Logo', 'Affiche' ]\n[ 75000, 40000 ]\n[ true, true ]"
+ },
+ {
+  "id": 54,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Un paramètre de type par défaut",
+  "niveau": "intermediaire",
+  "ts": "type ApiResponse<T = unknown> = { data: T; status: number };\n\nfunction ok<T>(data: T): ApiResponse<T> {\n  return { data, status: 200 };\n}\n\n// ApiResponse sans argument = ApiResponse<unknown> : data doit être affiné\nfunction readTotal(response: ApiResponse): number {\n  // @ts-expect-error — data est unknown : impossible de l'utiliser comme nombre\n  void (response.data + 1);\n  if (typeof response.data !== \"number\") {\n    throw new Error(\"data n'est pas un nombre\");\n  }\n  return response.data;\n}\n\nconst response = ok(75_000); // ApiResponse<number>\nconsole.log(readTotal(response), response.status);\nconsole.log(readTotal(ok(42)));\n\ntry {\n  readTotal(ok(\"75000\"));\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
+  "js": "// Exercice 54 · ★★★☆ Intermédiaire — Un paramètre de type par défaut\nfunction ok(data) {\n    return { data, status: 200 };\n}\n// ApiResponse sans argument = ApiResponse<unknown> : data doit être affiné\nfunction readTotal(response) {\n    // @ts-expect-error — data est unknown : impossible de l'utiliser comme nombre\n    void (response.data + 1);\n    if (typeof response.data !== \"number\") {\n        throw new Error(\"data n'est pas un nombre\");\n    }\n    return response.data;\n}\nconst response = ok(75_000); // ApiResponse<number>\nconsole.log(readTotal(response), response.status);\nconsole.log(readTotal(ok(42)));\ntry {\n    readTotal(ok(\"75000\"));\n}\ncatch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n}\nexport {};",
+  "sortie": "75000 200\n42\ndata n'est pas un nombre"
+ },
+ {
+  "id": 55,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Un type Result<T, E> et sa fonction map",
+  "niveau": "avance",
+  "ts": "type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };\n\nfunction success<T>(value: T): { ok: true; value: T } {\n  return { ok: true, value };\n}\n\nfunction failure<E>(error: E): { ok: false; error: E } {\n  return { ok: false, error };\n}\n\nfunction mapResult<T, U, E>(result: Result<T, E>, fn: (value: T) => U): Result<U, E> {\n  // l'erreur traverse sans être touchée\n  return result.ok ? success(fn(result.value)) : result;\n}\n\nfunction parseInteger(text: string): Result<number> {\n  if (!/^-?\\d+$/.test(text.trim())) {\n    return failure(`\"${text}\" n'est pas un entier`);\n  }\n  return success(Number(text));\n}\n\nfor (const text of [\"21\", \"abc\", \"3.5\"]) {\n  const doubled = mapResult(parseInteger(text), (n) => n * 2);\n  if (doubled.ok) {\n    console.log(`${text} → ${doubled.value}`);\n  } else {\n    console.log(`${text} ✗ ${doubled.error}`);\n  }\n}\n\nexport {};",
+  "js": "// Exercice 55 · ★★★★ Avancé — Un type Result<T, E> et sa fonction map\nfunction success(value) {\n    return { ok: true, value };\n}\nfunction failure(error) {\n    return { ok: false, error };\n}\nfunction mapResult(result, fn) {\n    // l'erreur traverse sans être touchée\n    return result.ok ? success(fn(result.value)) : result;\n}\nfunction parseInteger(text) {\n    if (!/^-?\\d+$/.test(text.trim())) {\n        return failure(`\"${text}\" n'est pas un entier`);\n    }\n    return success(Number(text));\n}\nfor (const text of [\"21\", \"abc\", \"3.5\"]) {\n    const doubled = mapResult(parseInteger(text), (n) => n * 2);\n    if (doubled.ok) {\n        console.log(`${text} → ${doubled.value}`);\n    }\n    else {\n        console.log(`${text} ✗ ${doubled.error}`);\n    }\n}\nexport {};",
+  "sortie": "21 → 42\nabc ✗ \"abc\" n'est pas un entier\n3.5 ✗ \"3.5\" n'est pas un entier"
+ },
+ {
+  "id": 56,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Une classe générique : Stack<T>",
+  "niveau": "avance",
+  "ts": "class Stack<T> {\n  private readonly items: T[] = [];\n\n  push(item: T): void {\n    this.items.push(item);\n  }\n\n  pop(): T | undefined {\n    return this.items.pop();\n  }\n\n  peek(): T | undefined {\n    return this.items[this.items.length - 1];\n  }\n\n  get size(): number {\n    return this.items.length;\n  }\n}\n\nconst numbers = new Stack<number>();\nnumbers.push(1);\nnumbers.push(2);\n// @ts-expect-error — \"a\" n'est pas un number\nnumbers.push(\"a\");\n\nconst words = new Stack<string>();\nwords.push(\"un\");\nwords.push(\"deux\");\n\n// à l'exécution, \"a\" a quand même été empilé (le typage disparaît) :\nconsole.log(numbers.pop(), numbers.peek(), numbers.size);\nconsole.log(words.pop(), words.peek(), words.size);\n\nconst empty = new Stack<number>();\nconsole.log(empty.pop());\n\nexport {};",
+  "js": "// Exercice 56 · ★★★★ Avancé — Une classe générique : Stack<T>\nclass Stack {\n    items = [];\n    push(item) {\n        this.items.push(item);\n    }\n    pop() {\n        return this.items.pop();\n    }\n    peek() {\n        return this.items[this.items.length - 1];\n    }\n    get size() {\n        return this.items.length;\n    }\n}\nconst numbers = new Stack();\nnumbers.push(1);\nnumbers.push(2);\n// @ts-expect-error — \"a\" n'est pas un number\nnumbers.push(\"a\");\nconst words = new Stack();\nwords.push(\"un\");\nwords.push(\"deux\");\n// à l'exécution, \"a\" a quand même été empilé (le typage disparaît) :\nconsole.log(numbers.pop(), numbers.peek(), numbers.size);\nconsole.log(words.pop(), words.peek(), words.size);\nconst empty = new Stack();\nconsole.log(empty.pop());\nexport {};",
+  "sortie": "a 2 2\ndeux un 1\nundefined"
+ },
+ {
+  "id": 57,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Partial et Pick : mettre à jour une offre",
+  "niveau": "intermediaire",
+  "ts": "type Offer = {\n  id: string;\n  title: string;\n  budget: number;\n  currency: \"XOF\" | \"EUR\";\n  deadline: Date;\n  description?: string;\n  createdAt: Date;\n};\n\ntype UpdateOfferInput = Partial<Pick<Offer, \"title\" | \"budget\" | \"deadline\" | \"description\">>;\n\nfunction applyUpdate(offer: Offer, patch: UpdateOfferInput): Offer {\n  return { ...offer, ...patch }; // nouvelle offre, l'originale est intacte\n}\n\nconst offer: Offer = {\n  id: \"o1\",\n  title: \"Logo\",\n  budget: 75_000,\n  currency: \"XOF\",\n  deadline: new Date(\"2026-11-30\"),\n  createdAt: new Date(\"2026-10-19\"),\n};\n\nconst updated = applyUpdate(offer, { budget: 90_000 });\nconsole.log(`${offer.budget} → ${updated.budget} | ${updated.title}`);\n\n// @ts-expect-error — currency ne fait pas partie de UpdateOfferInput\napplyUpdate(offer, { currency: \"EUR\" });\n\nexport {};",
+  "js": "// Exercice 57 · ★★★☆ Intermédiaire — Partial et Pick : mettre à jour une offre\nfunction applyUpdate(offer, patch) {\n    return { ...offer, ...patch }; // nouvelle offre, l'originale est intacte\n}\nconst offer = {\n    id: \"o1\",\n    title: \"Logo\",\n    budget: 75_000,\n    currency: \"XOF\",\n    deadline: new Date(\"2026-11-30\"),\n    createdAt: new Date(\"2026-10-19\"),\n};\nconst updated = applyUpdate(offer, { budget: 90_000 });\nconsole.log(`${offer.budget} → ${updated.budget} | ${updated.title}`);\n// @ts-expect-error — currency ne fait pas partie de UpdateOfferInput\napplyUpdate(offer, { currency: \"EUR\" });\nexport {};",
+  "sortie": "75000 → 90000 | Logo"
+ },
+ {
+  "id": 58,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Omit : les données de création",
+  "niveau": "intermediaire",
+  "ts": "type Offer = {\n  id: string;\n  title: string;\n  budget: number;\n  currency: \"XOF\" | \"EUR\";\n  deadline: Date;\n  description?: string;\n  createdAt: Date;\n};\n\ntype CreateOfferInput = Omit<Offer, \"id\" | \"createdAt\">;\n\n// identifiant et horloge injectés : on peut tester avec des valeurs fixes\nfunction createOffer(input: CreateOfferInput, newId: () => string, now: () => Date): Offer {\n  return { ...input, id: newId(), createdAt: now() };\n}\n\nconst input: CreateOfferInput = {\n  title: \"Affiche\",\n  budget: 40_000,\n  currency: \"XOF\",\n  deadline: new Date(\"2026-12-15\"),\n};\n\nconst offer = createOffer(input, () => \"off_1\", () => new Date(\"2026-10-19T08:00:00Z\"));\nconsole.log(offer.id, offer.title, offer.createdAt.toISOString());\n\nconst withId: CreateOfferInput = {\n  ...input,\n  // @ts-expect-error — id ne peut pas être fourni à la création\n  id: \"pirate\",\n};\nvoid withId;\n\nexport {};",
+  "js": "// Exercice 58 · ★★★☆ Intermédiaire — Omit : les données de création\n// identifiant et horloge injectés : on peut tester avec des valeurs fixes\nfunction createOffer(input, newId, now) {\n    return { ...input, id: newId(), createdAt: now() };\n}\nconst input = {\n    title: \"Affiche\",\n    budget: 40_000,\n    currency: \"XOF\",\n    deadline: new Date(\"2026-12-15\"),\n};\nconst offer = createOffer(input, () => \"off_1\", () => new Date(\"2026-10-19T08:00:00Z\"));\nconsole.log(offer.id, offer.title, offer.createdAt.toISOString());\nconst withId = {\n    ...input,\n    // @ts-expect-error — id ne peut pas être fourni à la création\n    id: \"pirate\",\n};\nvoid withId;\nexport {};",
+  "sortie": "off_1 Affiche 2026-10-19T08:00:00.000Z"
+ },
+ {
+  "id": 59,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Required et Readonly : une configuration",
+  "niveau": "intermediaire",
+  "ts": "type Settings = { theme?: \"light\" | \"dark\"; pageSize?: number };\n\nconst DEFAULT_SETTINGS: Required<Settings> = { theme: \"light\", pageSize: 20 };\n\nfunction resolveSettings(partial: Settings): Readonly<Required<Settings>> {\n  return {\n    theme: partial.theme ?? DEFAULT_SETTINGS.theme,\n    pageSize: partial.pageSize ?? DEFAULT_SETTINGS.pageSize,\n  };\n}\n\nconst defaults = resolveSettings({});\nconst custom = resolveSettings({ theme: \"dark\", pageSize: 50 });\n\n// @ts-expect-error — Cannot assign to 'pageSize' because it is a read-only property\ncustom.pageSize = 10;\n\nconsole.log(defaults, resolveSettings({ theme: \"dark\", pageSize: 50 }));\n\nexport {};",
+  "js": "// Exercice 59 · ★★★☆ Intermédiaire — Required et Readonly : une configuration\nconst DEFAULT_SETTINGS = { theme: \"light\", pageSize: 20 };\nfunction resolveSettings(partial) {\n    return {\n        theme: partial.theme ?? DEFAULT_SETTINGS.theme,\n        pageSize: partial.pageSize ?? DEFAULT_SETTINGS.pageSize,\n    };\n}\nconst defaults = resolveSettings({});\nconst custom = resolveSettings({ theme: \"dark\", pageSize: 50 });\n// @ts-expect-error — Cannot assign to 'pageSize' because it is a read-only property\ncustom.pageSize = 10;\nconsole.log(defaults, resolveSettings({ theme: \"dark\", pageSize: 50 }));\nexport {};",
+  "sortie": "{ theme: 'light', pageSize: 20 } { theme: 'dark', pageSize: 50 }"
+ },
+ {
+  "id": 60,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Record : un libellé pour chaque statut",
+  "niveau": "intermediaire",
+  "ts": "type TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\nconst statusLabels: Record<TaskStatus, string> = {\n  draft: \"Brouillon\",\n  published: \"Publiée\",\n  in_selection: \"En sélection\",\n  assigned: \"Attribuée\",\n  in_progress: \"En cours\",\n  delivered: \"Livrée\",\n  validated: \"Validée\",\n  closed: \"Clôturée\",\n  disputed: \"En litige\",\n  cancelled: \"Annulée\",\n};\n\n// Oublier un statut est une erreur de compilation :\n// @ts-expect-error — Property 'cancelled' is missing in type ...\nconst incomplete: Record<TaskStatus, string> = {\n  draft: \"Brouillon\",\n  published: \"Publiée\",\n  in_selection: \"En sélection\",\n  assigned: \"Attribuée\",\n  in_progress: \"En cours\",\n  delivered: \"Livrée\",\n  validated: \"Validée\",\n  closed: \"Clôturée\",\n  disputed: \"En litige\",\n};\n\nfunction labelOf(status: TaskStatus): string {\n  return statusLabels[status]; // string (et non string | undefined) : la clé existe forcément\n}\n\nconst missing = Object.keys(statusLabels).length - Object.keys(incomplete).length;\nconsole.log(`${labelOf(\"in_progress\")} | ${labelOf(\"disputed\")} | ${missing}`);\n\nexport {};",
+  "js": "// Exercice 60 · ★★★☆ Intermédiaire — Record : un libellé pour chaque statut\nconst statusLabels = {\n    draft: \"Brouillon\",\n    published: \"Publiée\",\n    in_selection: \"En sélection\",\n    assigned: \"Attribuée\",\n    in_progress: \"En cours\",\n    delivered: \"Livrée\",\n    validated: \"Validée\",\n    closed: \"Clôturée\",\n    disputed: \"En litige\",\n    cancelled: \"Annulée\",\n};\n// Oublier un statut est une erreur de compilation :\n// @ts-expect-error — Property 'cancelled' is missing in type ...\nconst incomplete = {\n    draft: \"Brouillon\",\n    published: \"Publiée\",\n    in_selection: \"En sélection\",\n    assigned: \"Attribuée\",\n    in_progress: \"En cours\",\n    delivered: \"Livrée\",\n    validated: \"Validée\",\n    closed: \"Clôturée\",\n    disputed: \"En litige\",\n};\nfunction labelOf(status) {\n    return statusLabels[status]; // string (et non string | undefined) : la clé existe forcément\n}\nconst missing = Object.keys(statusLabels).length - Object.keys(incomplete).length;\nconsole.log(`${labelOf(\"in_progress\")} | ${labelOf(\"disputed\")} | ${missing}`);\nexport {};",
+  "sortie": "En cours | En litige | 1"
+ },
+ {
+  "id": 61,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "ReturnType et Parameters",
+  "niveau": "intermediaire",
+  "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\n// type de retour volontairement non annoté\nfunction computePayout(amount: number, rate: number) {\n  const platformFee = Math.round(amount * rate);\n  return { collaboratorAmount: amount - platformFee, platformFee };\n}\n\ntype Payout = ReturnType<typeof computePayout>; // { collaboratorAmount: number; platformFee: number }\ntype PayoutArgs = Parameters<typeof computePayout>; // [amount: number, rate: number]\n\nconst args: PayoutArgs = [80_000, 0.1];\nconst payout: Payout = computePayout(...args);\n\ntype _payout = Expect<Equal<Payout, { collaboratorAmount: number; platformFee: number }>>;\ntype _args = Expect<Equal<PayoutArgs, [amount: number, rate: number]>>;\nconst checks: [_payout, _args] = [true, true];\n\nconsole.log(payout, checks);\n\nexport {};",
+  "js": "// Exercice 61 · ★★★☆ Intermédiaire — ReturnType et Parameters\n// type de retour volontairement non annoté\nfunction computePayout(amount, rate) {\n    const platformFee = Math.round(amount * rate);\n    return { collaboratorAmount: amount - platformFee, platformFee };\n}\nconst args = [80_000, 0.1];\nconst payout = computePayout(...args);\nconst checks = [true, true];\nconsole.log(payout, checks);\nexport {};",
+  "sortie": "{ collaboratorAmount: 72000, platformFee: 8000 } [ true, true ]"
+ },
+ {
+  "id": 62,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Exclude, Extract et NonNullable",
+  "niveau": "intermediaire",
+  "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\ntype TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\ntype FinalStatus = Extract<TaskStatus, \"closed\" | \"cancelled\">; // \"closed\" | \"cancelled\"\ntype ActiveStatus = Exclude<TaskStatus, FinalStatus>; // les 8 autres\n\nconst FINAL_STATUSES: readonly TaskStatus[] = [\"closed\", \"cancelled\"];\n\nfunction isActive(s: TaskStatus): s is ActiveStatus {\n  return !FINAL_STATUSES.includes(s);\n}\n\ntype Defined = NonNullable<string | null | undefined>;\n\ntype _final = Expect<Equal<FinalStatus, \"closed\" | \"cancelled\">>;\ntype _defined = Expect<Equal<Defined, string>>;\nconst checks: [_final, _defined] = [true, true];\n\nconst all: TaskStatus[] = [\n  \"draft\", \"published\", \"in_selection\", \"assigned\", \"in_progress\",\n  \"delivered\", \"validated\", \"closed\", \"disputed\", \"cancelled\",\n];\nconst active: ActiveStatus[] = all.filter(isActive);\n\nconsole.log(`actifs : ${active.length} sur ${all.length}`, checks);\n\nexport {};",
+  "js": "// Exercice 62 · ★★★☆ Intermédiaire — Exclude, Extract et NonNullable\n//\n// Defined = NonNullable<string | null | undefined> vaut simplement string.\nconst FINAL_STATUSES = [\"closed\", \"cancelled\"];\nfunction isActive(s) {\n    return !FINAL_STATUSES.includes(s);\n}\nconst checks = [true, true];\nconst all = [\n    \"draft\", \"published\", \"in_selection\", \"assigned\", \"in_progress\",\n    \"delivered\", \"validated\", \"closed\", \"disputed\", \"cancelled\",\n];\nconst active = all.filter(isActive);\nconsole.log(`actifs : ${active.length} sur ${all.length}`, checks);\nexport {};",
+  "sortie": "actifs : 8 sur 10 [ true, true ]"
+ },
+ {
+  "id": 63,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "keyof typeof sur un objet constant",
+  "niveau": "intermediaire",
+  "ts": "const statusColors = { draft: \"grey\", published: \"blue\", closed: \"green\" } as const;\n\ntype StatusKey = keyof typeof statusColors; // \"draft\" | \"published\" | \"closed\"\ntype Color = (typeof statusColors)[StatusKey]; // \"grey\" | \"blue\" | \"green\"\n\nfunction colorOf(key: StatusKey): Color {\n  return statusColors[key];\n}\n\nconsole.log(colorOf(\"published\"), colorOf(\"closed\"));\n// @ts-expect-error — \"archived\" n'est pas une clé de statusColors\nconsole.log(colorOf(\"archived\"));\n\nexport {};",
+  "js": "// Exercice 63 · ★★★☆ Intermédiaire — keyof typeof sur un objet constant\nconst statusColors = { draft: \"grey\", published: \"blue\", closed: \"green\" };\nfunction colorOf(key) {\n    return statusColors[key];\n}\nconsole.log(colorOf(\"published\"), colorOf(\"closed\"));\n// @ts-expect-error — \"archived\" n'est pas une clé de statusColors\nconsole.log(colorOf(\"archived\"));\nexport {};",
+  "sortie": "blue green\nundefined"
+ },
+ {
+  "id": 64,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Types mappés : Nullable<T> et Mutable<T>",
+  "niveau": "avance",
+  "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\ntype Nullable<T> = { [K in keyof T]: T[K] | null };\ntype Mutable<T> = { -readonly [K in keyof T]: T[K] };\n\n// État initial d'un formulaire : tous les champs à null\ntype TaskForm = { name: string; minBudget: number };\nconst initialForm: Nullable<TaskForm> = { name: null, minBudget: null };\n\n// Copie modifiable d'une configuration en lecture seule\ntype Config = Readonly<{ retries: number; baseUrl: string }>;\nconst config: Config = { retries: 3, baseUrl: \"https://api.taskd.example\" };\nconst editable: Mutable<Config> = { ...config };\neditable.retries = 5; // autorisé : readonly retiré\n// @ts-expect-error — config reste en lecture seule\nconfig.retries = 5;\n\ntype _nullable = Expect<Equal<Nullable<TaskForm>, { name: string | null; minBudget: number | null }>>;\ntype _mutable = Expect<Equal<Mutable<Config>, { retries: number; baseUrl: string }>>;\nconst checks: [_nullable, _mutable] = [true, true];\n\nconsole.log(initialForm);\nconsole.log(`3 → ${editable.retries}`, checks);\n\nexport {};",
+  "js": "// Exercice 64 · ★★★★ Avancé — Types mappés : Nullable<T> et Mutable<T>\nconst initialForm = { name: null, minBudget: null };\nconst config = { retries: 3, baseUrl: \"https://api.taskd.example\" };\nconst editable = { ...config };\neditable.retries = 5; // autorisé : readonly retiré\n// @ts-expect-error — config reste en lecture seule\nconfig.retries = 5;\nconst checks = [true, true];\nconsole.log(initialForm);\nconsole.log(`3 → ${editable.retries}`, checks);\nexport {};",
+  "sortie": "{ name: null, minBudget: null }\n3 → 5 [ true, true ]"
+ },
+ {
+  "id": 65,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Types conditionnels et infer",
+  "niveau": "avance",
+  "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\ntype ElementOf<T> = T extends readonly (infer U)[] ? U : never;\ntype Unwrap<T> = T extends Promise<infer U> ? U : T;\n\ntype _e1 = Expect<Equal<ElementOf<string[]>, string>>;\ntype _e2 = Expect<Equal<ElementOf<number>, never>>;\ntype _u1 = Expect<Equal<Unwrap<Promise<Date>>, Date>>;\ntype _u2 = Expect<Equal<Unwrap<string>, string>>;\n\nconst verified: _e1 & _e2 & _u1 & _u2 = true;\nconsole.log(\"Types conditionnels vérifiés :\", verified);\n\nexport {};",
+  "js": "// Exercice 65 · ★★★★ Avancé — Types conditionnels et infer\nconst verified = true;\nconsole.log(\"Types conditionnels vérifiés :\", verified);\nexport {};",
+  "sortie": "Types conditionnels vérifiés : true"
+ },
+ {
+  "id": 66,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Une classe : EscrowAccount",
+  "niveau": "intermediaire",
+  "ts": "class EscrowAccount {\n  #held = 0; // solde privé (privé aussi à l'exécution)\n\n  constructor(\n    readonly taskId: string,\n    readonly currency: \"XOF\" | \"EUR\",\n  ) {}\n\n  hold(amount: number): void {\n    if (amount <= 0) {\n      throw new Error(\"Montant invalide\");\n    }\n    this.#held += amount;\n  }\n\n  release(): number {\n    const amount = this.#held;\n    this.#held = 0;\n    return amount;\n  }\n\n  get heldAmount(): number {\n    return this.#held;\n  }\n}\n\nconst account = new EscrowAccount(\"task_1\", \"XOF\");\naccount.hold(75_000);\nconsole.log(`Séquestre ${account.taskId} : ${account.heldAmount} ${account.currency}`);\nconsole.log(`libéré : ${account.release()} | reste : ${account.heldAmount}`);\n\ntry {\n  account.hold(0);\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
+  "js": "// Exercice 66 · ★★★☆ Intermédiaire — Une classe : EscrowAccount\nclass EscrowAccount {\n    taskId;\n    currency;\n    #held = 0; // solde privé (privé aussi à l'exécution)\n    constructor(taskId, currency) {\n        this.taskId = taskId;\n        this.currency = currency;\n    }\n    hold(amount) {\n        if (amount <= 0) {\n            throw new Error(\"Montant invalide\");\n        }\n        this.#held += amount;\n    }\n    release() {\n        const amount = this.#held;\n        this.#held = 0;\n        return amount;\n    }\n    get heldAmount() {\n        return this.#held;\n    }\n}\nconst account = new EscrowAccount(\"task_1\", \"XOF\");\naccount.hold(75_000);\nconsole.log(`Séquestre ${account.taskId} : ${account.heldAmount} ${account.currency}`);\nconsole.log(`libéré : ${account.release()} | reste : ${account.heldAmount}`);\ntry {\n    account.hold(0);\n}\ncatch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n}\nexport {};",
+  "sortie": "Séquestre task_1 : 75000 XOF\nlibéré : 75000 | reste : 0\nMontant invalide"
+ },
+ {
+  "id": 67,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "public, private, protected",
+  "niveau": "intermediaire",
+  "ts": "class Member {\n  constructor(\n    public readonly id: string,\n    private email: string,\n    protected level: number,\n  ) {}\n\n  maskedEmail(): string {\n    const [name = \"\", domain = \"\"] = this.email.split(\"@\");\n    return `${name.slice(0, 1)}***@${domain}`;\n  }\n}\n\nclass Mentor extends Member {\n  title(): string {\n    return this.level >= 4 ? \"Mentor senior\" : \"Mentor\"; // this.level autorisé dans la sous-classe\n  }\n}\n\nconst member = new Member(\"m1\", \"awa@example.com\", 2);\nconst mentor = new Mentor(\"m2\", \"kofi@example.com\", 4);\n\n// @ts-expect-error — 'email' is private and only accessible within class 'Member'\nconsole.log(member.email);\n// @ts-expect-error — 'level' is protected and only accessible within class 'Member' and its subclasses\nconsole.log(mentor.level);\n\nconsole.log(member.id, member.maskedEmail(), \"|\", mentor.title());\n\nexport {};",
+  "js": "// Exercice 67 · ★★★☆ Intermédiaire — public, private, protected\n//\n// private et protected sont des vérifications de TypeScript uniquement : à\n// l'exécution, les propriétés existent et restent lisibles (d'où les valeurs\n// affichées ci-dessous). Pour un vrai privé à l'exécution : #champ.\nclass Member {\n    id;\n    email;\n    level;\n    constructor(id, email, level) {\n        this.id = id;\n        this.email = email;\n        this.level = level;\n    }\n    maskedEmail() {\n        const [name = \"\", domain = \"\"] = this.email.split(\"@\");\n        return `${name.slice(0, 1)}***@${domain}`;\n    }\n}\nclass Mentor extends Member {\n    title() {\n        return this.level >= 4 ? \"Mentor senior\" : \"Mentor\"; // this.level autorisé dans la sous-classe\n    }\n}\nconst member = new Member(\"m1\", \"awa@example.com\", 2);\nconst mentor = new Mentor(\"m2\", \"kofi@example.com\", 4);\n// @ts-expect-error — 'email' is private and only accessible within class 'Member'\nconsole.log(member.email);\n// @ts-expect-error — 'level' is protected and only accessible within class 'Member' and its subclasses\nconsole.log(mentor.level);\nconsole.log(member.id, member.maskedEmail(), \"|\", mentor.title());\nexport {};",
+  "sortie": "awa@example.com\n4\nm1 a***@example.com | Mentor senior"
+ },
+ {
+  "id": 68,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "implements : programmer vers une interface",
+  "niveau": "avance",
+  "ts": "type ChargeResult = { status: \"ok\" | \"failed\"; reference: string };\n\ninterface PaymentGateway {\n  charge(amount: number, reference: string): Promise<ChargeResult>;\n}\n\nclass FakeGateway implements PaymentGateway {\n  async charge(amount: number, reference: string): Promise<ChargeResult> {\n    return { status: amount > 100_000 ? \"failed\" : \"ok\", reference };\n  }\n}\n\nclass CheckoutService {\n  private counter = 0;\n\n  // le service dépend de l'interface, pas d'une implémentation précise\n  constructor(private readonly gateway: PaymentGateway) {}\n\n  async pay(amount: number): Promise<string> {\n    this.counter += 1;\n    const result = await this.gateway.charge(amount, `PAY-${this.counter}`);\n    return result.status === \"ok\"\n      ? `${result.reference} : paiement accepté`\n      : `${result.reference} : paiement refusé`;\n  }\n}\n\nconst checkout = new CheckoutService(new FakeGateway());\nconsole.log(await checkout.pay(50_000));\nconsole.log(await checkout.pay(250_000));\n\nexport {};",
+  "js": "// Exercice 68 · ★★★★ Avancé — implements : programmer vers une interface\nclass FakeGateway {\n    async charge(amount, reference) {\n        return { status: amount > 100_000 ? \"failed\" : \"ok\", reference };\n    }\n}\nclass CheckoutService {\n    gateway;\n    counter = 0;\n    // le service dépend de l'interface, pas d'une implémentation précise\n    constructor(gateway) {\n        this.gateway = gateway;\n    }\n    async pay(amount) {\n        this.counter += 1;\n        const result = await this.gateway.charge(amount, `PAY-${this.counter}`);\n        return result.status === \"ok\"\n            ? `${result.reference} : paiement accepté`\n            : `${result.reference} : paiement refusé`;\n    }\n}\nconst checkout = new CheckoutService(new FakeGateway());\nconsole.log(await checkout.pay(50_000));\nconsole.log(await checkout.pay(250_000));\nexport {};",
+  "sortie": "PAY-1 : paiement accepté\nPAY-2 : paiement refusé"
+ },
+ {
+  "id": 69,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Classe abstraite",
+  "niveau": "avance",
+  "ts": "abstract class Notifier {\n  abstract send(to: string, message: string): string;\n\n  protected format(message: string): string {\n    return message.charAt(0).toUpperCase() + message.slice(1);\n  }\n}\n\nclass EmailNotifier extends Notifier {\n  send(to: string, message: string): string {\n    return `[email → ${to}] ${this.format(message)}`;\n  }\n}\n\nclass SmsNotifier extends Notifier {\n  private static readonly MAX_LENGTH = 20;\n\n  send(to: string, message: string): string {\n    const text = this.format(message).slice(0, SmsNotifier.MAX_LENGTH).trimEnd();\n    return `[sms → ${to}] ${text}`;\n  }\n}\n\nconst message = \"votre candidature a été retenue pour la mission\";\nconst notifiers: Notifier[] = [new EmailNotifier(), new SmsNotifier()];\n\nfor (const notifier of notifiers) {\n  console.log(notifier.send(\"awa\", message));\n}\n\n// @ts-expect-error — Cannot create an instance of an abstract class\nconst impossible = new Notifier();\nconsole.log(typeof impossible);\n\nexport {};",
+  "js": "// Exercice 69 · ★★★★ Avancé — Classe abstraite\nclass Notifier {\n    format(message) {\n        return message.charAt(0).toUpperCase() + message.slice(1);\n    }\n}\nclass EmailNotifier extends Notifier {\n    send(to, message) {\n        return `[email → ${to}] ${this.format(message)}`;\n    }\n}\nclass SmsNotifier extends Notifier {\n    static MAX_LENGTH = 20;\n    send(to, message) {\n        const text = this.format(message).slice(0, SmsNotifier.MAX_LENGTH).trimEnd();\n        return `[sms → ${to}] ${text}`;\n    }\n}\nconst message = \"votre candidature a été retenue pour la mission\";\nconst notifiers = [new EmailNotifier(), new SmsNotifier()];\nfor (const notifier of notifiers) {\n    console.log(notifier.send(\"awa\", message));\n}\n// @ts-expect-error — Cannot create an instance of an abstract class\nconst impossible = new Notifier();\nconsole.log(typeof impossible);\nexport {};",
+  "sortie": "[email → awa] Votre candidature a été retenue pour la mission\n[sms → awa] Votre candidature a\nobject"
+ },
+ {
+  "id": 70,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Un objet-valeur immuable : Money",
+  "niveau": "avance",
+  "ts": "type Currency = \"XOF\" | \"EUR\";\n\nclass Money {\n  private constructor(\n    readonly amount: number,\n    readonly currency: Currency,\n  ) {}\n\n  static of(amount: number, currency: Currency): Money {\n    if (!Number.isInteger(amount) || amount < 0) {\n      throw new Error(\"Le montant doit être un entier positif ou nul\");\n    }\n    return new Money(amount, currency);\n  }\n\n  static zero(currency: Currency): Money {\n    return new Money(0, currency);\n  }\n\n  add(other: Money): Money {\n    if (other.currency !== this.currency) {\n      throw new Error(\"Devises différentes\");\n    }\n    return new Money(this.amount + other.amount, this.currency);\n  }\n\n  equals(other: Money): boolean {\n    return this.amount === other.amount && this.currency === other.currency;\n  }\n\n  toString(): string {\n    return `${this.amount} ${this.currency}`;\n  }\n}\n\nfunction attempt(action: () => unknown): void {\n  try {\n    action();\n  } catch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n  }\n}\n\nconst a = Money.of(50_000, \"XOF\");\nconst b = Money.of(25_000, \"XOF\");\nconst total = a.add(b);\n\nconsole.log(`${total} | a inchangé : ${a} | ${total.equals(Money.of(75_000, \"XOF\"))}`);\nconsole.log(String(Money.zero(\"EUR\")));\n\n// @ts-expect-error — le constructeur est privé : il faut passer par Money.of\nattempt(() => new Money(10, \"XOF\"));\n\nattempt(() => a.add(Money.of(10, \"EUR\")));\nattempt(() => Money.of(-5, \"XOF\"));\nattempt(() => Money.of(10.5, \"XOF\"));\n\nexport {};",
+  "js": "// Exercice 70 · ★★★★ Avancé — Un objet-valeur immuable : Money\nclass Money {\n    amount;\n    currency;\n    constructor(amount, currency) {\n        this.amount = amount;\n        this.currency = currency;\n    }\n    static of(amount, currency) {\n        if (!Number.isInteger(amount) || amount < 0) {\n            throw new Error(\"Le montant doit être un entier positif ou nul\");\n        }\n        return new Money(amount, currency);\n    }\n    static zero(currency) {\n        return new Money(0, currency);\n    }\n    add(other) {\n        if (other.currency !== this.currency) {\n            throw new Error(\"Devises différentes\");\n        }\n        return new Money(this.amount + other.amount, this.currency);\n    }\n    equals(other) {\n        return this.amount === other.amount && this.currency === other.currency;\n    }\n    toString() {\n        return `${this.amount} ${this.currency}`;\n    }\n}\nfunction attempt(action) {\n    try {\n        action();\n    }\n    catch (error) {\n        console.log(error instanceof Error ? error.message : String(error));\n    }\n}\nconst a = Money.of(50_000, \"XOF\");\nconst b = Money.of(25_000, \"XOF\");\nconst total = a.add(b);\nconsole.log(`${total} | a inchangé : ${a} | ${total.equals(Money.of(75_000, \"XOF\"))}`);\nconsole.log(String(Money.zero(\"EUR\")));\n// @ts-expect-error — le constructeur est privé : il faut passer par Money.of\nattempt(() => new Money(10, \"XOF\"));\nattempt(() => a.add(Money.of(10, \"EUR\")));\nattempt(() => Money.of(-5, \"XOF\"));\nattempt(() => Money.of(10.5, \"XOF\"));\nexport {};",
+  "sortie": "75000 XOF | a inchangé : 50000 XOF | true\n0 EUR\nDevises différentes\nLe montant doit être un entier positif ou nul\nLe montant doit être un entier positif ou nul"
+ },
+ {
+  "id": 71,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Modules : import / export et import type",
+  "niveau": "intermediaire",
+  "ts": "// ───────────── domain/payout.ts ─────────────\n// export type Payout = { ... };\n// export function computePayout(...) { ... }\n\ntype Payout = { collaboratorAmount: number; platformFee: number };\n\nfunction computePayout(amount: number, rate: number): Payout {\n  const platformFee = Math.round(amount * rate);\n  return { collaboratorAmount: amount - platformFee, platformFee };\n}\n\n// ───────────── services/payment.service.ts ─────────────\n// import { computePayout } from \"../domain/payout.js\";      → conservé (valeur)\n// import type { Payout } from \"../domain/payout.js\";        → supprimé à la compilation\n// export function describePayout(...) { ... }\n\nfunction formatPayout(payout: Payout): string {\n  return `Collaborateur : ${payout.collaboratorAmount} XOF, plateforme : ${payout.platformFee} XOF`;\n}\n\nfunction describePayout(amount: number, rate: number): string {\n  return formatPayout(computePayout(amount, rate));\n}\n\n// ───────────── main.ts ─────────────\n// import { describePayout } from \"./services/payment.service.js\";\n\nconsole.log(describePayout(80_000, 0.1));\nconsole.log(describePayout(15_500, 0.12));\n\nexport {};",
+  "js": "// Exercice 71 · ★★★☆ Intermédiaire — Modules : import / export et import type\n//\n// L'énoncé prévoit trois fichiers. Ce fichier est autonome (soumission\n// individuelle) : les trois fichiers sont regroupés ci-dessous, chacun dans sa\n// section, avec en commentaire les lignes import / export qu'ils contiendraient.\n//\n// Que devient `import type` après la compilation ?\n// Il est entièrement supprimé : un type n'existe pas en JavaScript. Seul\n// `import { computePayout }` (une valeur) reste dans le code compilé. Avec\n// verbatimModuleSyntax, TypeScript exige justement `import type` pour les\n// imports qui ne sont que des types, afin que leur suppression soit explicite.\nfunction computePayout(amount, rate) {\n    const platformFee = Math.round(amount * rate);\n    return { collaboratorAmount: amount - platformFee, platformFee };\n}\n// ───────────── services/payment.service.ts ─────────────\n// import { computePayout } from \"../domain/payout.js\";      → conservé (valeur)\n// import type { Payout } from \"../domain/payout.js\";        → supprimé à la compilation\n// export function describePayout(...) { ... }\nfunction formatPayout(payout) {\n    return `Collaborateur : ${payout.collaboratorAmount} XOF, plateforme : ${payout.platformFee} XOF`;\n}\nfunction describePayout(amount, rate) {\n    return formatPayout(computePayout(amount, rate));\n}\n// ───────────── main.ts ─────────────\n// import { describePayout } from \"./services/payment.service.js\";\nconsole.log(describePayout(80_000, 0.1));\nconsole.log(describePayout(15_500, 0.12));\nexport {};",
+  "sortie": "Collaborateur : 72000 XOF, plateforme : 8000 XOF\nCollaborateur : 13640 XOF, plateforme : 1860 XOF"
+ },
+ {
+  "id": 72,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Ranger les types par fonctionnalité",
+  "niveau": "intermediaire",
+  "ts": "// ───────────── features/offers/types.ts ─────────────\ntype Offer = { id: string; title: string; budget: number; currency: \"XOF\" | \"EUR\" };\n\n// ───────────── features/offers/api.ts ─────────────\nasync function listOffers(): Promise<Offer[]> {\n  return [\n    { id: \"o1\", title: \"Logo boutique\", budget: 75_000, currency: \"XOF\" },\n    { id: \"o2\", title: \"Affiche concert\", budget: 40_000, currency: \"XOF\" },\n  ];\n}\n\n// ───────────── features/offers/index.ts (barrel) ─────────────\nconst offersFeature = { listOffers };\n\n// ───────────── main.ts ─────────────\nfor (const offer of await offersFeature.listOffers()) {\n  console.log(`${offer.id} — ${offer.title} (${offer.budget} ${offer.currency})`);\n}\n\nexport {};",
+  "js": "// Exercice 72 · ★★★☆ Intermédiaire — Ranger les types par fonctionnalité\n//\n// Organisation prévue (regroupée ici dans un seul fichier autonome) :\n//   features/offers/types.ts  → le type Offer\n//   features/offers/api.ts    → listOffers() simulée\n//   features/offers/index.ts  → barrel : export * from \"./types.js\"; export * from \"./api.js\";\n//   main.ts                   → import { listOffers, type Offer } from \"./features/offers/index.js\";\n//\n// Pourquoi éviter un fichier types.ts global ?\n// - il devient un fourre-tout que tout le projet importe : chaque modification\n//   touche tout le monde et crée des dépendances entre fonctionnalités sans rapport ;\n// - les types sont loin du code qui les utilise : plus difficile à lire et à supprimer ;\n// - ranger par fonctionnalité permet de déplacer ou supprimer une fonctionnalité\n//   d'un bloc, et le barrel fixe une API publique claire (main.ts n'importe que\n//   depuis ./features/offers).\n// ───────────── features/offers/api.ts ─────────────\nasync function listOffers() {\n    return [\n        { id: \"o1\", title: \"Logo boutique\", budget: 75_000, currency: \"XOF\" },\n        { id: \"o2\", title: \"Affiche concert\", budget: 40_000, currency: \"XOF\" },\n    ];\n}\n// ───────────── features/offers/index.ts (barrel) ─────────────\nconst offersFeature = { listOffers };\n// ───────────── main.ts ─────────────\nfor (const offer of await offersFeature.listOffers()) {\n    console.log(`${offer.id} — ${offer.title} (${offer.budget} ${offer.currency})`);\n}\nexport {};",
+  "sortie": "o1 — Logo boutique (75000 XOF)\no2 — Affiche concert (40000 XOF)"
+ },
+ {
+  "id": 73,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "Un schéma zod et le type déduit",
+  "niveau": "intermediaire",
+  "ts": "import { z } from \"zod\";\n\nconst offerSchema = z.object({\n  id: z.string(),\n  title: z\n    .string()\n    .min(5, \"Le titre doit contenir au moins 5 caractères\")\n    .max(120, \"Le titre doit contenir au plus 120 caractères\"),\n  budget: z.number().int(\"Le budget doit être un entier\").positive(\"Le budget doit être positif\"),\n  currency: z.enum([\"XOF\", \"EUR\"]),\n  deadline: z.coerce.date(),\n  description: z.string().optional(),\n});\n\ntype Offer = z.infer<typeof offerSchema>;\n\nconst valid = offerSchema.safeParse({\n  id: \"o1\",\n  title: \"Logo boutique\",\n  budget: 75_000,\n  currency: \"XOF\",\n  deadline: \"2026-11-30\",\n});\n\nif (valid.success) {\n  const offer: Offer = valid.data; // deadline est une Date\n  console.log(offer.title, offer.deadline.toISOString().slice(0, 10), offer.description);\n}\n\nconst invalid = offerSchema.safeParse({\n  id: \"o2\",\n  title: \"Logo\",\n  budget: -10,\n  currency: \"USD\",\n  deadline: \"2026-11-30\",\n});\n\nif (!invalid.success) {\n  for (const issue of invalid.error.issues) {\n    console.log(`${issue.path.join(\".\")} : ${issue.message}`);\n  }\n}\n\nexport {};",
+  "js": "// Exercice 73 · ★★★☆ Intermédiaire — Un schéma zod et le type déduit\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\nconst offerSchema = z.object({\n    id: z.string(),\n    title: z\n        .string()\n        .min(5, \"Le titre doit contenir au moins 5 caractères\")\n        .max(120, \"Le titre doit contenir au plus 120 caractères\"),\n    budget: z.number().int(\"Le budget doit être un entier\").positive(\"Le budget doit être positif\"),\n    currency: z.enum([\"XOF\", \"EUR\"]),\n    deadline: z.coerce.date(),\n    description: z.string().optional(),\n});\nconst valid = offerSchema.safeParse({\n    id: \"o1\",\n    title: \"Logo boutique\",\n    budget: 75_000,\n    currency: \"XOF\",\n    deadline: \"2026-11-30\",\n});\nif (valid.success) {\n    const offer = valid.data; // deadline est une Date\n    console.log(offer.title, offer.deadline.toISOString().slice(0, 10), offer.description);\n}\nconst invalid = offerSchema.safeParse({\n    id: \"o2\",\n    title: \"Logo\",\n    budget: -10,\n    currency: \"USD\",\n    deadline: \"2026-11-30\",\n});\nif (!invalid.success) {\n    for (const issue of invalid.error.issues) {\n        console.log(`${issue.path.join(\".\")} : ${issue.message}`);\n    }\n}\nexport {};",
+  "sortie": "Logo boutique 2026-11-30 undefined\ntitle : Le titre doit contenir au moins 5 caractères\nbudget : Le budget doit être positif\ncurrency : Invalid option: expected one of \"XOF\"|\"EUR\""
+ },
+ {
+  "id": 74,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "Valider un formulaire avec refine",
+  "niveau": "avance",
+  "ts": "import { z } from \"zod\";\n\nconst createTaskSchema = z\n  .object({\n    name: z.string().min(3, \"Le nom doit contenir au moins 3 caractères\"),\n    minBudget: z.number().int().positive(\"Le budget doit être positif\"),\n    maxBudget: z.number().int().positive(\"Le budget doit être positif\"),\n    skills: z.array(z.string()).min(1, \"Choisissez au moins une compétence\"),\n  })\n  .refine((task) => task.minBudget <= task.maxBudget, {\n    message: \"Le budget minimum doit être inférieur ou égal au maximum\",\n    path: [\"maxBudget\"], // l'erreur est rattachée au champ maxBudget\n  });\n\nconst forms: unknown[] = [\n  { name: \"Logo\", minBudget: 50_000, maxBudget: 100_000, skills: [\"Figma\"] },\n  { name: \"Logo\", minBudget: 100_000, maxBudget: 50_000, skills: [\"Figma\"] },\n  { name: \"Lo\", minBudget: 50_000, maxBudget: 100_000, skills: [] },\n];\n\nfor (const form of forms) {\n  const result = createTaskSchema.safeParse(form);\n  if (result.success) {\n    console.log(\"valide\");\n  } else {\n    console.log(JSON.stringify(z.flattenError(result.error).fieldErrors));\n  }\n}\n\nexport {};",
+  "js": "// Exercice 74 · ★★★★ Avancé — Valider un formulaire avec refine\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\nconst createTaskSchema = z\n    .object({\n    name: z.string().min(3, \"Le nom doit contenir au moins 3 caractères\"),\n    minBudget: z.number().int().positive(\"Le budget doit être positif\"),\n    maxBudget: z.number().int().positive(\"Le budget doit être positif\"),\n    skills: z.array(z.string()).min(1, \"Choisissez au moins une compétence\"),\n})\n    .refine((task) => task.minBudget <= task.maxBudget, {\n    message: \"Le budget minimum doit être inférieur ou égal au maximum\",\n    path: [\"maxBudget\"], // l'erreur est rattachée au champ maxBudget\n});\nconst forms = [\n    { name: \"Logo\", minBudget: 50_000, maxBudget: 100_000, skills: [\"Figma\"] },\n    { name: \"Logo\", minBudget: 100_000, maxBudget: 50_000, skills: [\"Figma\"] },\n    { name: \"Lo\", minBudget: 50_000, maxBudget: 100_000, skills: [] },\n];\nfor (const form of forms) {\n    const result = createTaskSchema.safeParse(form);\n    if (result.success) {\n        console.log(\"valide\");\n    }\n    else {\n        console.log(JSON.stringify(z.flattenError(result.error).fieldErrors));\n    }\n}\nexport {};",
+  "sortie": "valide\n{\"maxBudget\":[\"Le budget minimum doit être inférieur ou égal au maximum\"]}\n{\"name\":[\"Le nom doit contenir au moins 3 caractères\"],\"skills\":[\"Choisissez au moins une compétence\"]}"
+ },
+ {
+  "id": 75,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "Des chaînes de formulaire vers des types stricts",
+  "niveau": "avance",
+  "ts": "import { z } from \"zod\";\n\nconst formSchema = z.object({\n  // \"50 000\" → 50000 : on retire les espaces (ordinaires et insécables) avant de convertir\n  budget: z.preprocess(\n    (value) => (typeof value === \"string\" ? value.replace(/[\\s  ]/g, \"\") : value),\n    z.coerce.number().int().positive(),\n  ),\n  deadline: z.coerce.date(),\n  // une case cochée envoie \"on\" ; décochée, le champ est absent\n  published: z.preprocess((value) => value === \"on\", z.boolean()),\n});\n\nconst checked = formSchema.parse({ budget: \"50 000\", deadline: \"2026-12-01\", published: \"on\" });\nconst unchecked = formSchema.parse({ budget: \"1000\", deadline: \"2026-12-01\" });\n\nconsole.log(checked.budget, typeof checked.budget);\nconsole.log(checked.deadline.toISOString().slice(0, 10), checked.deadline instanceof Date);\nconsole.log(checked.published, typeof checked.published);\nconsole.log(unchecked.published, typeof unchecked.published === \"string\");\n\nexport {};",
+  "js": "// Exercice 75 · ★★★★ Avancé — Des chaînes de formulaire vers des types stricts\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\nconst formSchema = z.object({\n    // \"50 000\" → 50000 : on retire les espaces (ordinaires et insécables) avant de convertir\n    budget: z.preprocess((value) => (typeof value === \"string\" ? value.replace(/[\\s  ]/g, \"\") : value), z.coerce.number().int().positive()),\n    deadline: z.coerce.date(),\n    // une case cochée envoie \"on\" ; décochée, le champ est absent\n    published: z.preprocess((value) => value === \"on\", z.boolean()),\n});\nconst checked = formSchema.parse({ budget: \"50 000\", deadline: \"2026-12-01\", published: \"on\" });\nconst unchecked = formSchema.parse({ budget: \"1000\", deadline: \"2026-12-01\" });\nconsole.log(checked.budget, typeof checked.budget);\nconsole.log(checked.deadline.toISOString().slice(0, 10), checked.deadline instanceof Date);\nconsole.log(checked.published, typeof checked.published);\nconsole.log(unchecked.published, typeof unchecked.published === \"string\");\nexport {};",
+  "sortie": "50000 number\n2026-12-01 true\ntrue boolean\nfalse false"
+ },
+ {
+  "id": 76,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "z.discriminatedUnion pour les paiements",
+  "niveau": "avance",
+  "ts": "import { z } from \"zod\";\n\nconst paymentSchema = z.discriminatedUnion(\"status\", [\n  z.object({ status: z.literal(\"pending\"), amount: z.number().int().positive() }),\n  z.object({ status: z.literal(\"held\"), amount: z.number().int().positive(), providerRef: z.string() }),\n  z.object({ status: z.literal(\"refunded\"), amount: z.number().int().positive(), reason: z.string() }),\n]);\n\ntype Payment = z.infer<typeof paymentSchema>;\n\nfunction assertNever(value: never): never {\n  throw new Error(`Cas non traité : ${JSON.stringify(value)}`);\n}\n\nfunction describe(payment: Payment): string {\n  switch (payment.status) {\n    case \"pending\":\n      return `En attente : ${payment.amount} XOF`;\n    case \"held\":\n      return `Bloqué (${payment.providerRef}) : ${payment.amount} XOF`;\n    case \"refunded\":\n      return `Remboursé (${payment.reason}) : ${payment.amount} XOF`;\n    default:\n      return assertNever(payment);\n  }\n}\n\nconst incoming: unknown[] = [\n  { status: \"held\", amount: 50_000, providerRef: \"KKP-1\" },\n  { status: \"refunded\", amount: 20_000, reason: \"litige\" },\n  { status: \"lost\", amount: 10_000 },\n];\n\nfor (const data of incoming) {\n  const result = paymentSchema.safeParse(data);\n  if (result.success) {\n    console.log(describe(result.data));\n  } else {\n    console.log(`rejeté : ${result.error.issues.map((issue) => issue.code).join(\", \")}`);\n  }\n}\n\nexport {};",
+  "js": "// Exercice 76 · ★★★★ Avancé — z.discriminatedUnion pour les paiements\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\nconst paymentSchema = z.discriminatedUnion(\"status\", [\n    z.object({ status: z.literal(\"pending\"), amount: z.number().int().positive() }),\n    z.object({ status: z.literal(\"held\"), amount: z.number().int().positive(), providerRef: z.string() }),\n    z.object({ status: z.literal(\"refunded\"), amount: z.number().int().positive(), reason: z.string() }),\n]);\nfunction assertNever(value) {\n    throw new Error(`Cas non traité : ${JSON.stringify(value)}`);\n}\nfunction describe(payment) {\n    switch (payment.status) {\n        case \"pending\":\n            return `En attente : ${payment.amount} XOF`;\n        case \"held\":\n            return `Bloqué (${payment.providerRef}) : ${payment.amount} XOF`;\n        case \"refunded\":\n            return `Remboursé (${payment.reason}) : ${payment.amount} XOF`;\n        default:\n            return assertNever(payment);\n    }\n}\nconst incoming = [\n    { status: \"held\", amount: 50_000, providerRef: \"KKP-1\" },\n    { status: \"refunded\", amount: 20_000, reason: \"litige\" },\n    { status: \"lost\", amount: 10_000 },\n];\nfor (const data of incoming) {\n    const result = paymentSchema.safeParse(data);\n    if (result.success) {\n        console.log(describe(result.data));\n    }\n    else {\n        console.log(`rejeté : ${result.error.issues.map((issue) => issue.code).join(\", \")}`);\n    }\n}\nexport {};",
+  "sortie": "Bloqué (KKP-1) : 50000 XOF\nRemboursé (litige) : 20000 XOF\nrejeté : invalid_union"
+ },
+ {
+  "id": 77,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "Valider les variables d'environnement",
+  "niveau": "avance",
+  "ts": "import { z } from \"zod\";\n\nconst envSchema = z.object({\n  DATABASE_URL: z.url(),\n  PORT: z.coerce.number().int().positive().default(3000),\n  COMMISSION_RATE: z.coerce.number().min(0).max(1),\n});\n\ntype Env = z.infer<typeof envSchema>;\n\nfunction loadEnv(source: Record<string, string | undefined>): Env {\n  const result = envSchema.safeParse(source);\n  if (!result.success) {\n    // on liste tous les problèmes d'un coup, pas seulement le premier\n    const fields = result.error.issues.map((issue) => issue.path.join(\".\"));\n    throw new Error(`Configuration invalide : ${fields.join(\", \")}`);\n  }\n  return result.data;\n}\n\nconst env = loadEnv({ DATABASE_URL: \"postgres://localhost:5432/taskd\", COMMISSION_RATE: \"0.1\" });\nconsole.log(env.PORT, env.COMMISSION_RATE, typeof env.PORT);\n\ntry {\n  loadEnv({ COMMISSION_RATE: \"1.5\" });\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
+  "js": "// Exercice 77 · ★★★★ Avancé — Valider les variables d'environnement\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\nconst envSchema = z.object({\n    DATABASE_URL: z.url(),\n    PORT: z.coerce.number().int().positive().default(3000),\n    COMMISSION_RATE: z.coerce.number().min(0).max(1),\n});\nfunction loadEnv(source) {\n    const result = envSchema.safeParse(source);\n    if (!result.success) {\n        // on liste tous les problèmes d'un coup, pas seulement le premier\n        const fields = result.error.issues.map((issue) => issue.path.join(\".\"));\n        throw new Error(`Configuration invalide : ${fields.join(\", \")}`);\n    }\n    return result.data;\n}\nconst env = loadEnv({ DATABASE_URL: \"postgres://localhost:5432/taskd\", COMMISSION_RATE: \"0.1\" });\nconsole.log(env.PORT, env.COMMISSION_RATE, typeof env.PORT);\ntry {\n    loadEnv({ COMMISSION_RATE: \"1.5\" });\n}\ncatch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n}\nexport {};",
+  "sortie": "3000 0.1 number\nConfiguration invalide : DATABASE_URL, COMMISSION_RATE"
+ },
+ {
+  "id": 78,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "transform et types d'entrée / de sortie",
+  "niveau": "avance",
+  "ts": "import { z } from \"zod\";\n\ntype Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\n// nettoie (trim, minuscules) puis valide\nconst emailSchema = z.string().trim().toLowerCase().pipe(z.email());\n\n// entrée : string, sortie : number\nconst ageSchema = z\n  .string()\n  .regex(/^\\d+$/, \"L'âge doit être un nombre\")\n  .transform((value) => Number(value));\n\ntype AgeInput = z.input<typeof ageSchema>;\ntype AgeOutput = z.output<typeof ageSchema>;\n\ntype _in = Expect<Equal<AgeInput, string>>;\ntype _out = Expect<Equal<AgeOutput, number>>;\nconst checks: [_in, _out] = [true, true];\n\nconsole.log(emailSchema.parse(\"  Awa.Sagbo@Example.COM \"));\nconsole.log(emailSchema.safeParse(\"pas-un-email\").success);\nconsole.log(ageSchema.parse(\"42\") + 1);\nconsole.log(checks);\n\nexport {};",
+  "js": "// Exercice 78 · ★★★★ Avancé — transform et types d'entrée / de sortie\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\n// nettoie (trim, minuscules) puis valide\nconst emailSchema = z.string().trim().toLowerCase().pipe(z.email());\n// entrée : string, sortie : number\nconst ageSchema = z\n    .string()\n    .regex(/^\\d+$/, \"L'âge doit être un nombre\")\n    .transform((value) => Number(value));\nconst checks = [true, true];\nconsole.log(emailSchema.parse(\"  Awa.Sagbo@Example.COM \"));\nconsole.log(emailSchema.safeParse(\"pas-un-email\").success);\nconsole.log(ageSchema.parse(\"42\") + 1);\nconsole.log(checks);\nexport {};",
+  "sortie": "awa.sagbo@example.com\nfalse\n43\n[ true, true ]"
+ },
+ {
+  "id": 79,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "Valider une réponse d'API (liste)",
+  "niveau": "avance",
+  "ts": "import { z } from \"zod\";\n\nconst offerSchema = z.object({\n  id: z.string(),\n  title: z.string(),\n  budget: z.number().int().positive(),\n});\n\ntype Offer = z.infer<typeof offerSchema>;\n\n// réponse d'API simulée : la deuxième offre est invalide\nasync function fetchOffers(): Promise<unknown> {\n  return [\n    { id: \"o1\", title: \"Logo\", budget: 75_000 },\n    { id: \"o2\", title: \"Affiche\", budget: \"40000\" },\n    { id: \"o3\", title: \"Site\", budget: 300_000 },\n  ];\n}\n\nasync function loadOffers(): Promise<Offer[]> {\n  const result = z.array(offerSchema).safeParse(await fetchOffers());\n  if (!result.success) {\n    const paths = result.error.issues.map((issue) => issue.path.join(\".\"));\n    throw new Error(`Réponse invalide en : ${paths.join(\", \")}`);\n  }\n  return result.data;\n}\n\ntry {\n  const offers = await loadOffers();\n  console.log(offers.length);\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
+  "js": "// Exercice 79 · ★★★★ Avancé — Valider une réponse d'API (liste)\n// Dépendance : zod (npm install zod)\nimport { z } from \"zod\";\nconst offerSchema = z.object({\n    id: z.string(),\n    title: z.string(),\n    budget: z.number().int().positive(),\n});\n// réponse d'API simulée : la deuxième offre est invalide\nasync function fetchOffers() {\n    return [\n        { id: \"o1\", title: \"Logo\", budget: 75_000 },\n        { id: \"o2\", title: \"Affiche\", budget: \"40000\" },\n        { id: \"o3\", title: \"Site\", budget: 300_000 },\n    ];\n}\nasync function loadOffers() {\n    const result = z.array(offerSchema).safeParse(await fetchOffers());\n    if (!result.success) {\n        const paths = result.error.issues.map((issue) => issue.path.join(\".\"));\n        throw new Error(`Réponse invalide en : ${paths.join(\", \")}`);\n    }\n    return result.data;\n}\ntry {\n    const offers = await loadOffers();\n    console.log(offers.length);\n}\ncatch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n}\nexport {};",
+  "sortie": "Réponse invalide en : 1.budget"
+ },
+ {
+  "id": 80,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Typer l'erreur d'un catch",
+  "niveau": "elementaire",
+  "ts": "function getErrorMessage(error: unknown): string {\n  if (error instanceof Error) {\n    return error.message;\n  }\n  if (typeof error === \"string\") {\n    return error;\n  }\n  if (typeof error === \"object\" && error !== null && \"message\" in error && typeof error.message === \"string\") {\n    return error.message;\n  }\n  return \"Erreur inconnue\";\n}\n\nconst thrown: unknown[] = [new Error(\"réseau\"), \"timeout\", { message: \"quota\" }, null, 42];\n\nfor (const value of thrown) {\n  try {\n    throw value;\n  } catch (error) {\n    console.log(getErrorMessage(error));\n  }\n}\n\nexport {};",
+  "js": "// Exercice 80 · ★★☆☆ Élémentaire — Typer l'erreur d'un catch\n// En mode strict (useUnknownInCatchVariables), la variable d'un catch est unknown.\nfunction getErrorMessage(error) {\n    if (error instanceof Error) {\n        return error.message;\n    }\n    if (typeof error === \"string\") {\n        return error;\n    }\n    if (typeof error === \"object\" && error !== null && \"message\" in error && typeof error.message === \"string\") {\n        return error.message;\n    }\n    return \"Erreur inconnue\";\n}\nconst thrown = [new Error(\"réseau\"), \"timeout\", { message: \"quota\" }, null, 42];\nfor (const value of thrown) {\n    try {\n        throw value;\n    }\n    catch (error) {\n        console.log(getErrorMessage(error));\n    }\n}\nexport {};",
+  "sortie": "réseau\ntimeout\nquota\nErreur inconnue\nErreur inconnue"
+ },
+ {
+  "id": 81,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Des erreurs métier explicites",
+  "niveau": "intermediaire",
+  "ts": "class DomainError extends Error {\n  constructor(\n    readonly code: string,\n    message: string,\n  ) {\n    super(message);\n    this.name = new.target.name;\n  }\n}\n\nclass AlreadyAppliedError extends DomainError {\n  constructor() {\n    super(\"ALREADY_APPLIED\", \"Vous avez déjà postulé à cette tâche\");\n  }\n}\n\nclass TaskNotPublishedError extends DomainError {\n  constructor(status: string) {\n    super(\"TASK_NOT_PUBLISHED\", `La tâche n'est pas publiée (statut : ${status})`);\n  }\n}\n\nfunction handle(error: unknown): string {\n  // la classe la plus spécifique d'abord : une AlreadyAppliedError est aussi une DomainError\n  if (error instanceof AlreadyAppliedError) {\n    return `Message utilisateur : ${error.message}`;\n  }\n  if (error instanceof DomainError) {\n    return `Erreur métier [${error.code}] : ${error.message}`;\n  }\n  return \"Erreur technique : contactez le support\";\n}\n\nconsole.log(handle(new AlreadyAppliedError()));\nconsole.log(handle(new TaskNotPublishedError(\"draft\")));\nconsole.log(handle(new TypeError(\"Cannot read properties of undefined\")));\n\nexport {};",
+  "js": "// Exercice 81 · ★★★☆ Intermédiaire — Des erreurs métier explicites\nclass DomainError extends Error {\n    code;\n    constructor(code, message) {\n        super(message);\n        this.code = code;\n        this.name = new.target.name;\n    }\n}\nclass AlreadyAppliedError extends DomainError {\n    constructor() {\n        super(\"ALREADY_APPLIED\", \"Vous avez déjà postulé à cette tâche\");\n    }\n}\nclass TaskNotPublishedError extends DomainError {\n    constructor(status) {\n        super(\"TASK_NOT_PUBLISHED\", `La tâche n'est pas publiée (statut : ${status})`);\n    }\n}\nfunction handle(error) {\n    // la classe la plus spécifique d'abord : une AlreadyAppliedError est aussi une DomainError\n    if (error instanceof AlreadyAppliedError) {\n        return `Message utilisateur : ${error.message}`;\n    }\n    if (error instanceof DomainError) {\n        return `Erreur métier [${error.code}] : ${error.message}`;\n    }\n    return \"Erreur technique : contactez le support\";\n}\nconsole.log(handle(new AlreadyAppliedError()));\nconsole.log(handle(new TaskNotPublishedError(\"draft\")));\nconsole.log(handle(new TypeError(\"Cannot read properties of undefined\")));\nexport {};",
+  "sortie": "Message utilisateur : Vous avez déjà postulé à cette tâche\nErreur métier [TASK_NOT_PUBLISHED] : La tâche n'est pas publiée (statut : draft)\nErreur technique : contactez le support"
+ },
+ {
+  "id": 82,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Chaîner les causes (cause)",
+  "niveau": "intermediaire",
+  "ts": "function readFromDisk(id: string): string {\n  throw new Error(`ENOENT : fichier ${id}.json introuvable`);\n}\n\nfunction loadOffer(id: string): string {\n  try {\n    return readFromDisk(id);\n  } catch (error) {\n    throw new Error(`Impossible de charger l'offre ${id}`, { cause: error });\n  }\n}\n\ntry {\n  loadOffer(\"off_1\");\n} catch (error) {\n  if (error instanceof Error) {\n    console.log(error.message);\n    const cause = error.cause instanceof Error ? error.cause.message : String(error.cause);\n    console.log(`cause : ${cause}`);\n  }\n}\n\nexport {};",
+  "js": "// Exercice 82 · ★★★☆ Intermédiaire — Chaîner les causes (cause)\n//\n// Pourquoi ne pas simplement relancer l'erreur d'origine ?\n// « ENOENT » seul ne dit pas ce que le programme essayait de faire. La nouvelle\n// erreur donne le contexte métier (quelle offre), et cause garde l'erreur\n// technique d'origine (et sa pile) pour le diagnostic : on ne perd rien.\nfunction readFromDisk(id) {\n    throw new Error(`ENOENT : fichier ${id}.json introuvable`);\n}\nfunction loadOffer(id) {\n    try {\n        return readFromDisk(id);\n    }\n    catch (error) {\n        throw new Error(`Impossible de charger l'offre ${id}`, { cause: error });\n    }\n}\ntry {\n    loadOffer(\"off_1\");\n}\ncatch (error) {\n    if (error instanceof Error) {\n        console.log(error.message);\n        const cause = error.cause instanceof Error ? error.cause.message : String(error.cause);\n        console.log(`cause : ${cause}`);\n    }\n}\nexport {};",
+  "sortie": "Impossible de charger l'offre off_1\ncause : ENOENT : fichier off_1.json introuvable"
+ },
+ {
+  "id": 83,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Renvoyer un résultat plutôt que lever une exception",
+  "niveau": "intermediaire",
+  "ts": "type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };\n\ntype BudgetRange = { min: number; max: number };\n\nfunction validateBudget(min: number, max: number): Result<BudgetRange> {\n  if (min <= 0) {\n    return { ok: false, error: \"Le budget minimum doit être positif\" };\n  }\n  if (min > max) {\n    return { ok: false, error: \"Le minimum dépasse le maximum\" };\n  }\n  return { ok: true, value: { min, max } };\n}\n\nfunction report(result: Result<BudgetRange>): string {\n  // @ts-expect-error — value n'existe pas tant que result.ok n'a pas été testé\n  void result.value;\n\n  if (result.ok) {\n    return `OK : ${result.value.max}`;\n  }\n  return `Refusé : ${result.error}`;\n}\n\nconsole.log(report(validateBudget(50_000, 100_000)));\nconsole.log(report(validateBudget(0, 100_000)));\nconsole.log(report(validateBudget(100_000, 50_000)));\n\nexport {};",
+  "js": "// Exercice 83 · ★★★☆ Intermédiaire — Renvoyer un résultat plutôt que lever une exception\nfunction validateBudget(min, max) {\n    if (min <= 0) {\n        return { ok: false, error: \"Le budget minimum doit être positif\" };\n    }\n    if (min > max) {\n        return { ok: false, error: \"Le minimum dépasse le maximum\" };\n    }\n    return { ok: true, value: { min, max } };\n}\nfunction report(result) {\n    // @ts-expect-error — value n'existe pas tant que result.ok n'a pas été testé\n    void result.value;\n    if (result.ok) {\n        return `OK : ${result.value.max}`;\n    }\n    return `Refusé : ${result.error}`;\n}\nconsole.log(report(validateBudget(50_000, 100_000)));\nconsole.log(report(validateBudget(0, 100_000)));\nconsole.log(report(validateBudget(100_000, 50_000)));\nexport {};",
+  "sortie": "OK : 100000\nRefusé : Le budget minimum doit être positif\nRefusé : Le minimum dépasse le maximum"
+ },
+ {
+  "id": 84,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Convertir une exception en Result",
+  "niveau": "avance",
+  "ts": "type Result<T, E = string> = { ok: true; value: T } | { ok: false; error: E };\n\nfunction toError(value: unknown): Error {\n  if (value instanceof Error) {\n    return value;\n  }\n  if (typeof value === \"string\") {\n    return new Error(value);\n  }\n  return new Error(`Valeur lancée non conforme : ${String(value)}`);\n}\n\nfunction tryCatch<T>(fn: () => T): Result<T, Error> {\n  try {\n    return { ok: true, value: fn() };\n  } catch (error) {\n    return { ok: false, error: toError(error) };\n  }\n}\n\n// JSON.parse renvoie any : on le ramène à unknown pour ne pas propager any\nconst parseJson = (text: string): unknown => JSON.parse(text);\n\nfor (const text of ['{\"a\":1}', \"{oops\"]) {\n  const result = tryCatch(() => parseJson(text));\n  if (result.ok) {\n    console.log(`JSON valide : ${JSON.stringify(result.value)}`);\n  } else {\n    console.log(`JSON invalide : ${result.error.name}`);\n  }\n}\n\n// une chaîne lancée devient une vraie Error\nconsole.log(toError(\"texte brut\").message);\n\nexport {};",
+  "js": "// Exercice 84 · ★★★★ Avancé — Convertir une exception en Result\nfunction toError(value) {\n    if (value instanceof Error) {\n        return value;\n    }\n    if (typeof value === \"string\") {\n        return new Error(value);\n    }\n    return new Error(`Valeur lancée non conforme : ${String(value)}`);\n}\nfunction tryCatch(fn) {\n    try {\n        return { ok: true, value: fn() };\n    }\n    catch (error) {\n        return { ok: false, error: toError(error) };\n    }\n}\n// JSON.parse renvoie any : on le ramène à unknown pour ne pas propager any\nconst parseJson = (text) => JSON.parse(text);\nfor (const text of ['{\"a\":1}', \"{oops\"]) {\n    const result = tryCatch(() => parseJson(text));\n    if (result.ok) {\n        console.log(`JSON valide : ${JSON.stringify(result.value)}`);\n    }\n    else {\n        console.log(`JSON invalide : ${result.error.name}`);\n    }\n}\n// une chaîne lancée devient une vraie Error\nconsole.log(toError(\"texte brut\").message);\nexport {};",
+  "sortie": "JSON valide : {\"a\":1}\nJSON invalide : SyntaxError\ntexte brut"
+ },
+ {
+  "id": 85,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Des codes d'erreur vers des statuts HTTP",
+  "niveau": "avance",
+  "ts": "type ErrorCode = \"NOT_FOUND\" | \"ALREADY_APPLIED\" | \"INVALID_INPUT\" | \"FORBIDDEN\";\n\nclass AppError extends Error {\n  constructor(\n    readonly code: ErrorCode,\n    message: string,\n  ) {\n    super(message);\n    this.name = \"AppError\";\n  }\n}\n\n// Record<ErrorCode, number> : ajouter un code à ErrorCode oblige à ajouter son statut ici\nconst httpStatus: Record<ErrorCode, number> = {\n  NOT_FOUND: 404,\n  ALREADY_APPLIED: 409,\n  INVALID_INPUT: 400,\n  FORBIDDEN: 403,\n};\n\n// Démonstration : un code ajouté sans statut est refusé\ntype ErrorCodeWithConflict = ErrorCode | \"CONFLICT\";\n// @ts-expect-error — Property 'CONFLICT' is missing\nconst incomplete: Record<ErrorCodeWithConflict, number> = { ...httpStatus };\nvoid incomplete;\n\ntype HttpResponse = { status: number; body: { code: string; message: string } };\n\nfunction toHttp(error: unknown): HttpResponse {\n  if (error instanceof AppError) {\n    return { status: httpStatus[error.code], body: { code: error.code, message: error.message } };\n  }\n  // ne jamais exposer le détail interne d'une erreur inattendue\n  return { status: 500, body: { code: \"INTERNAL\", message: \"Une erreur inattendue est survenue\" } };\n}\n\nconsole.log(toHttp(new AppError(\"NOT_FOUND\", \"Offre introuvable\")));\nconsole.log(toHttp(new AppError(\"ALREADY_APPLIED\", \"Vous avez déjà postulé\")));\nconsole.log(toHttp(new Error(\"connexion PostgreSQL refusée sur 10.0.0.12\")));\n\nexport {};",
+  "js": "// Exercice 85 · ★★★★ Avancé — Des codes d'erreur vers des statuts HTTP\nclass AppError extends Error {\n    code;\n    constructor(code, message) {\n        super(message);\n        this.code = code;\n        this.name = \"AppError\";\n    }\n}\n// Record<ErrorCode, number> : ajouter un code à ErrorCode oblige à ajouter son statut ici\nconst httpStatus = {\n    NOT_FOUND: 404,\n    ALREADY_APPLIED: 409,\n    INVALID_INPUT: 400,\n    FORBIDDEN: 403,\n};\n// @ts-expect-error — Property 'CONFLICT' is missing\nconst incomplete = { ...httpStatus };\nvoid incomplete;\nfunction toHttp(error) {\n    if (error instanceof AppError) {\n        return { status: httpStatus[error.code], body: { code: error.code, message: error.message } };\n    }\n    // ne jamais exposer le détail interne d'une erreur inattendue\n    return { status: 500, body: { code: \"INTERNAL\", message: \"Une erreur inattendue est survenue\" } };\n}\nconsole.log(toHttp(new AppError(\"NOT_FOUND\", \"Offre introuvable\")));\nconsole.log(toHttp(new AppError(\"ALREADY_APPLIED\", \"Vous avez déjà postulé\")));\nconsole.log(toHttp(new Error(\"connexion PostgreSQL refusée sur 10.0.0.12\")));\nexport {};",
+  "sortie": "{\n  status: 404,\n  body: { code: 'NOT_FOUND', message: 'Offre introuvable' }\n}\n{\n  status: 409,\n  body: { code: 'ALREADY_APPLIED', message: 'Vous avez déjà postulé' }\n}\n{\n  status: 500,\n  body: { code: 'INTERNAL', message: 'Une erreur inattendue est survenue' }\n}"
+ },
+ {
+  "id": 86,
+  "tsx": true,
+  "bibliotheque": true,
+  "titre": "Typer les props d'un composant React",
+  "niveau": "intermediaire",
+  "ts": "import { renderToStaticMarkup } from \"react-dom/server\";\n\ntype Offer = {\n  id: string;\n  title: string;\n  budget: number;\n  currency: \"XOF\" | \"EUR\";\n  description?: string;\n};\n\ntype OfferCardProps = {\n  offer: Pick<Offer, \"id\" | \"title\" | \"budget\" | \"currency\">;\n  onOpen: (offerId: string) => void;\n};\n\nfunction formatAmount(amount: number, currency: string): string {\n  return `${String(amount).replace(/\\B(?=(\\d{3})+(?!\\d))/g, \" \")} ${currency}`;\n}\n\nfunction OfferCard({ offer, onOpen }: OfferCardProps) {\n  return (\n    <article>\n      <h3>{offer.title}</h3>\n      <p>{formatAmount(offer.budget, offer.currency)}</p>\n      <button type=\"button\" onClick={() => onOpen(offer.id)}>\n        Voir l'offre\n      </button>\n    </article>\n  );\n}\n\nconst offer: OfferCardProps[\"offer\"] = { id: \"o1\", title: \"Logo boutique\", budget: 75_000, currency: \"XOF\" };\nconst open = (offerId: string): void => console.log(`ouverture de ${offerId}`);\n\nconsole.log(renderToStaticMarkup(<OfferCard offer={offer} onOpen={open} />));\n\n// @ts-expect-error — Property 'offer' is missing\nconst missingOffer = <OfferCard onOpen={open} />;\nconsole.log(typeof missingOffer);\n\nexport {};",
+  "js": "import { jsx as _jsx, jsxs as _jsxs } from \"react/jsx-runtime\";\n// Exercice 86 · ★★★☆ Intermédiaire — Typer les props d'un composant React\n// Dépendances : react, react-dom (+ @types/react, @types/react-dom) ; \"jsx\": \"react-jsx\"\nimport { renderToStaticMarkup } from \"react-dom/server\";\nfunction formatAmount(amount, currency) {\n    return `${String(amount).replace(/\\B(?=(\\d{3})+(?!\\d))/g, \" \")} ${currency}`;\n}\nfunction OfferCard({ offer, onOpen }) {\n    return (_jsxs(\"article\", { children: [_jsx(\"h3\", { children: offer.title }), _jsx(\"p\", { children: formatAmount(offer.budget, offer.currency) }), _jsx(\"button\", { type: \"button\", onClick: () => onOpen(offer.id), children: \"Voir l'offre\" })] }));\n}\nconst offer = { id: \"o1\", title: \"Logo boutique\", budget: 75_000, currency: \"XOF\" };\nconst open = (offerId) => console.log(`ouverture de ${offerId}`);\nconsole.log(renderToStaticMarkup(_jsx(OfferCard, { offer: offer, onOpen: open })));\n// @ts-expect-error — Property 'offer' is missing\nconst missingOffer = _jsx(OfferCard, { onOpen: open });\nconsole.log(typeof missingOffer);\nexport {};",
+  "sortie": "<article><h3>Logo boutique</h3><p>75 000 XOF</p><button type=\"button\">Voir l&#x27;offre</button></article>\nobject"
+ },
+ {
+  "id": 87,
+  "tsx": true,
+  "bibliotheque": true,
+  "titre": "useState<T> et événements typés",
+  "niveau": "intermediaire",
+  "ts": "import { useState, type ChangeEvent } from \"react\";\nimport { renderToStaticMarkup } from \"react-dom/server\";\n\nconst TASK_STATUSES = [\"draft\", \"published\", \"closed\"] as const;\ntype TaskStatus = (typeof TASK_STATUSES)[number];\n\nconst STATUS_VALUES: readonly string[] = TASK_STATUSES;\n\nfunction isTaskStatus(value: string): value is TaskStatus {\n  return STATUS_VALUES.includes(value);\n}\n\nfunction StatusSelect() {\n  const [status, setStatus] = useState<TaskStatus>(\"draft\");\n\n  function handleChange(event: ChangeEvent<HTMLSelectElement>): void {\n    const value = event.target.value; // string : à valider avant setStatus\n    if (isTaskStatus(value)) {\n      setStatus(value);\n    }\n  }\n\n  function neverCalled(): void {\n    // @ts-expect-error — \"finished\" n'est pas un TaskStatus\n    setStatus(\"finished\");\n  }\n  void neverCalled;\n\n  return (\n    <select value={status} onChange={handleChange}>\n      {TASK_STATUSES.map((s) => (\n        <option key={s} value={s}>\n          {s}\n        </option>\n      ))}\n    </select>\n  );\n}\n\nconsole.log(renderToStaticMarkup(<StatusSelect />));\n\nexport {};",
+  "js": "import { jsx as _jsx } from \"react/jsx-runtime\";\n// Exercice 87 · ★★★☆ Intermédiaire — useState<T> et événements typés\n// Dépendances : react, react-dom (+ @types/react, @types/react-dom) ; \"jsx\": \"react-jsx\"\nimport { useState } from \"react\";\nimport { renderToStaticMarkup } from \"react-dom/server\";\nconst TASK_STATUSES = [\"draft\", \"published\", \"closed\"];\nconst STATUS_VALUES = TASK_STATUSES;\nfunction isTaskStatus(value) {\n    return STATUS_VALUES.includes(value);\n}\nfunction StatusSelect() {\n    const [status, setStatus] = useState(\"draft\");\n    function handleChange(event) {\n        const value = event.target.value; // string : à valider avant setStatus\n        if (isTaskStatus(value)) {\n            setStatus(value);\n        }\n    }\n    function neverCalled() {\n        // @ts-expect-error — \"finished\" n'est pas un TaskStatus\n        setStatus(\"finished\");\n    }\n    void neverCalled;\n    return (_jsx(\"select\", { value: status, onChange: handleChange, children: TASK_STATUSES.map((s) => (_jsx(\"option\", { value: s, children: s }, s))) }));\n}\nconsole.log(renderToStaticMarkup(_jsx(StatusSelect, {})));\nexport {};",
+  "sortie": "<select><option value=\"draft\" selected=\"\">draft</option><option value=\"published\">published</option><option value=\"closed\">closed</option></select>"
+ },
+ {
+  "id": 88,
+  "tsx": true,
+  "bibliotheque": true,
+  "titre": "Un hook personnalisé typé : useToggle",
+  "niveau": "avance",
+  "ts": "import { useState, type ReactNode } from \"react\";\nimport { renderToStaticMarkup } from \"react-dom/server\";\n\nfunction useToggle(initial = false): [boolean, () => void] {\n  const [value, setValue] = useState(initial);\n  const toggle = (): void => setValue((current) => !current);\n  return [value, toggle];\n}\n\ntype PanelProps = { title: string; initiallyOpen?: boolean; children: ReactNode };\n\nfunction Panel({ title, initiallyOpen = false, children }: PanelProps) {\n  const [open, toggle] = useToggle(initiallyOpen);\n  return (\n    <section>\n      <button type=\"button\" onClick={toggle}>\n        {title}\n      </button>\n      {open && children}\n    </section>\n  );\n}\n\nconsole.log(renderToStaticMarkup(<Panel title=\"Détails\"><p>Contenu du panneau</p></Panel>));\nconsole.log(\n  renderToStaticMarkup(\n    <Panel title=\"Détails\" initiallyOpen>\n      <p>Contenu du panneau</p>\n    </Panel>,\n  ),\n);\n\nexport {};",
+  "js": "import { jsx as _jsx, jsxs as _jsxs } from \"react/jsx-runtime\";\n// Exercice 88 · ★★★★ Avancé — Un hook personnalisé typé : useToggle\n// Dépendances : react, react-dom (+ @types/react, @types/react-dom) ; \"jsx\": \"react-jsx\"\n//\n// Le type de retour est annoté : sans annotation, [open, toggle] serait inféré\n// comme (boolean | (() => void))[] et la déstructuration perdrait les types.\nimport { useState } from \"react\";\nimport { renderToStaticMarkup } from \"react-dom/server\";\nfunction useToggle(initial = false) {\n    const [value, setValue] = useState(initial);\n    const toggle = () => setValue((current) => !current);\n    return [value, toggle];\n}\nfunction Panel({ title, initiallyOpen = false, children }) {\n    const [open, toggle] = useToggle(initiallyOpen);\n    return (_jsxs(\"section\", { children: [_jsx(\"button\", { type: \"button\", onClick: toggle, children: title }), open && children] }));\n}\nconsole.log(renderToStaticMarkup(_jsx(Panel, { title: \"D\\u00E9tails\", children: _jsx(\"p\", { children: \"Contenu du panneau\" }) })));\nconsole.log(renderToStaticMarkup(_jsx(Panel, { title: \"D\\u00E9tails\", initiallyOpen: true, children: _jsx(\"p\", { children: \"Contenu du panneau\" }) })));\nexport {};",
+  "sortie": "<section><button type=\"button\">Détails</button></section>\n<section><button type=\"button\">Détails</button><p>Contenu du panneau</p></section>"
+ },
+ {
+  "id": 89,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "Typer un contrôleur Express",
+  "niveau": "avance",
+  "ts": "import express, { type Request, type Response } from \"express\";\nimport type { AddressInfo } from \"node:net\";\n\ntype ApplyParams = { taskId: string };\ntype ApplyBody = { message?: string };\n\nfunction applyToTask(req: Request<ApplyParams, unknown, ApplyBody>, res: Response): void {\n  // @ts-expect-error — Property 'id' does not exist on type 'ApplyParams'\n  void req.params.id;\n\n  const { taskId } = req.params;\n  const message = req.body.message ?? \"\";\n  res.status(201).json({ taskId, message });\n}\n\nconst app = express();\napp.use(express.json());\napp.post(\"/tasks/:taskId/apply\", applyToTask);\n\n// listen(0) : le système choisit un port libre\nconst server = app.listen(0);\nawait new Promise<void>((resolve) => server.once(\"listening\", () => resolve()));\n\nfunction isAddressInfo(address: string | AddressInfo | null): address is AddressInfo {\n  return typeof address === \"object\" && address !== null;\n}\n\nconst address = server.address();\nif (!isAddressInfo(address)) {\n  throw new Error(\"Adresse du serveur inattendue\");\n}\n\ntry {\n  const response = await fetch(`http://127.0.0.1:${address.port}/tasks/task_42/apply`, {\n    method: \"POST\",\n    headers: { \"Content-Type\": \"application/json\" },\n    body: JSON.stringify({ message: \"Je suis disponible\" }),\n  });\n  console.log(response.status, await response.text());\n} finally {\n  server.close();\n}\n\nexport {};",
+  "js": "// Exercice 89 · ★★★★ Avancé — Typer un contrôleur Express\n// Dépendances : express (+ @types/express)\nimport express, {} from \"express\";\nfunction applyToTask(req, res) {\n    // @ts-expect-error — Property 'id' does not exist on type 'ApplyParams'\n    void req.params.id;\n    const { taskId } = req.params;\n    const message = req.body.message ?? \"\";\n    res.status(201).json({ taskId, message });\n}\nconst app = express();\napp.use(express.json());\napp.post(\"/tasks/:taskId/apply\", applyToTask);\n// listen(0) : le système choisit un port libre\nconst server = app.listen(0);\nawait new Promise((resolve) => server.once(\"listening\", () => resolve()));\nfunction isAddressInfo(address) {\n    return typeof address === \"object\" && address !== null;\n}\nconst address = server.address();\nif (!isAddressInfo(address)) {\n    throw new Error(\"Adresse du serveur inattendue\");\n}\ntry {\n    const response = await fetch(`http://127.0.0.1:${address.port}/tasks/task_42/apply`, {\n        method: \"POST\",\n        headers: { \"Content-Type\": \"application/json\" },\n        body: JSON.stringify({ message: \"Je suis disponible\" }),\n    });\n    console.log(response.status, await response.text());\n}\nfinally {\n    server.close();\n}\nexport {};",
+  "sortie": "201 {\"taskId\":\"task_42\",\"message\":\"Je suis disponible\"}"
+ },
+ {
+  "id": 90,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "L'opérateur satisfies",
+  "niveau": "avance",
+  "ts": "type Equal<A, B> =\n  (<T>() => T extends A ? 1 : 2) extends (<T>() => T extends B ? 1 : 2) ? true : false;\ntype Expect<T extends true> = T;\n\ntype RouteDef = { path: string; method: \"GET\" | \"POST\" };\n\n// 1) Annotation : le type devient exactement Record<string, RouteDef>,\n//    les noms de routes sont perdus (keyof = string).\nconst annotatedRoutes: Record<string, RouteDef> = {\n  listOffers: { path: \"/offers\", method: \"GET\" },\n  createOffer: { path: \"/offers\", method: \"POST\" },\n};\ntype _lost = Expect<Equal<keyof typeof annotatedRoutes, string>>;\n\n// 2) satisfies : les valeurs sont vérifiées, mais le type exact est conservé.\nconst routes = {\n  listOffers: { path: \"/offers\", method: \"GET\" },\n  createOffer: { path: \"/offers\", method: \"POST\" },\n} satisfies Record<string, RouteDef>;\ntype _kept = Expect<Equal<keyof typeof routes, \"listOffers\" | \"createOffer\">>;\n\nfunction routePath(name: keyof typeof routes): string {\n  return routes[name].path;\n}\n\n// method: \"DELETE\" est refusée par satisfies\nconst withDelete = {\n  // @ts-expect-error — Type '\"DELETE\"' is not assignable to type '\"GET\" | \"POST\"'\n  removeOffer: { path: \"/offers/:id\", method: \"DELETE\" },\n} satisfies Record<string, RouteDef>;\n\nconst checks: [_lost, _kept] = [true, true];\nconsole.log(routePath(\"listOffers\"), routePath(\"createOffer\"));\nconsole.log(checks);\nconsole.log(Object.keys(withDelete));\n\nexport {};",
+  "js": "// Exercice 90 · ★★★★ Avancé — L'opérateur satisfies\n// 1) Annotation : le type devient exactement Record<string, RouteDef>,\n//    les noms de routes sont perdus (keyof = string).\nconst annotatedRoutes = {\n    listOffers: { path: \"/offers\", method: \"GET\" },\n    createOffer: { path: \"/offers\", method: \"POST\" },\n};\n// 2) satisfies : les valeurs sont vérifiées, mais le type exact est conservé.\nconst routes = {\n    listOffers: { path: \"/offers\", method: \"GET\" },\n    createOffer: { path: \"/offers\", method: \"POST\" },\n};\nfunction routePath(name) {\n    return routes[name].path;\n}\n// method: \"DELETE\" est refusée par satisfies\nconst withDelete = {\n    // @ts-expect-error — Type '\"DELETE\"' is not assignable to type '\"GET\" | \"POST\"'\n    removeOffer: { path: \"/offers/:id\", method: \"DELETE\" },\n};\nconst checks = [true, true];\nconsole.log(routePath(\"listOffers\"), routePath(\"createOffer\"));\nconsole.log(checks);\nconsole.log(Object.keys(withDelete));\nexport {};",
+  "sortie": "/offers /offers\n[ true, true ]\n[ 'removeOffer' ]"
+ },
+ {
+  "id": 91,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Lire une erreur : Type ... is not assignable",
+  "niveau": "elementaire",
+  "ts": "type Task = { id: string; budget: number };\n\n// @ts-expect-error — TS2322 : Type 'string' is not assignable to type 'number'\nconst refused: Task = { id: \"t1\", budget: \"75000\" };\n\nconst task: Task = { id: \"t1\", budget: 75_000 };\n\n// 4) donnée venant d'une API : validation à l'exécution\nfunction parseTask(raw: unknown): Task {\n  if (typeof raw === \"object\" && raw !== null && \"id\" in raw && typeof raw.id === \"string\" && \"budget\" in raw) {\n    const budget = typeof raw.budget === \"string\" ? Number(raw.budget) : raw.budget;\n    if (typeof budget === \"number\" && Number.isFinite(budget)) {\n      return { id: raw.id, budget };\n    }\n  }\n  throw new Error(\"Tâche invalide\");\n}\n\nconsole.log(task.budget + 1);\nconsole.log(typeof refused.budget); // à l'exécution, c'est bien une chaîne\nconsole.log(parseTask({ id: \"t2\", budget: \"75000\" }).budget + 1);\n\nexport {};",
+  "js": "// Exercice 91 · ★★☆☆ Élémentaire — Lire une erreur : Type ... is not assignable\n//\n// Code d'origine :\n//   1  type Task = { id: string; budget: number };\n//   2  const task: Task = { id: \"t1\", budget: \"75000\" };\n//\n// 1) Code : TS2322 — Type 'string' is not assignable to type 'number'.\n//    En une phrase : « la propriété budget reçoit une chaîne alors que le type\n//    Task exige un nombre ». Le compilateur précise aussi que le type attendu\n//    vient de la propriété 'budget' déclarée dans le type 'Task'.\n// 2) Ligne 2, colonne 32 : l'erreur pointe la propriété budget (et non la\n//    déclaration de task), là où la valeur fautive est écrite.\n// 3) Correction à la source : écrire un nombre, budget: 75_000 (ni as, ni any).\n// 4) Si budget venait d'une API, la donnée est inconnue au moment de la\n//    compilation : on la reçoit en unknown et on la valide à l'exécution\n//    (fonction de garde ou schéma zod), en convertissant \"75000\" en nombre\n//    si le contrat le permet, ou en rejetant la réponse sinon.\n// @ts-expect-error — TS2322 : Type 'string' is not assignable to type 'number'\nconst refused = { id: \"t1\", budget: \"75000\" };\nconst task = { id: \"t1\", budget: 75_000 };\n// 4) donnée venant d'une API : validation à l'exécution\nfunction parseTask(raw) {\n    if (typeof raw === \"object\" && raw !== null && \"id\" in raw && typeof raw.id === \"string\" && \"budget\" in raw) {\n        const budget = typeof raw.budget === \"string\" ? Number(raw.budget) : raw.budget;\n        if (typeof budget === \"number\" && Number.isFinite(budget)) {\n            return { id: raw.id, budget };\n        }\n    }\n    throw new Error(\"Tâche invalide\");\n}\nconsole.log(task.budget + 1);\nconsole.log(typeof refused.budget); // à l'exécution, c'est bien une chaîne\nconsole.log(parseTask({ id: \"t2\", budget: \"75000\" }).budget + 1);\nexport {};",
+  "sortie": "75001\nstring\n75001"
+ },
+ {
+  "id": 92,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Lire une erreur : Property ... does not exist",
+  "niveau": "elementaire",
+  "ts": "type Payment = { amount: number };\n\nfunction computeFeeTypo(payment: Payment): number {\n  // @ts-expect-error — TS2551 : Property 'ammount' does not exist… Did you mean 'amount'?\n  return payment.ammount * 0.1;\n}\n\nfunction computeFee(payment: Payment): number {\n  return payment.amount * 0.1;\n}\n\nconsole.log(computeFee({ amount: 50_000 }));\nconsole.log(computeFeeTypo({ amount: 50_000 })); // undefined * 0.1 = NaN à l'exécution\n\nexport {};",
+  "js": "// Exercice 92 · ★★☆☆ Élémentaire — Lire une erreur : Property ... does not exist\n//\n// Message complet :\n//   TS2551 — Property 'ammount' does not exist on type 'Payment'.\n//            Did you mean 'amount'?\n// Oui, le compilateur propose une correction (« Did you mean 'amount'? ») :\n// c'est une faute de frappe. Sans proposition proche, le code serait TS2339.\nfunction computeFeeTypo(payment) {\n    // @ts-expect-error — TS2551 : Property 'ammount' does not exist… Did you mean 'amount'?\n    return payment.ammount * 0.1;\n}\nfunction computeFee(payment) {\n    return payment.amount * 0.1;\n}\nconsole.log(computeFee({ amount: 50_000 }));\nconsole.log(computeFeeTypo({ amount: 50_000 })); // undefined * 0.1 = NaN à l'exécution\nexport {};",
+  "sortie": "5000\nNaN"
+ },
+ {
+  "id": 93,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Lire une erreur : is possibly 'undefined'",
+  "niveau": "intermediaire",
+  "ts": "const offers = [{ id: \"o1\", title: \"Logo\" }];\nconst found = offers.find((offer) => offer.id === \"o2\");\n\nfunction showTitleUnsafe(): void {\n  // @ts-expect-error — TS18048 : 'found' is possibly 'undefined'\n  console.log(found.title);\n}\nvoid showTitleUnsafe;\n\n// a) test explicite\nif (found !== undefined) {\n  console.log(found.title);\n} else {\n  console.log(\"aucune offre o2\");\n}\n\n// b) chaînage optionnel + valeur par défaut\nconsole.log(found?.title ?? \"(sans titre)\");\n\n// c) erreur levée si absent\nfunction requireOffer(id: string): { id: string; title: string } {\n  const offer = offers.find((o) => o.id === id);\n  if (offer === undefined) {\n    throw new Error(`Offre ${id} introuvable`);\n  }\n  return offer;\n}\n\ntry {\n  console.log(requireOffer(\"o2\").title);\n} catch (error) {\n  console.log(error instanceof Error ? error.message : String(error));\n}\n\nexport {};",
+  "js": "// Exercice 93 · ★★★☆ Intermédiaire — Lire une erreur : is possibly 'undefined'\n//\n// Erreur : TS18048 — 'found' is possibly 'undefined'.\n// 1) find renvoie T | undefined car aucun élément ne correspond peut-être :\n//    c'est le cas ici (aucune offre \"o2\").\n// 3) Si l'absence est un cas anormal (bug, donnée corrompue), on lève une\n//    erreur explicite (méthode c) : on échoue tôt avec un message clair au lieu\n//    de continuer avec une valeur de repli qui masquerait le problème.\n//    La valeur par défaut (b) convient quand l'absence est normale.\nconst offers = [{ id: \"o1\", title: \"Logo\" }];\nconst found = offers.find((offer) => offer.id === \"o2\");\nfunction showTitleUnsafe() {\n    // @ts-expect-error — TS18048 : 'found' is possibly 'undefined'\n    console.log(found.title);\n}\nvoid showTitleUnsafe;\n// a) test explicite\nif (found !== undefined) {\n    console.log(found.title);\n}\nelse {\n    console.log(\"aucune offre o2\");\n}\n// b) chaînage optionnel + valeur par défaut\nconsole.log(found?.title ?? \"(sans titre)\");\n// c) erreur levée si absent\nfunction requireOffer(id) {\n    const offer = offers.find((o) => o.id === id);\n    if (offer === undefined) {\n        throw new Error(`Offre ${id} introuvable`);\n    }\n    return offer;\n}\ntry {\n    console.log(requireOffer(\"o2\").title);\n}\ncatch (error) {\n    console.log(error instanceof Error ? error.message : String(error));\n}\nexport {};",
+  "sortie": "aucune offre o2\n(sans titre)\nOffre o2 introuvable"
+ },
+ {
+  "id": 94,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Lire une erreur : arguments incompatibles",
+  "niveau": "intermediaire",
+  "ts": "function computePayout(amount: number, rate: number): number {\n  return Math.round(amount * (1 - rate));\n}\n\n// @ts-expect-error — TS2345 : 'string' n'est pas assignable à 'number'\nconst fromString = computePayout(\"80000\", 0.1);\n// @ts-expect-error — TS2554 : Expected 2 arguments, but got 1\nconst missingRate = computePayout(80_000);\n\nconsole.log(computePayout(80_000, 0.1));\n// à l'exécution, JavaScript « s'en sort » par hasard pour la chaîne, mais pas pour le taux manquant :\nconsole.log(fromString, missingRate);\n\nexport {};",
+  "js": "// Exercice 94 · ★★★☆ Intermédiaire — Lire une erreur : arguments incompatibles\n//\n// Ligne 1 : computePayout(\"80000\", 0.1);\n//   TS2345 — Argument of type 'string' is not assignable to parameter of type 'number'.\n//   Correction : passer un nombre, computePayout(80_000, 0.1) (ou convertir\n//   et valider la chaîne en amont si elle vient d'un formulaire).\n// Ligne 2 : computePayout(80_000);\n//   TS2554 — Expected 2 arguments, but got 1. (An argument for 'rate' was not provided.)\n//   Correction : fournir le taux, computePayout(80_000, 0.1) — ou donner une\n//   valeur par défaut au paramètre si cela a un sens métier (rate = 0.1).\nfunction computePayout(amount, rate) {\n    return Math.round(amount * (1 - rate));\n}\n// @ts-expect-error — TS2345 : 'string' n'est pas assignable à 'number'\nconst fromString = computePayout(\"80000\", 0.1);\n// @ts-expect-error — TS2554 : Expected 2 arguments, but got 1\nconst missingRate = computePayout(80_000);\nconsole.log(computePayout(80_000, 0.1));\n// à l'exécution, JavaScript « s'en sort » par hasard pour la chaîne, mais pas pour le taux manquant :\nconsole.log(fromString, missingRate);\nexport {};",
+  "sortie": "72000\n72000 NaN"
+ },
+ {
+  "id": 95,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "Lire une erreur : Cannot find module",
+  "niveau": "intermediaire",
+  "ts": "// @ts-expect-error — TS2307 : Cannot find module './payoutt.js'\nimport type { Payout } from \"./payoutt.js\";\n\n// ───────────── payout.ts ─────────────\nfunction computePayout(amount: number, rate: number): { collaboratorAmount: number; platformFee: number } {\n  const platformFee = Math.round(amount * rate);\n  return { collaboratorAmount: amount - platformFee, platformFee };\n}\n\n// ───────────── main.ts ─────────────\nconst payout: Payout = computePayout(80_000, 0.1);\nconsole.log(payout);\n\nexport {};",
+  "js": "// Exercice 95 · ★★★☆ Intermédiaire — Lire une erreur : Cannot find module\n//\n// Dans main.ts : import { computePayout } from \"./payoutt\";   (le fichier s'appelle payout.ts)\n//\n// 1) TS2307 — Cannot find module './payoutt' or its corresponding type declarations.\n//    (Avec module NodeNext et un chemin relatif sans extension, on obtient\n//    plutôt TS2835 : Relative import paths need explicit file extensions…)\n// 2) Les trois causes les plus fréquentes :\n//    - chemin faux : faute de frappe, mauvais dossier, ./ oublié, casse différente\n//      (Payout.ts ≠ payout.ts sous Linux) ;\n//    - extension : en ESM / NodeNext, on écrit l'extension JavaScript de sortie :\n//      \"./payout.js\" (même si le fichier source est payout.ts) ;\n//    - dépendance non installée : import { z } from \"zod\" sans npm install zod,\n//      ou paquet sans types (il faut alors installer @types/…).\n// 3) Correction : import { computePayout } from \"./payout.js\";\n//\n// Ce fichier étant autonome, la ligne fautive est démontrée avec un import de\n// type seul (effacé à la compilation, donc sans effet à l'exécution) et le\n// contenu de payout.ts est recopié ci-dessous.\n// ───────────── payout.ts ─────────────\nfunction computePayout(amount, rate) {\n    const platformFee = Math.round(amount * rate);\n    return { collaboratorAmount: amount - platformFee, platformFee };\n}\n// ───────────── main.ts ─────────────\nconst payout = computePayout(80_000, 0.1);\nconsole.log(payout);\nexport {};",
+  "sortie": "{ collaboratorAmount: 72000, platformFee: 8000 }"
+ },
+ {
+  "id": 96,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "TaskD — Modéliser le domaine (étape 1/5)",
+  "niveau": "intermediaire",
+  "ts": "// ───────────── domain/types.ts ─────────────\n\ntype TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\n// tuple : au moins une compétence\ntype Skills = readonly [string, ...string[]];\n\ntype Task = {\n  readonly id: string;\n  readonly name: string;\n  readonly status: TaskStatus;\n  readonly minBudget: number;\n  readonly maxBudget: number;\n  readonly skills: Skills;\n};\n\ntype Application = {\n  readonly taskId: string;\n  readonly collaboratorId: string;\n  readonly message: string;\n};\n\ntype Payment =\n  | { readonly status: \"pending\"; readonly amount: number }\n  | { readonly status: \"held\"; readonly amount: number; readonly providerRef: string }\n  | {\n      readonly status: \"released\";\n      readonly amount: number;\n      readonly collaboratorAmount: number;\n      readonly platformFee: number;\n    }\n  | { readonly status: \"refunded\"; readonly amount: number; readonly reason: string };\n\nconst statusLabels: Record<TaskStatus, string> = {\n  draft: \"Brouillon\",\n  published: \"Publiée\",\n  in_selection: \"En sélection\",\n  assigned: \"Attribuée\",\n  in_progress: \"En cours\",\n  delivered: \"Livrée\",\n  validated: \"Validée\",\n  closed: \"Clôturée\",\n  disputed: \"En litige\",\n  cancelled: \"Annulée\",\n};\n\n// ───────────── domain/transitions.ts ─────────────\n\nconst allowedTransitions: Record<TaskStatus, readonly TaskStatus[]> = {\n  draft: [\"published\", \"cancelled\"],\n  published: [\"in_selection\", \"cancelled\"],\n  in_selection: [\"assigned\", \"published\", \"cancelled\"],\n  assigned: [\"in_progress\", \"cancelled\"],\n  in_progress: [\"delivered\", \"disputed\", \"cancelled\"],\n  delivered: [\"validated\", \"in_progress\", \"disputed\"],\n  validated: [\"closed\"],\n  disputed: [\"in_progress\", \"closed\", \"cancelled\"],\n  closed: [], // final\n  cancelled: [], // final\n};\n\nfunction canTransition(from: TaskStatus, to: TaskStatus): boolean {\n  return allowedTransitions[from].includes(to);\n}\n\n// ───────────── démonstration ─────────────\n\nconst task: Task = {\n  id: \"task_1\",\n  name: \"Logo de la boutique\",\n  status: \"published\",\n  minBudget: 50_000,\n  maxBudget: 100_000,\n  skills: [\"Figma\"],\n};\n\nconst noSkill: Task = {\n  ...task,\n  // @ts-expect-error — un tuple [string, ...string[]] exige au moins une compétence\n  skills: [],\n};\n\nconst application: Application = { taskId: task.id, collaboratorId: \"c1\", message: \"Disponible\" };\nconst payment: Payment = { status: \"held\", amount: 80_000, providerRef: \"KKP-1\" };\nvoid application;\nvoid payment;\n\nconsole.log(`${task.name} : ${statusLabels[task.status]}`);\n\nconst checks: [TaskStatus, TaskStatus][] = [\n  [\"published\", \"in_selection\"],\n  [\"delivered\", \"disputed\"],\n  [\"closed\", \"published\"],\n  [\"draft\", \"closed\"],\n];\nfor (const [from, to] of checks) {\n  console.log(`${from} → ${to} : ${canTransition(from, to) ? \"autorisé\" : \"interdit\"}`);\n}\n\nconsole.log(noSkill.skills.length);\n\nexport {};",
+  "js": "// Exercice 96 · ★★★☆ Intermédiaire — TaskD — Modéliser le domaine (étape 1/5)\n//\n// Fichier autonome : domain/types.ts et domain/transitions.ts sont regroupés ici.\nconst statusLabels = {\n    draft: \"Brouillon\",\n    published: \"Publiée\",\n    in_selection: \"En sélection\",\n    assigned: \"Attribuée\",\n    in_progress: \"En cours\",\n    delivered: \"Livrée\",\n    validated: \"Validée\",\n    closed: \"Clôturée\",\n    disputed: \"En litige\",\n    cancelled: \"Annulée\",\n};\n// ───────────── domain/transitions.ts ─────────────\nconst allowedTransitions = {\n    draft: [\"published\", \"cancelled\"],\n    published: [\"in_selection\", \"cancelled\"],\n    in_selection: [\"assigned\", \"published\", \"cancelled\"],\n    assigned: [\"in_progress\", \"cancelled\"],\n    in_progress: [\"delivered\", \"disputed\", \"cancelled\"],\n    delivered: [\"validated\", \"in_progress\", \"disputed\"],\n    validated: [\"closed\"],\n    disputed: [\"in_progress\", \"closed\", \"cancelled\"],\n    closed: [], // final\n    cancelled: [], // final\n};\nfunction canTransition(from, to) {\n    return allowedTransitions[from].includes(to);\n}\n// ───────────── démonstration ─────────────\nconst task = {\n    id: \"task_1\",\n    name: \"Logo de la boutique\",\n    status: \"published\",\n    minBudget: 50_000,\n    maxBudget: 100_000,\n    skills: [\"Figma\"],\n};\nconst noSkill = {\n    ...task,\n    // @ts-expect-error — un tuple [string, ...string[]] exige au moins une compétence\n    skills: [],\n};\nconst application = { taskId: task.id, collaboratorId: \"c1\", message: \"Disponible\" };\nconst payment = { status: \"held\", amount: 80_000, providerRef: \"KKP-1\" };\nvoid application;\nvoid payment;\nconsole.log(`${task.name} : ${statusLabels[task.status]}`);\nconst checks = [\n    [\"published\", \"in_selection\"],\n    [\"delivered\", \"disputed\"],\n    [\"closed\", \"published\"],\n    [\"draft\", \"closed\"],\n];\nfor (const [from, to] of checks) {\n    console.log(`${from} → ${to} : ${canTransition(from, to) ? \"autorisé\" : \"interdit\"}`);\n}\nconsole.log(noSkill.skills.length);\nexport {};",
+  "sortie": "Logo de la boutique : Publiée\npublished → in_selection : autorisé\ndelivered → disputed : autorisé\nclosed → published : interdit\ndraft → closed : interdit\n0"
+ },
+ {
+  "id": 97,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "TaskD — Les transitions de statut (étape 2/5)",
+  "niveau": "intermediaire",
+  "ts": "// ───────────── domain/types.ts (étape 1) ─────────────\n\ntype TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\ntype Skills = readonly [string, ...string[]];\n\ntype Task = {\n  readonly id: string;\n  readonly name: string;\n  readonly status: TaskStatus;\n  readonly minBudget: number;\n  readonly maxBudget: number;\n  readonly skills: Skills;\n};\n\n// ───────────── domain/transitions.ts (étape 1) ─────────────\n\nconst allowedTransitions: Record<TaskStatus, readonly TaskStatus[]> = {\n  draft: [\"published\", \"cancelled\"],\n  published: [\"in_selection\", \"cancelled\"],\n  in_selection: [\"assigned\", \"published\", \"cancelled\"],\n  assigned: [\"in_progress\", \"cancelled\"],\n  in_progress: [\"delivered\", \"disputed\", \"cancelled\"],\n  delivered: [\"validated\", \"in_progress\", \"disputed\"],\n  validated: [\"closed\"],\n  disputed: [\"in_progress\", \"closed\", \"cancelled\"],\n  closed: [],\n  cancelled: [],\n};\n\nfunction canTransition(from: TaskStatus, to: TaskStatus): boolean {\n  return allowedTransitions[from].includes(to);\n}\n\n// ───────────── domain/errors.ts ─────────────\n\nclass DomainError extends Error {\n  constructor(\n    readonly code: string,\n    message: string,\n  ) {\n    super(message);\n    this.name = new.target.name;\n  }\n}\n\nclass InvalidTransitionError extends DomainError {\n  constructor(from: TaskStatus, to: TaskStatus) {\n    super(\"INVALID_TRANSITION\", `Transition interdite : ${from} → ${to}`);\n  }\n}\n\n// ───────────── domain/transition.ts ─────────────\n\nfunction transition(task: Task, to: TaskStatus): Task {\n  if (!canTransition(task.status, to)) {\n    throw new InvalidTransitionError(task.status, to);\n  }\n  return { ...task, status: to }; // nouvel objet : l'original reste intact\n}\n\n// ───────────── démonstration ─────────────\n\nconst draft: Task = {\n  id: \"task_1\",\n  name: \"Logo de la boutique\",\n  status: \"draft\",\n  minBudget: 50_000,\n  maxBudget: 100_000,\n  skills: [\"Figma\"],\n};\n\nconst published = transition(draft, \"published\");\nconsole.log(`${draft.status} → ${published.status} | même objet : ${Object.is(draft, published)}`);\n\ntry {\n  transition(published, \"closed\");\n} catch (error) {\n  if (error instanceof DomainError) {\n    console.log(`${error.code} — ${error.message}`);\n  }\n}\n\nexport {};",
+  "js": "// Exercice 97 · ★★★☆ Intermédiaire — TaskD — Les transitions de statut (étape 2/5)\n//\n// Fichier autonome : reprend le domaine de l'étape 1 (types, transitions) et\n// regroupe domain/errors.ts et domain/transition.ts.\n// ───────────── domain/transitions.ts (étape 1) ─────────────\nconst allowedTransitions = {\n    draft: [\"published\", \"cancelled\"],\n    published: [\"in_selection\", \"cancelled\"],\n    in_selection: [\"assigned\", \"published\", \"cancelled\"],\n    assigned: [\"in_progress\", \"cancelled\"],\n    in_progress: [\"delivered\", \"disputed\", \"cancelled\"],\n    delivered: [\"validated\", \"in_progress\", \"disputed\"],\n    validated: [\"closed\"],\n    disputed: [\"in_progress\", \"closed\", \"cancelled\"],\n    closed: [],\n    cancelled: [],\n};\nfunction canTransition(from, to) {\n    return allowedTransitions[from].includes(to);\n}\n// ───────────── domain/errors.ts ─────────────\nclass DomainError extends Error {\n    code;\n    constructor(code, message) {\n        super(message);\n        this.code = code;\n        this.name = new.target.name;\n    }\n}\nclass InvalidTransitionError extends DomainError {\n    constructor(from, to) {\n        super(\"INVALID_TRANSITION\", `Transition interdite : ${from} → ${to}`);\n    }\n}\n// ───────────── domain/transition.ts ─────────────\nfunction transition(task, to) {\n    if (!canTransition(task.status, to)) {\n        throw new InvalidTransitionError(task.status, to);\n    }\n    return { ...task, status: to }; // nouvel objet : l'original reste intact\n}\n// ───────────── démonstration ─────────────\nconst draft = {\n    id: \"task_1\",\n    name: \"Logo de la boutique\",\n    status: \"draft\",\n    minBudget: 50_000,\n    maxBudget: 100_000,\n    skills: [\"Figma\"],\n};\nconst published = transition(draft, \"published\");\nconsole.log(`${draft.status} → ${published.status} | même objet : ${Object.is(draft, published)}`);\ntry {\n    transition(published, \"closed\");\n}\ncatch (error) {\n    if (error instanceof DomainError) {\n        console.log(`${error.code} — ${error.message}`);\n    }\n}\nexport {};",
+  "sortie": "draft → published | même objet : false\nINVALID_TRANSITION — Transition interdite : published → closed"
+ },
+ {
+  "id": 98,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "TaskD — Postuler à une tâche (étape 3/5)",
+  "niveau": "avance",
+  "ts": "// ───────────── domain/types.ts (étape 1) ─────────────\n\ntype TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\ntype Skills = readonly [string, ...string[]];\n\ntype Task = {\n  readonly id: string;\n  readonly name: string;\n  readonly status: TaskStatus;\n  readonly minBudget: number;\n  readonly maxBudget: number;\n  readonly skills: Skills;\n};\n\ntype Application = {\n  readonly taskId: string;\n  readonly collaboratorId: string;\n  readonly message: string;\n};\n\n// ───────────── domain/errors.ts ─────────────\n\nclass DomainError extends Error {\n  constructor(\n    readonly code: string,\n    message: string,\n  ) {\n    super(message);\n    this.name = new.target.name;\n  }\n}\n\nclass TaskNotPublishedError extends DomainError {\n  constructor(status: TaskStatus) {\n    super(\"TASK_NOT_PUBLISHED\", `La tâche n'est pas publiée (statut : ${status})`);\n  }\n}\n\nclass AlreadyAppliedError extends DomainError {\n  constructor() {\n    super(\"ALREADY_APPLIED\", \"Vous avez déjà postulé à cette tâche\");\n  }\n}\n\n// ───────────── domain/apply.ts ─────────────\n\nfunction assertPublished(task: Task): void {\n  if (task.status !== \"published\") {\n    throw new TaskNotPublishedError(task.status);\n  }\n}\n\nfunction hasAlreadyApplied(taskId: string, collaboratorId: string, existing: readonly Application[]): boolean {\n  return existing.some((a) => a.taskId === taskId && a.collaboratorId === collaboratorId);\n}\n\nfunction apply(task: Task, collaboratorId: string, message: string, existing: readonly Application[]): Application {\n  assertPublished(task);\n  if (hasAlreadyApplied(task.id, collaboratorId, existing)) {\n    throw new AlreadyAppliedError();\n  }\n  return { taskId: task.id, collaboratorId, message };\n}\n\n// ───────────── démonstration ─────────────\n\nfunction attempt(action: () => Application): void {\n  try {\n    const application = action();\n    console.log(`candidature : ${application.collaboratorId} → ${application.taskId}`);\n  } catch (error) {\n    if (error instanceof DomainError) {\n      console.log(`${error.code} — ${error.message}`);\n    } else {\n      throw error;\n    }\n  }\n}\n\nconst task: Task = {\n  id: \"task_1\",\n  name: \"Logo de la boutique\",\n  status: \"published\",\n  minBudget: 50_000,\n  maxBudget: 100_000,\n  skills: [\"Figma\"],\n};\nconst draft: Task = { ...task, id: \"task_2\", status: \"draft\" };\n\nconst first = apply(task, \"c1\", \"Disponible dès lundi\", []);\n\nattempt(() => first);\nattempt(() => apply(task, \"c1\", \"Je relance\", [first]));\nattempt(() => apply(draft, \"c2\", \"Bonjour\", []));\n\nexport {};",
+  "js": "// Exercice 98 · ★★★★ Avancé — TaskD — Postuler à une tâche (étape 3/5)\n//\n// Fichier autonome : reprend les types et les erreurs des étapes précédentes\n// et regroupe domain/errors.ts (complété) et domain/apply.ts.\n// ───────────── domain/errors.ts ─────────────\nclass DomainError extends Error {\n    code;\n    constructor(code, message) {\n        super(message);\n        this.code = code;\n        this.name = new.target.name;\n    }\n}\nclass TaskNotPublishedError extends DomainError {\n    constructor(status) {\n        super(\"TASK_NOT_PUBLISHED\", `La tâche n'est pas publiée (statut : ${status})`);\n    }\n}\nclass AlreadyAppliedError extends DomainError {\n    constructor() {\n        super(\"ALREADY_APPLIED\", \"Vous avez déjà postulé à cette tâche\");\n    }\n}\n// ───────────── domain/apply.ts ─────────────\nfunction assertPublished(task) {\n    if (task.status !== \"published\") {\n        throw new TaskNotPublishedError(task.status);\n    }\n}\nfunction hasAlreadyApplied(taskId, collaboratorId, existing) {\n    return existing.some((a) => a.taskId === taskId && a.collaboratorId === collaboratorId);\n}\nfunction apply(task, collaboratorId, message, existing) {\n    assertPublished(task);\n    if (hasAlreadyApplied(task.id, collaboratorId, existing)) {\n        throw new AlreadyAppliedError();\n    }\n    return { taskId: task.id, collaboratorId, message };\n}\n// ───────────── démonstration ─────────────\nfunction attempt(action) {\n    try {\n        const application = action();\n        console.log(`candidature : ${application.collaboratorId} → ${application.taskId}`);\n    }\n    catch (error) {\n        if (error instanceof DomainError) {\n            console.log(`${error.code} — ${error.message}`);\n        }\n        else {\n            throw error;\n        }\n    }\n}\nconst task = {\n    id: \"task_1\",\n    name: \"Logo de la boutique\",\n    status: \"published\",\n    minBudget: 50_000,\n    maxBudget: 100_000,\n    skills: [\"Figma\"],\n};\nconst draft = { ...task, id: \"task_2\", status: \"draft\" };\nconst first = apply(task, \"c1\", \"Disponible dès lundi\", []);\nattempt(() => first);\nattempt(() => apply(task, \"c1\", \"Je relance\", [first]));\nattempt(() => apply(draft, \"c2\", \"Bonjour\", []));\nexport {};",
+  "sortie": "candidature : c1 → task_1\nALREADY_APPLIED — Vous avez déjà postulé à cette tâche\nTASK_NOT_PUBLISHED — La tâche n'est pas publiée (statut : draft)"
+ },
+ {
+  "id": 99,
+  "tsx": false,
+  "bibliotheque": false,
+  "titre": "TaskD — Commission et libération du paiement (étape 4/5)",
+  "niveau": "avance",
+  "ts": "// ───────────── domain/types.ts (étape 1) ─────────────\n\ntype Payment =\n  | { readonly status: \"pending\"; readonly amount: number }\n  | { readonly status: \"held\"; readonly amount: number; readonly providerRef: string }\n  | {\n      readonly status: \"released\";\n      readonly amount: number;\n      readonly collaboratorAmount: number;\n      readonly platformFee: number;\n    }\n  | { readonly status: \"refunded\"; readonly amount: number; readonly reason: string };\n\n// ───────────── domain/errors.ts ─────────────\n\nclass DomainError extends Error {\n  constructor(\n    readonly code: string,\n    message: string,\n  ) {\n    super(message);\n    this.name = new.target.name;\n  }\n}\n\nclass InvalidPaymentStateError extends DomainError {\n  constructor(status: Payment[\"status\"]) {\n    super(\"INVALID_PAYMENT_STATE\", `Libération impossible depuis l'état « ${status} »`);\n  }\n}\n\n// ───────────── domain/payout.ts ─────────────\n\ntype Payout = { collaboratorAmount: number; platformFee: number };\n\nfunction assertValidAmount(amount: number): void {\n  if (!Number.isInteger(amount) || amount <= 0) {\n    throw new Error(\"Le montant doit être un entier positif\");\n  }\n}\n\nfunction assertValidRate(rate: number): void {\n  if (!(rate >= 0 && rate <= 1)) {\n    throw new Error(\"Le taux de commission doit être compris entre 0 et 1\");\n  }\n}\n\nfunction computePayout(amount: number, commissionRate: number): Payout {\n  assertValidAmount(amount);\n  assertValidRate(commissionRate);\n  // on n'arrondit qu'une seule part : la somme vaut toujours exactement amount\n  const platformFee = Math.round(amount * commissionRate);\n  return { collaboratorAmount: amount - platformFee, platformFee };\n}\n\nfunction releasePayment(payment: Payment, commissionRate: number): Payment {\n  if (payment.status !== \"held\") {\n    throw new InvalidPaymentStateError(payment.status);\n  }\n  return { status: \"released\", amount: payment.amount, ...computePayout(payment.amount, commissionRate) };\n}\n\n// ───────────── démonstration ─────────────\n\nfunction attempt(action: () => unknown): void {\n  try {\n    action();\n  } catch (error) {\n    if (error instanceof DomainError) {\n      console.log(`${error.code} — ${error.message}`);\n    } else {\n      console.log(error instanceof Error ? error.message : String(error));\n    }\n  }\n}\n\nconsole.log(computePayout(80_000, 0.1));\n\nconst odd = computePayout(10_001, 0.12);\nconsole.log(odd, `somme : ${odd.collaboratorAmount + odd.platformFee}`);\n\nconst released = releasePayment({ status: \"held\", amount: 50_000, providerRef: \"KKP-1\" }, 0.1);\nconsole.log(released);\n\nattempt(() => releasePayment(released, 0.1));\nattempt(() => computePayout(-100, 0.1));\nattempt(() => computePayout(1_000, 1.5));\n\nexport {};",
+  "js": "// Exercice 99 · ★★★★ Avancé — TaskD — Commission et libération du paiement (étape 4/5)\n//\n// Fichier autonome : reprend le type Payment et DomainError des étapes\n// précédentes et regroupe domain/payout.ts.\n// ───────────── domain/errors.ts ─────────────\nclass DomainError extends Error {\n    code;\n    constructor(code, message) {\n        super(message);\n        this.code = code;\n        this.name = new.target.name;\n    }\n}\nclass InvalidPaymentStateError extends DomainError {\n    constructor(status) {\n        super(\"INVALID_PAYMENT_STATE\", `Libération impossible depuis l'état « ${status} »`);\n    }\n}\nfunction assertValidAmount(amount) {\n    if (!Number.isInteger(amount) || amount <= 0) {\n        throw new Error(\"Le montant doit être un entier positif\");\n    }\n}\nfunction assertValidRate(rate) {\n    if (!(rate >= 0 && rate <= 1)) {\n        throw new Error(\"Le taux de commission doit être compris entre 0 et 1\");\n    }\n}\nfunction computePayout(amount, commissionRate) {\n    assertValidAmount(amount);\n    assertValidRate(commissionRate);\n    // on n'arrondit qu'une seule part : la somme vaut toujours exactement amount\n    const platformFee = Math.round(amount * commissionRate);\n    return { collaboratorAmount: amount - platformFee, platformFee };\n}\nfunction releasePayment(payment, commissionRate) {\n    if (payment.status !== \"held\") {\n        throw new InvalidPaymentStateError(payment.status);\n    }\n    return { status: \"released\", amount: payment.amount, ...computePayout(payment.amount, commissionRate) };\n}\n// ───────────── démonstration ─────────────\nfunction attempt(action) {\n    try {\n        action();\n    }\n    catch (error) {\n        if (error instanceof DomainError) {\n            console.log(`${error.code} — ${error.message}`);\n        }\n        else {\n            console.log(error instanceof Error ? error.message : String(error));\n        }\n    }\n}\nconsole.log(computePayout(80_000, 0.1));\nconst odd = computePayout(10_001, 0.12);\nconsole.log(odd, `somme : ${odd.collaboratorAmount + odd.platformFee}`);\nconst released = releasePayment({ status: \"held\", amount: 50_000, providerRef: \"KKP-1\" }, 0.1);\nconsole.log(released);\nattempt(() => releasePayment(released, 0.1));\nattempt(() => computePayout(-100, 0.1));\nattempt(() => computePayout(1_000, 1.5));\nexport {};",
+  "sortie": "{ collaboratorAmount: 72000, platformFee: 8000 }\n{ collaboratorAmount: 8801, platformFee: 1200 } somme : 10001\n{\n  status: 'released',\n  amount: 50000,\n  collaboratorAmount: 45000,\n  platformFee: 5000\n}\nINVALID_PAYMENT_STATE — Libération impossible depuis l'état « released »\nLe montant doit être un entier positif\nLe taux de commission doit être compris entre 0 et 1"
+ },
+ {
+  "id": 100,
+  "tsx": false,
+  "bibliotheque": true,
+  "titre": "TaskD — Validation d'entrée et script de recette (étape 5/5)",
+  "niveau": "avance",
+  "ts": "import assert from \"node:assert/strict\";\nimport { z } from \"zod\";\n\n// ───────────── domain/types.ts ─────────────\n\ntype TaskStatus =\n  | \"draft\"\n  | \"published\"\n  | \"in_selection\"\n  | \"assigned\"\n  | \"in_progress\"\n  | \"delivered\"\n  | \"validated\"\n  | \"closed\"\n  | \"disputed\"\n  | \"cancelled\";\n\ntype Skills = readonly [string, ...string[]];\n\ntype Task = {\n  readonly id: string;\n  readonly name: string;\n  readonly status: TaskStatus;\n  readonly minBudget: number;\n  readonly maxBudget: number;\n  readonly skills: Skills;\n};\n\ntype Application = {\n  readonly taskId: string;\n  readonly collaboratorId: string;\n  readonly message: string;\n};\n\ntype Payment =\n  | { readonly status: \"pending\"; readonly amount: number }\n  | { readonly status: \"held\"; readonly amount: number; readonly providerRef: string }\n  | {\n      readonly status: \"released\";\n      readonly amount: number;\n      readonly collaboratorAmount: number;\n      readonly platformFee: number;\n    }\n  | { readonly status: \"refunded\"; readonly amount: number; readonly reason: string };\n\n// ───────────── domain/transitions.ts ─────────────\n\nconst allowedTransitions: Record<TaskStatus, readonly TaskStatus[]> = {\n  draft: [\"published\", \"cancelled\"],\n  published: [\"in_selection\", \"cancelled\"],\n  in_selection: [\"assigned\", \"published\", \"cancelled\"],\n  assigned: [\"in_progress\", \"cancelled\"],\n  in_progress: [\"delivered\", \"disputed\", \"cancelled\"],\n  delivered: [\"validated\", \"in_progress\", \"disputed\"],\n  validated: [\"closed\"],\n  disputed: [\"in_progress\", \"closed\", \"cancelled\"],\n  closed: [],\n  cancelled: [],\n};\n\nfunction canTransition(from: TaskStatus, to: TaskStatus): boolean {\n  return allowedTransitions[from].includes(to);\n}\n\n// ───────────── domain/errors.ts ─────────────\n\nclass DomainError extends Error {\n  constructor(\n    readonly code: string,\n    message: string,\n  ) {\n    super(message);\n    this.name = new.target.name;\n  }\n}\n\nclass InvalidTransitionError extends DomainError {\n  constructor(from: TaskStatus, to: TaskStatus) {\n    super(\"INVALID_TRANSITION\", `Transition interdite : ${from} → ${to}`);\n  }\n}\n\nclass TaskNotPublishedError extends DomainError {\n  constructor(status: TaskStatus) {\n    super(\"TASK_NOT_PUBLISHED\", `La tâche n'est pas publiée (statut : ${status})`);\n  }\n}\n\nclass AlreadyAppliedError extends DomainError {\n  constructor() {\n    super(\"ALREADY_APPLIED\", \"Vous avez déjà postulé à cette tâche\");\n  }\n}\n\nclass InvalidPaymentStateError extends DomainError {\n  constructor(status: Payment[\"status\"]) {\n    super(\"INVALID_PAYMENT_STATE\", `Libération impossible depuis l'état « ${status} »`);\n  }\n}\n\n// ───────────── domain/transition.ts ─────────────\n\nfunction transition(task: Task, to: TaskStatus): Task {\n  if (!canTransition(task.status, to)) {\n    throw new InvalidTransitionError(task.status, to);\n  }\n  return { ...task, status: to };\n}\n\n// ───────────── domain/apply.ts ─────────────\n\nfunction assertPublished(task: Task): void {\n  if (task.status !== \"published\") {\n    throw new TaskNotPublishedError(task.status);\n  }\n}\n\nfunction hasAlreadyApplied(taskId: string, collaboratorId: string, existing: readonly Application[]): boolean {\n  return existing.some((a) => a.taskId === taskId && a.collaboratorId === collaboratorId);\n}\n\nfunction apply(task: Task, collaboratorId: string, message: string, existing: readonly Application[]): Application {\n  assertPublished(task);\n  if (hasAlreadyApplied(task.id, collaboratorId, existing)) {\n    throw new AlreadyAppliedError();\n  }\n  return { taskId: task.id, collaboratorId, message };\n}\n\n// ───────────── domain/payout.ts ─────────────\n\ntype Payout = { collaboratorAmount: number; platformFee: number };\n\nfunction assertValidAmount(amount: number): void {\n  if (!Number.isInteger(amount) || amount <= 0) {\n    throw new Error(\"Le montant doit être un entier positif\");\n  }\n}\n\nfunction assertValidRate(rate: number): void {\n  if (!(rate >= 0 && rate <= 1)) {\n    throw new Error(\"Le taux de commission doit être compris entre 0 et 1\");\n  }\n}\n\nfunction computePayout(amount: number, commissionRate: number): Payout {\n  assertValidAmount(amount);\n  assertValidRate(commissionRate);\n  const platformFee = Math.round(amount * commissionRate);\n  return { collaboratorAmount: amount - platformFee, platformFee };\n}\n\nfunction releasePayment(payment: Payment, commissionRate: number): Payment {\n  if (payment.status !== \"held\") {\n    throw new InvalidPaymentStateError(payment.status);\n  }\n  return { status: \"released\", amount: payment.amount, ...computePayout(payment.amount, commissionRate) };\n}\n\n// ───────────── domain/schemas.ts ─────────────\n\nconst positiveBudget = z.number().int().positive(\"Le budget doit être un entier positif\");\n\nconst createTaskSchema = z\n  .object({\n    name: z.string().min(3, \"Le nom doit contenir au moins 3 caractères\"),\n    minBudget: positiveBudget,\n    maxBudget: positiveBudget,\n    skills: z.tuple([z.string()], z.string()), // au moins une compétence\n  })\n  .refine((input) => input.minBudget <= input.maxBudget, {\n    message: \"Le budget minimum doit être inférieur ou égal au maximum\",\n    path: [\"maxBudget\"],\n  });\n\ntype CreateTaskInput = z.infer<typeof createTaskSchema>;\n\nfunction createTask(input: CreateTaskInput, id: string): Task {\n  return { id, ...input, status: \"draft\" };\n}\n\n// ───────────── main.ts — script de recette ─────────────\n\nconst COMMISSION_RATE = 0.1;\n\nfunction step(label: string, check: () => void): void {\n  check();\n  console.log(`✔ ${label}`);\n}\n\nlet task: Task | undefined;\nlet published: Task | undefined;\n\nstep(\"une entrée invalide est refusée\", () => {\n  const result = createTaskSchema.safeParse({ name: \"Lo\", minBudget: 100, maxBudget: 50, skills: [] });\n  assert.equal(result.success, false);\n});\n\nstep(\"la tâche est créée en brouillon\", () => {\n  const input = createTaskSchema.parse({\n    name: \"Logo de la boutique\",\n    minBudget: 50_000,\n    maxBudget: 100_000,\n    skills: [\"Figma\"],\n  });\n  task = createTask(input, \"task_1\");\n  assert.equal(task.status, \"draft\");\n});\n\nstep(\"publication autorisée, saut de statut refusé, objet d'origine intact\", () => {\n  assert.ok(task);\n  const original = task;\n  const next = transition(original, \"published\");\n  assert.equal(next.status, \"published\");\n  assert.throws(() => transition(next, \"closed\"), InvalidTransitionError);\n  assert.equal(original.status, \"draft\");\n  assert.notEqual(next, original);\n  published = next;\n});\n\nstep(\"une seule candidature par collaborateur\", () => {\n  assert.ok(published);\n  const target = published;\n  const first = apply(target, \"c1\", \"Disponible dès lundi\", []);\n  assert.equal(first.collaboratorId, \"c1\");\n  assert.throws(() => apply(target, \"c1\", \"Je relance\", [first]), AlreadyAppliedError);\n});\n\nstep(\"paiement libéré : 72000 XOF au collaborateur, 8000 XOF de commission\", () => {\n  const held: Payment = { status: \"held\", amount: 80_000, providerRef: \"KKP-1\" };\n  const released = releasePayment(held, COMMISSION_RATE);\n  assert.deepEqual(released, { status: \"released\", amount: 80_000, collaboratorAmount: 72_000, platformFee: 8_000 });\n  assert.throws(() => releasePayment(released, COMMISSION_RATE), InvalidPaymentStateError);\n});\n\nexport {};",
+  "js": "// Exercice 100 · ★★★★ Avancé — TaskD — Validation d'entrée et script de recette (étape 5/5)\n// Dépendance : zod (npm install zod)\n//\n// Fichier autonome : tout le domaine des étapes 1 à 4 est regroupé ici\n// (types, transitions, erreurs, candidature, paiement), puis domain/schemas.ts\n// et main.ts (script de recette). Aucun any ni as dans le code métier.\nimport assert from \"node:assert/strict\";\nimport { z } from \"zod\";\n// ───────────── domain/transitions.ts ─────────────\nconst allowedTransitions = {\n    draft: [\"published\", \"cancelled\"],\n    published: [\"in_selection\", \"cancelled\"],\n    in_selection: [\"assigned\", \"published\", \"cancelled\"],\n    assigned: [\"in_progress\", \"cancelled\"],\n    in_progress: [\"delivered\", \"disputed\", \"cancelled\"],\n    delivered: [\"validated\", \"in_progress\", \"disputed\"],\n    validated: [\"closed\"],\n    disputed: [\"in_progress\", \"closed\", \"cancelled\"],\n    closed: [],\n    cancelled: [],\n};\nfunction canTransition(from, to) {\n    return allowedTransitions[from].includes(to);\n}\n// ───────────── domain/errors.ts ─────────────\nclass DomainError extends Error {\n    code;\n    constructor(code, message) {\n        super(message);\n        this.code = code;\n        this.name = new.target.name;\n    }\n}\nclass InvalidTransitionError extends DomainError {\n    constructor(from, to) {\n        super(\"INVALID_TRANSITION\", `Transition interdite : ${from} → ${to}`);\n    }\n}\nclass TaskNotPublishedError extends DomainError {\n    constructor(status) {\n        super(\"TASK_NOT_PUBLISHED\", `La tâche n'est pas publiée (statut : ${status})`);\n    }\n}\nclass AlreadyAppliedError extends DomainError {\n    constructor() {\n        super(\"ALREADY_APPLIED\", \"Vous avez déjà postulé à cette tâche\");\n    }\n}\nclass InvalidPaymentStateError extends DomainError {\n    constructor(status) {\n        super(\"INVALID_PAYMENT_STATE\", `Libération impossible depuis l'état « ${status} »`);\n    }\n}\n// ───────────── domain/transition.ts ─────────────\nfunction transition(task, to) {\n    if (!canTransition(task.status, to)) {\n        throw new InvalidTransitionError(task.status, to);\n    }\n    return { ...task, status: to };\n}\n// ───────────── domain/apply.ts ─────────────\nfunction assertPublished(task) {\n    if (task.status !== \"published\") {\n        throw new TaskNotPublishedError(task.status);\n    }\n}\nfunction hasAlreadyApplied(taskId, collaboratorId, existing) {\n    return existing.some((a) => a.taskId === taskId && a.collaboratorId === collaboratorId);\n}\nfunction apply(task, collaboratorId, message, existing) {\n    assertPublished(task);\n    if (hasAlreadyApplied(task.id, collaboratorId, existing)) {\n        throw new AlreadyAppliedError();\n    }\n    return { taskId: task.id, collaboratorId, message };\n}\nfunction assertValidAmount(amount) {\n    if (!Number.isInteger(amount) || amount <= 0) {\n        throw new Error(\"Le montant doit être un entier positif\");\n    }\n}\nfunction assertValidRate(rate) {\n    if (!(rate >= 0 && rate <= 1)) {\n        throw new Error(\"Le taux de commission doit être compris entre 0 et 1\");\n    }\n}\nfunction computePayout(amount, commissionRate) {\n    assertValidAmount(amount);\n    assertValidRate(commissionRate);\n    const platformFee = Math.round(amount * commissionRate);\n    return { collaboratorAmount: amount - platformFee, platformFee };\n}\nfunction releasePayment(payment, commissionRate) {\n    if (payment.status !== \"held\") {\n        throw new InvalidPaymentStateError(payment.status);\n    }\n    return { status: \"released\", amount: payment.amount, ...computePayout(payment.amount, commissionRate) };\n}\n// ───────────── domain/schemas.ts ─────────────\nconst positiveBudget = z.number().int().positive(\"Le budget doit être un entier positif\");\nconst createTaskSchema = z\n    .object({\n    name: z.string().min(3, \"Le nom doit contenir au moins 3 caractères\"),\n    minBudget: positiveBudget,\n    maxBudget: positiveBudget,\n    skills: z.tuple([z.string()], z.string()), // au moins une compétence\n})\n    .refine((input) => input.minBudget <= input.maxBudget, {\n    message: \"Le budget minimum doit être inférieur ou égal au maximum\",\n    path: [\"maxBudget\"],\n});\nfunction createTask(input, id) {\n    return { id, ...input, status: \"draft\" };\n}\n// ───────────── main.ts — script de recette ─────────────\nconst COMMISSION_RATE = 0.1;\nfunction step(label, check) {\n    check();\n    console.log(`✔ ${label}`);\n}\nlet task;\nlet published;\nstep(\"une entrée invalide est refusée\", () => {\n    const result = createTaskSchema.safeParse({ name: \"Lo\", minBudget: 100, maxBudget: 50, skills: [] });\n    assert.equal(result.success, false);\n});\nstep(\"la tâche est créée en brouillon\", () => {\n    const input = createTaskSchema.parse({\n        name: \"Logo de la boutique\",\n        minBudget: 50_000,\n        maxBudget: 100_000,\n        skills: [\"Figma\"],\n    });\n    task = createTask(input, \"task_1\");\n    assert.equal(task.status, \"draft\");\n});\nstep(\"publication autorisée, saut de statut refusé, objet d'origine intact\", () => {\n    assert.ok(task);\n    const original = task;\n    const next = transition(original, \"published\");\n    assert.equal(next.status, \"published\");\n    assert.throws(() => transition(next, \"closed\"), InvalidTransitionError);\n    assert.equal(original.status, \"draft\");\n    assert.notEqual(next, original);\n    published = next;\n});\nstep(\"une seule candidature par collaborateur\", () => {\n    assert.ok(published);\n    const target = published;\n    const first = apply(target, \"c1\", \"Disponible dès lundi\", []);\n    assert.equal(first.collaboratorId, \"c1\");\n    assert.throws(() => apply(target, \"c1\", \"Je relance\", [first]), AlreadyAppliedError);\n});\nstep(\"paiement libéré : 72000 XOF au collaborateur, 8000 XOF de commission\", () => {\n    const held = { status: \"held\", amount: 80_000, providerRef: \"KKP-1\" };\n    const released = releasePayment(held, COMMISSION_RATE);\n    assert.deepEqual(released, { status: \"released\", amount: 80_000, collaboratorAmount: 72_000, platformFee: 8_000 });\n    assert.throws(() => releasePayment(released, COMMISSION_RATE), InvalidPaymentStateError);\n});\nexport {};",
+  "sortie": "✔ une entrée invalide est refusée\n✔ la tâche est créée en brouillon\n✔ publication autorisée, saut de statut refusé, objet d'origine intact\n✔ une seule candidature par collaborateur\n✔ paiement libéré : 72000 XOF au collaborateur, 8000 XOF de commission"
  }
 ];

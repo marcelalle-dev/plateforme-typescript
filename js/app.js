@@ -52,7 +52,7 @@ function dessinerRail(actif) {
     ? [...LIENS, ["#/compte", compte.session ? "Mon compte" : "Se connecter", "compte"]]
     : LIENS;
   rail.replaceChildren(
-    h("a", { class: "marque", href: "#/" }, h("b", { class: "logo", "aria-hidden": "true" }, "TS"), h("span", {}, "TypeScript en 50 exercices", h("small", {}, "Cours, quiz et pratique"))),
+    h("a", { class: "marque", href: "#/" }, h("b", { class: "logo", "aria-hidden": "true" }, "TS"), h("span", {}, "Plateforme interactive TypeScript personnalisée", h("small", {}, "Cours, quiz et pratique"))),
     h("nav", { "aria-label": "Navigation principale" },
       h("ul", { class: "nav-rail" }, liensRail.map((l) => h("li", {}, lien(l))))),
     h("h2", {}, "Modules"),
@@ -137,13 +137,13 @@ function afficher() {
   }
   if (situation === "desactive") {
     principal.replaceChildren(...vueCompteDesactive());
-    document.title = "Compte désactivé | TypeScript en 50 exercices";
+    document.title = "Compte désactivé | Plateforme interactive TypeScript personnalisée";
     window.scrollTo(0, 0);
     return;
   }
   if (situation === "bloque") {
     principal.replaceChildren(...vueCompte({ obligatoire: true }).filter(Boolean));
-    document.title = "Créer un compte | TypeScript en 50 exercices";
+    document.title = "Créer un compte | Plateforme interactive TypeScript personnalisée";
     window.scrollTo(0, 0);
     return;
   }
@@ -151,7 +151,7 @@ function afficher() {
   principal.replaceChildren(...[bandeauEssai(), ...contenu().flat()].filter(Boolean));
   window.scrollTo(0, 0);
   const titre = principal.querySelector("h1");
-  document.title = titre ? `${titre.textContent} | TypeScript en 50 exercices` : "TypeScript en 50 exercices";
+  document.title = titre ? `${titre.textContent} | Plateforme interactive TypeScript personnalisée` : "Plateforme interactive TypeScript personnalisée";
   principal.focus({ preventScroll: true });
   apresRendu(principal);
 }

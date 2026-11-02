@@ -76,7 +76,7 @@ export function vueTableau() {
       h("div", {},
         prochain
           ? h("h1", {}, st.tentes ? "Votre prochain exercice" : "Comprenez TypeScript, un exercice à la fois")
-          : h("h1", {}, "Les 50 exercices sont validés"),
+          : h("h1", {}, "Tous les exercices sont validés"),
         prochain
           ? h("p", { class: "intro" }, h("strong", {}, `Exercice ${nn(prochain.id)} : ${prochain.titre}. `), `Niveau ${NIVEAUX[prochain.niveau].nom.toLowerCase()}. Chaque exercice se déroule en trois étapes : le cours, le quiz, puis du code à écrire.`)
           : h("p", { class: "intro" }, "Vous pouvez refaire n’importe quel quiz pour améliorer votre score."),
@@ -92,7 +92,7 @@ export function vueTableau() {
       chiffre(st.moyenne === null ? "Aucune" : `${noteTexte(st.moyenne)}/10`, "moyenne des quiz"),
       chiffre(st.meilleur === null ? "Aucun" : `${noteTexte(st.meilleur)}/10`, "meilleur score")),
     h("section", { class: "section" },
-      h("h2", {}, "Les cinq modules"),
+      h("h2", {}, "Les modules"),
       h("div", { class: "lignes-module" }, MODULES.map((m) => {
         const liste = exercicesDu(m);
         const valides = liste.filter((e) => store.suivi(e.id)?.valide).length;
@@ -109,7 +109,7 @@ export function vueTableau() {
 
 export function vueModules() {
   return [
-    h("h1", {}, "Les cinq modules"),
+    h("h1", {}, "Les modules"),
     h("p", { class: "sous-titre" }, "Les exercices sont organisés du plus simple au plus avancé. Ouvrez un module pour voir ses dix exercices."),
     h("div", { class: "section" }, MODULES.map((m) => {
       const liste = exercicesDu(m);
@@ -177,7 +177,7 @@ export function vueExercices(filtres) {
 
   appliquer();
   return [
-    h("h1", {}, "Les 50 exercices"),
+    h("h1", {}, "Les exercices"),
     h("div", { class: "filtres" },
       h("label", {}, "Rechercher",
         h("input", { type: "search", value: filtres.texte, placeholder: "Titre ou notion", oninput: (e) => { filtres.texte = e.target.value; appliquer(); } })),

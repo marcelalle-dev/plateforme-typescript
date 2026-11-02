@@ -53,11 +53,22 @@ function voisins(ex) {
 
 // --- Cours ---------------------------------------------------------------------------------
 
+// L'éditeur du site n'a pas accès aux bibliothèques : on indique comment lancer ce code sur son ordinateur.
+function noteBibliotheque(ex) {
+  const racines = [...ex.ts.matchAll(/from "([^".][^"]*)"/g)].map((m) => m[1]).filter((p) => !p.startsWith("node:")).map((p) => p.split("/")[0]);
+  const paquets = [...new Set(racines.flatMap((p) => (p === "react-dom" ? ["react", p] : [p])))];
+  const fichier = `exercice${nn(ex.id)}.${ex.tsx ? "tsx" : "ts"}`;
+  return h("div", { class: "note-bibliotheque" },
+    h("h3", {}, "Pour lancer ce code"),
+    riche("p", `Ce code utilise ${paquets.map((p) => `\`${p}\``).join(", ")}. L’éditeur du site ne peut pas charger de bibliothèque : le résultat attendu de cette page vient d’une vraie exécution sur ordinateur. La pratique de cet exercice s’écrit sans bibliothèque.`),
+    h("pre", {}, h("code", {}, `npm install ${paquets.join(" ")}\nnpx tsx ${fichier}`)));
+}
+
 function coderOriginal(ex) {
   const mots = motsDuCours(ex.id);
   const zone = h("div", {}, blocCode(ex.ts, { numeros: true, mots }));
   const volets = [
-    { nom: `Code TypeScript (exercice${nn(ex.id)}.ts)`, code: ex.ts },
+    { nom: `Code TypeScript (exercice${nn(ex.id)}.${ex.tsx ? "tsx" : "ts"})`, code: ex.ts },
     { nom: `Version du document (exercice${nn(ex.id)}.js)`, code: ex.js },
   ];
   const boutons = volets.map((v, i) =>
@@ -115,7 +126,9 @@ export function vueCours(ex) {
         h("h2", {}, "Code original"),
         h("p", {}, "Les mots soulignés apparaissent pour la première fois. Cliquez sur n’importe quel mot du code, ou survolez-le, pour lire son explication."),
         coderOriginal(ex),
-        bacASable({ code: ex.ts, essai: ex.essai, libelle: `Éditeur d’essai de l’exercice ${nn(ex.id)}` })),
+        ex.bibliotheque
+          ? noteBibliotheque(ex)
+          : bacASable({ code: ex.ts, essai: ex.essai, libelle: `Éditeur d’essai de l’exercice ${nn(ex.id)}` })),
       h("section", {},
         h("h2", {}, `Mots nouveaux (${motsAExpliquer(ex.id).length})`),
         lexique(motsAExpliquer(ex.id), ex.id)),

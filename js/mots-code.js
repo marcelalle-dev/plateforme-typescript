@@ -10,13 +10,13 @@ const DIRECTIVE = /@ts-expect-error/;
 // Une valeur textuelle n'est un mot à expliquer que si elle ressemble à un identifiant : "draft", "XOF".
 const TEXTE_MOT = /^[A-Za-z][A-Za-z_]*$/;
 
-export function extraireMots(ts, code) {
-  const source = ts.createSourceFile("/m.ts", code, ts.ScriptTarget.ES2022, true);
+export function extraireMots(ts, code, tsx = false) {
+  const source = ts.createSourceFile(tsx ? "/m.tsx" : "/m.ts", code, ts.ScriptTarget.ES2022, true);
   const mots = new Set();
   const K = ts.SyntaxKind;
 
   function visiter(noeud) {
-    if (noeud.kind === K.Identifier || (noeud.kind >= K.FirstKeyword && noeud.kind <= K.LastKeyword)) {
+    if (noeud.kind === K.Identifier || noeud.kind === K.PrivateIdentifier || (noeud.kind >= K.FirstKeyword && noeud.kind <= K.LastKeyword)) {
       const nom = noeud.getText(source);
       // Un nom vide vient d'un code incomplet, comme une question à trou.
       if (nom) mots.add(nom);

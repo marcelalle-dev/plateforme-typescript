@@ -1,6 +1,6 @@
-# TypeScript en 50 exercices
+# Plateforme interactive TypeScript personnalisée
 
-Plateforme interactive pour comprendre les exercices 01 à 50 : cours détaillé, quiz corrigé, code à écrire et suivi de progression. Aucune installation n'est nécessaire en dehors de Node.js, et tout fonctionne hors ligne.
+Plateforme interactive pour comprendre les exercices 01 à 100 : cours détaillé, quiz corrigé, code à écrire et suivi de progression. Aucune installation n'est nécessaire en dehors de Node.js, et tout fonctionne hors ligne.
 
 **Version en ligne :** https://marcelalle-dev.github.io/typescript-50-exercices/
 
@@ -26,6 +26,10 @@ npm run start:reseau
 
 Le terminal affiche l'adresse à ouvrir sur le téléphone. La progression est enregistrée séparément sur chaque appareil, dans le `localStorage` du navigateur.
 
+## Exercices qui utilisent une bibliothèque
+
+Les exercices 73 à 79, 86 à 89 et 100 utilisent zod, React ou Express. L'éditeur du site ne peut pas charger ces bibliothèques : leur cours, leur pas à pas réel et leur quiz sont complets, mais il n'y a pas de bouton « Essayer ce code », et leur pratique s'écrit sans bibliothèque. Chaque cours indique la commande pour lancer le code sur un ordinateur.
+
 ## Ce que contient chaque exercice
 
 1. **Cours** : objectif, explication simple, code original modifiable, mots nouveaux, explication ligne par ligne, exécution pas à pas, résultat attendu, erreurs fréquentes, points à retenir et liens avec les autres exercices.
@@ -37,7 +41,7 @@ La plateforme propose aussi une page sur les bases de JavaScript, un résumé et
 ## D'où viennent les contenus
 
 - `data/sources.js` est généré par un script, sans recopie manuelle : le TypeScript vient de `../src/exerciceNN.ts`, le JavaScript, les titres et les niveaux viennent de `../docs/*.docx`, et les résultats viennent de l'exécution réelle de chaque exercice en UTC.
-- `data/module1.js` à `data/module5.js` contiennent le contenu pédagogique rédigé : explications, quiz et exercices pratiques.
+- `data/module1.js` à `data/module10.js` contiennent le contenu pédagogique rédigé : explications, quiz et exercices pratiques.
 - `data/glossaire.js` explique chaque mot du code, et `data/mots.js`, généré par `node outils/generer-mots.mjs`, indique où chacun apparaît pour la première fois. `data/traces.js`, généré par `TZ=UTC node outils/generer-traces.mjs`, contient l'exécution réelle de chaque exercice, étape par étape.
 
 Ce dépôt contient le fichier `data/sources.js` déjà généré. Pour le régénérer avec `npm run sources`, le dossier du projet doit se trouver à côté des dossiers `src/` et `docs/` d'origine.
