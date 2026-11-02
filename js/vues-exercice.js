@@ -1,6 +1,8 @@
 // Page d’un exercice : cours, quiz et exercice pratique.
 import { EXERCICES, MODULES, NIVEAUX } from "../data/index.js";
+import { MOTS_NOUVEAUX, MOTS_PRATIQUE } from "../data/mots.js";
 import { creerEditeur } from "./editeur.js";
+import { lexique, motsDeLExercice, motsDuCours } from "./mots-ui.js";
 import { corrigerQuiz, SEUIL_VALIDATION } from "./quiz-core.js";
 import { blocCode, enLigne, h, melanger, noteTexte, riche } from "./ui.js";
 import * as store from "./store.js";
@@ -48,7 +50,8 @@ function voisins(ex) {
 // --- Cours ---------------------------------------------------------------------------------
 
 function coderOriginal(ex) {
-  const zone = h("div", {}, blocCode(ex.ts, { numeros: true }));
+  const mots = motsDuCours(ex.id);
+  const zone = h("div", {}, blocCode(ex.ts, { numeros: true, mots }));
   const volets = [
     { nom: `Code TypeScript (exercice${nn(ex.id)}.ts)`, code: ex.ts },
     { nom: `Version du document (exercice${nn(ex.id)}.js)`, code: ex.js },
@@ -62,7 +65,7 @@ function coderOriginal(ex) {
       onclick: (e) => {
         boutons.forEach((b) => b.setAttribute("aria-selected", "false"));
         e.currentTarget.setAttribute("aria-selected", "true");
-        zone.replaceChildren(blocCode(v.code, { numeros: true }));
+        zone.replaceChildren(blocCode(v.code, { numeros: true, mots }));
       },
     }, v.nom));
   return h("div", {},
@@ -73,10 +76,11 @@ function coderOriginal(ex) {
 
 function ligneParLigne(ex) {
   const lignes = ex.ts.split("\n");
+  const mots = motsDuCours(ex.id);
   return h("div", { class: "annote" }, ex.lignes.map(([plage, texte]) => {
     const [debut, fin = debut] = plage.split("-").map(Number);
     return h("div", { class: "annote-ligne" },
-      blocCode(lignes.slice(debut - 1, fin).join("\n"), { numeros: true, debut }),
+      blocCode(lignes.slice(debut - 1, fin).join("\n"), { numeros: true, debut, mots }),
       riche("div", texte, { class: "texte" }));
   }));
 }
@@ -89,9 +93,14 @@ export function vueCours(ex) {
     h("div", { class: "cours" },
       h("section", { class: "objectif" }, h("h2", {}, "Objectif"), riche("p", ex.objectif)),
       h("section", {}, h("h2", {}, "Explication simple"), ex.simple.map((p) => riche("p", p))),
-      h("section", {}, h("h2", {}, "Code original"), coderOriginal(ex)),
+      h("section", {},
+        h("h2", {}, "Code original"),
+        h("p", {}, "Les mots soulignés apparaissent pour la première fois. Cliquez sur n’importe quel mot du code, ou survolez-le, pour lire son explication."),
+        coderOriginal(ex)),
+      h("section", {},
+        h("h2", {}, `Mots nouveaux (${MOTS_NOUVEAUX[ex.id].length})`),
+        lexique(MOTS_NOUVEAUX[ex.id])),
       h("section", {}, h("h2", {}, "Explication ligne par ligne"), ligneParLigne(ex)),
-      h("section", {}, h("h2", {}, "Déroulement"), h("ol", { class: "deroule" }, ex.deroulement.map((d) => riche("li", d)))),
       h("section", {},
         h("h2", {}, "Résultat attendu"),
         h("pre", { class: "terminal", tabindex: "0" }, ex.sortie),
@@ -133,7 +142,7 @@ function champOption(question, i, indexOption, texte, reponses, type) {
   return h("label", { class: "option", "data-valeur": String(valeur) }, entree, h("span", {}, contenu));
 }
 
-function carteQuestion(question, i, reponses) {
+function carteQuestion(question, i, reponses, mots) {
   const titre = h("legend", {},
     h("span", { class: "format" }, FORMATS[question.t]),
     h("span", { html: `${i + 1}. ${enLigne(question.q)}` }));
@@ -150,11 +159,11 @@ function carteQuestion(question, i, reponses) {
       spellcheck: "false",
       oninput: (e) => { reponses[i] = e.target.value; },
     });
-    const pre = blocCode(avant);
-    pre.firstChild.append(trou, blocCode(apres).firstChild.cloneNode(true));
+    const pre = blocCode(avant, { mots });
+    pre.firstChild.append(trou, blocCode(apres, { mots }).firstChild.cloneNode(true));
     corps.push(pre);
   } else {
-    if (question.code) corps.push(blocCode(question.code));
+    if (question.code) corps.push(blocCode(question.code, { mots }));
     let options;
     if (question.t === "vf") {
       options = [[0, "Vrai"], [1, "Faux"]];
@@ -208,10 +217,11 @@ function afficherCorrection(carte, question, detail, reponse) {
 export function vueQuiz(ex, naviguer) {
   store.marquerVisite(ex.id);
   const conteneur = h("div", { class: "quiz" });
+  const mots = motsDeLExercice(ex.id);
 
   function demarrer() {
     const reponses = new Array(ex.quiz.length);
-    const cartes = ex.quiz.map((q, i) => carteQuestion(q, i, reponses));
+    const cartes = ex.quiz.map((q, i) => carteQuestion(q, i, reponses, mots));
     const zoneResultat = h("div", { tabindex: "-1", "aria-live": "polite" });
     const verifier = h("button", {
       class: "bouton fort",
@@ -325,7 +335,7 @@ export function vuePratique(ex, naviguer) {
       zoneCorrection.replaceChildren(h("div", { style: "display:grid;gap:12px" },
         h("h2", {}, "Correction détaillée"),
         riche("p", p.correction),
-        blocCode(p.solution, { numeros: true })));
+        blocCode(p.solution, { numeros: true, mots: motsDeLExercice(ex.id) })));
       zoneCorrection.scrollIntoView({ block: "nearest" });
     },
   }, "Voir la correction");
@@ -360,6 +370,9 @@ export function vuePratique(ex, naviguer) {
     entete(ex, "pratique"),
     h("div", { class: "pratique" },
       h("section", {}, h("h2", {}, "Votre mission"), riche("p", p.enonce)),
+      MOTS_PRATIQUE[ex.id].length
+        ? h("section", {}, h("h2", {}, "Mots nouveaux du code de départ"), lexique(MOTS_PRATIQUE[ex.id]))
+        : null,
       h("section", {},
         editeur.element,
         h("p", { class: "aide" }, "Ctrl + Entrée vérifie le code. Pour quitter l’éditeur au clavier : Échap, puis Tab. Votre code est enregistré automatiquement."),

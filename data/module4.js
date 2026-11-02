@@ -19,11 +19,6 @@ export const MODULE4 = {
       ['18', 'Affiche les deux valeurs. Le type refusé existe quand même à l’exécution.'],
       ['20', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`STATUS_VALUES` reçoit `["draft", "published", "closed"]`.',
-      '`draft` donne `true`, `finished` donne `false`, `closed` donne `true`.',
-      'La dernière ligne affiche `published finished`.',
-    ],
     erreurs: [
       ['TS2322 : valeur hors de l’union', '`const refused: Status = "finished"` est refusé. Utilise une valeur de `STATUS`.'],
       ['TS2540 : propriété en lecture seule', '`STATUS.DRAFT = "x"` est refusé après `as const`.'],
@@ -72,11 +67,6 @@ export const MODULE4 = {
       ['24-25', '`task:finished` n’est pas dans l’union : erreur attendue.'],
       ['26', 'À l’exécution, la valeur s’affiche quand même.'],
       ['28', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`eventName("assigned")` renvoie `task:assigned`.',
-      '`console.log(events)` affiche `[ \'task:draft\', \'task:closed\' ]`.',
-      'La dernière ligne affiche `task:finished`, puisque les types ne sont pas contrôlés à l’exécution.',
     ],
     erreurs: [
       ['TS2322 : événement inconnu', '`"task:finished"` est refusé. Utilise un statut existant ou ajoute-le à l’union.'],
@@ -129,11 +119,6 @@ export const MODULE4 = {
       ['19', 'À l’exécution, `notAudited` est le même objet que `task`.'],
       ['21', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`withAudit` crée un nouvel objet à quatre champs.',
-      'La première ligne affiche `Flyer david 2026-10-19T10:00:00.000Z`.',
-      '`Object.keys(task)` affiche `[ \'id\', \'name\' ]`, tout comme `notAudited`.',
-    ],
     erreurs: [
       ['TS2322 / TS2739 : champs manquants', 'Un `Task` n’est pas un `AuditedTask`. Passe par `withAudit` ou ajoute les champs.'],
       ['Intersection impossible', '`"a" & "b"` donne `never`, car aucune valeur n’est les deux à la fois.'],
@@ -182,12 +167,6 @@ export const MODULE4 = {
       ['14', 'Un panier vide donne 0, la valeur de départ.'],
       ['16', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Première ligne : 0 + 5000 × 2 = 10000.',
-      'Deuxième ligne : 10000 + 2500 × 3 = 17500.',
-      'Troisième ligne : 17500 + 4000 × 1 = 21500, affiché.',
-      'Le panier vide affiche directement `0`.',
-    ],
     erreurs: [
       ['TS2339 : propriété absente', '`item.prix` est refusé car le champ s’appelle `price`.'],
       ['TS2322 : ligne incomplète', 'Un objet sans `quantity` n’est pas un `CartLine`.'],
@@ -235,12 +214,6 @@ export const MODULE4 = {
       ['9-10', '`"USD"` est refusé à la compilation (erreur attendue), mais l’exécution affiche `10 USD`.'],
       ['12', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`formatAmount(50_000)` utilise XOF : `50 000 XOF`.',
-      '`formatAmount(1_250_000, "EUR")` donne `1 250 000 EUR`.',
-      '`formatAmount(999)` donne `999 XOF`.',
-      'Le dernier appel affiche `10 USD`, car le type n’agit qu’à la compilation.',
-    ],
     erreurs: [
       ['TS2345 : devise non autorisée', '`formatAmount(10, "USD")` est refusé. Utilise XOF ou EUR, ou élargis l’union.'],
       ['TS1016 : paramètre obligatoire après un optionnel', 'Un paramètre `b?: T` ne peut pas précéder un paramètre obligatoire. Place les paramètres optionnels à la fin.'],
@@ -286,11 +259,6 @@ export const MODULE4 = {
       ['6', 'Teste trois budgets : valide, minimum nul, puis minimum supérieur au maximum.'],
       ['7', 'Trois cas : sous la borne, dans l’intervalle, au-dessus.'],
       ['9', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`isBudgetValid` donne `true`, `false` (min vaut 0), puis `false` (min > max).',
-      '`clamp(5, 10, 20)` remonte à 10.',
-      '`clamp(15, 10, 20)` reste à 15, et `clamp(25, 10, 20)` redescend à 20.',
     ],
     erreurs: [
       ['TS7006 : paramètre sans type', '`const f = (a, b) => a + b;` est refusé si rien ne permet de déduire les types.'],
@@ -351,12 +319,6 @@ export const MODULE4 = {
       ['36', 'Page 2 : les deux offres suivantes.'],
       ['38', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`{ skills: ["Figma"], page: 1 }` : `o1` et `o2` correspondent.',
-      '`{ query: "logo" }` : `o1` et `o4` correspondent.',
-      '`{}` : toutes les offres passent et la page 1 en garde deux.',
-      '`{ page: 2 }` : `start` vaut 2, d’où `o3` et `o4`.',
-    ],
     erreurs: [
       ['TS2353 : option inconnue', '`searchOffers({ budget: 5 })` est refusé : l’option s’appelle `minBudget`.'],
       ['TS2554 : argument manquant', '`searchOffers()` est refusé, car l’objet est obligatoire. Passe `{}` ou donne `= {}` comme valeur par défaut au paramètre.'],
@@ -407,12 +369,6 @@ export const MODULE4 = {
       ['13', 'Aucun argument : le total reste à 0.'],
       ['14', 'Le premier argument est `prefix`, les autres sont `names`.'],
       ['16', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`sum(1, 2, 3)` affiche `6`.',
-      '`sum(...amounts)` équivaut à `sum(10, 20, 30)` et affiche `60`.',
-      '`sum()` affiche `0`.',
-      '`announce` affiche `Bienvenue Awa, Kofi`.',
     ],
     erreurs: [
       ['TS1014 : le reste doit être en dernier', '`function f(...a: number[], b: string)` est refusé. Place le reste à la fin.'],
@@ -471,11 +427,6 @@ export const MODULE4 = {
       ['33', 'Affiche les vérifications.'],
       ['35', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Avec 42, `value.toISOString` n’est pas une fonction : l’erreur est capturée et le message affiché.',
-      '`asText` reçoit `2026-11-30`, puis `asDate` reçoit une `Date`.',
-      'Le programme affiche le texte, l’année `2026`, puis `[ true, true ]`.',
-    ],
     noteSortie: 'L’année est lue selon le fuseau local. Le résultat affiché a été produit en UTC.',
     erreurs: [
       ['TS2769 : No overload matches this call', 'Aucune surcharge n’accepte cet argument. Passe une `Date` ou un `string`.'],
@@ -527,11 +478,6 @@ export const MODULE4 = {
       ['18-19', 'Refusé : `Decision` n’est pas compatible avec `number`. Erreur attendue.'],
       ['20', 'Utilise la variable pour éviter un avertissement.'],
       ['22', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      'Pour `cand_7`, le callback est appelé avec `accept`, puis `reject`.',
-      'Chaque appel affiche `Candidat cand_7 : ...`.',
-      'Pour `cand_8`, les deux appels affichent l’identifiant et la décision.',
     ],
     erreurs: [
       ['TS2322 : callback incompatible', 'Le gestionnaire doit accepter les types annoncés par `OnCandidateDecision`. Corrige le type de ses paramètres.'],

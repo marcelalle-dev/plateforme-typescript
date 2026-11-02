@@ -20,12 +20,6 @@ export const MODULE1 = {
       ['10', 'Deuxième appel : 15 000 XOF et 12 %. La commission vaut 1 800 XOF.'],
       ['12', '`export {}` n’exporte rien, mais fait du fichier un **module**. Ainsi, ses variables ne se mélangent pas avec celles des autres fichiers d’exercices.'],
     ],
-    deroulement: [
-      'La déclaration de `describePayout` est enregistrée ; elle ne s’exécute pas encore.',
-      '`console.log("TaskD →")` affiche la première ligne.',
-      'Appel avec `amount = 80000` et `rate = 0.1` : `fee = 8000`, `payout = 72000`, puis le texte est affiché.',
-      'Appel avec `amount = 15000` et `rate = 0.12` : `fee = 1800`, `payout = 13200`, puis le texte est affiché.',
-    ],
     erreurs: [
       ['TS2345 : mauvais type d’argument', '`describePayout("80000", 0.1)` est refusé : un `string` n’est pas un `number`. Passe un nombre, ou convertis d’abord avec `Number(...)`.'],
       ['TS7006 : paramètre sans type', '`function describePayout(amount, rate)` déclenche « implicitly has an any type » avec un projet strict. Ajoute `: number` à chaque paramètre.'],
@@ -76,12 +70,6 @@ export const MODULE1 = {
       ['25', 'Affiche `first + 1`, soit 46. `first` est bien un `number` grâce au `??`.'],
       ['26', 'Montre qu’à l’exécution `refused` vaut 45 : le type a beau être contesté, le JavaScript produit fonctionne. Les types n’existent pas à l’exécution.'],
       ['28', 'Fait du fichier un module, comme dans tous les exercices.'],
-    ],
-    deroulement: [
-      '`scores` reçoit `[45, 72, 90]`, `refused` et `first` valent 45.',
-      '`maybeFirst` vaut 45, donc le test passe et le programme affiche `maybeFirst + 1 = 46`.',
-      '`sixth` vaut `undefined`, donc la branche `else` affiche `pas de sixième élément`.',
-      'Les deux derniers `console.log` affichent `first + 1 = 46`, puis la valeur de `refused`.',
     ],
     erreurs: [
       ['TS2322 : `number | undefined` vers `number`', '`const first: number = scores[0];` est refusé. Utilise `scores[0] ?? 0` ou un test `!== undefined`.'],
@@ -135,11 +123,6 @@ export const MODULE1 = {
       ['30', '`void` utilise la fonction sans rien faire de sa valeur : cela évite qu’elle soit signalée comme inutilisée.'],
       ['32', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Les fonctions sont déclarées, rien ne s’affiche encore.',
-      '`levelLabel("beginner")` donne `Débutant`, `levelLabel("expert")` donne `Expert`, d’où `Débutant / Expert`.',
-      '`brokenLevelLabel("expert")` saute le `if` et se termine sans `return` : `undefined` est affiché.',
-    ],
     erreurs: [
       ['TS7030 : Not all code paths return a value', 'Un chemin de la fonction n’a pas de `return`. Ajoute le cas manquant ou un `return` final.'],
       ['TS2366 : Function lacks ending return statement', 'La fonction annonce un type de retour sans `undefined`, mais peut se terminer sans `return`. Complète les chemins.'],
@@ -191,12 +174,6 @@ export const MODULE1 = {
       ['18', 'Utilise `refused` pour éviter un avertissement de variable inutilisée.'],
       ['19', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`refused` et `deadline` reçoivent `null` ; `now` reçoit le 20 novembre 2026.',
-      'Premier appel : l’échéance existe, la différence fait 10 jours, le programme affiche `10`.',
-      'Deuxième appel : `deadline` vaut `null`, le programme affiche `null`.',
-      'Enfin, `console.log(deadline)` affiche `null`.',
-    ],
     erreurs: [
       ['TS2322 : `null` vers `Date`', '`let refused: Date = null;` est refusé. Écris `Date | null` si l’absence est permise.'],
       ['TS18047 : possibly null', '`deadline.getTime()` est refusé sans test préalable lorsque `deadline` est `Date | null`. Ajoute `if (deadline === null)`.'],
@@ -244,11 +221,6 @@ export const MODULE1 = {
       ['11', '`Number("abc")` ne peut pas convertir le texte et donne `NaN` (« pas un nombre »). `NaN` a pourtant le type `number`, et `NaN * 2` reste `NaN`.'],
       ['13', 'Utilise `doubleImplicit` sans rien en faire pour éviter un avertissement.'],
       ['14', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      'Les deux fonctions sont déclarées.',
-      '`double(21)` renvoie 42, qui est affiché.',
-      '`Number("abc")` vaut `NaN`, `double(NaN)` renvoie `NaN`, qui est affiché.',
     ],
     erreurs: [
       ['TS7006 : Parameter implicitly has an any type', 'Le paramètre n’a pas de type et rien ne permet de le déduire. Ajoute une annotation comme `value: number`.'],
@@ -306,11 +278,6 @@ export const MODULE1 = {
       ['22', 'Affiche le résultat et les valeurs. Les types n’apparaissent pas à l’exécution.'],
       ['24', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'À la compilation, chaque ligne `Expect<Equal<...>>` confirme une prédiction de type.',
-      'À l’exécution, les déclarations de type n’existent plus : il reste les variables.',
-      '`console.log` affiche `allOk`, puis `title`, `budget`, `isPublished`, `tags` et `range`.',
-    ],
     erreurs: [
       ['TS2322 : réaffecter un littéral', 'Annoter `let s: "draft" = "draft"` puis écrire `s = "closed"` est refusé. Élargis l’annotation si la valeur doit changer.'],
       ['TS2339 : `push` sur un tuple `as const`', '`range.push(3)` est refusé car `readonly` n’a pas de `push`. Retire `as const` si le tableau doit changer.'],
@@ -364,12 +331,6 @@ export const MODULE1 = {
       ['21', 'Le mot le plus long est `Illustrator`. `longest([]) === ""` vaut `true`.'],
       ['23', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`average([45, 72, 90])` : total 207, divisé par 3, soit 69.',
-      '`average([])` renvoie 0 et `average([10])` renvoie 10 : la ligne `69 0 10` s’affiche.',
-      '`longest` compare Figma (5), Illustrator (11) et Photoshop (9) : Illustrator gagne.',
-      '`longest([])` n’entre jamais dans la boucle et renvoie `""`.',
-    ],
     erreurs: [
       ['TS2322 : élément de mauvais type', '`const scores: number[] = [45, "72"];` est refusé car un texte s’y trouve. Corrige la valeur ou le type du tableau.'],
       ['Tableau vide oublié', 'Sans le test de longueur, `average([])` calcule `0 / 0` et renvoie `NaN`. TypeScript ne détecte pas cette erreur de logique.'],
@@ -421,11 +382,6 @@ export const MODULE1 = {
       ['13-14', 'Trois éléments : refusé aussi.'],
       ['16-17', 'À l’exécution, les types n’existent plus : les deux tableaux existent, de longueurs 1 et 3.'],
       ['19', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`describeRange([50_000, 100_000])` produit `Entre 50000 et 100000 XOF`.',
-      '`tooShort` et `tooLong` sont créés malgré tout, car le JavaScript ignore les types.',
-      '`console.log` affiche leurs longueurs : `1 3`.',
     ],
     erreurs: [
       ['TS2322 : Source has 1 element(s) but target requires 2', 'Le tuple est trop court. Fournis le bon nombre d’éléments.'],
@@ -480,12 +436,6 @@ export const MODULE1 = {
       ['18', 'Affiche `BELLO, Mariam` : `last` est un `string` sûr, donc `toUpperCase()` est permis.'],
       ['20', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`"Awa Sagbo"` est coupé en `["Awa", "Sagbo"]` et renvoyé tel quel.',
-      '`"Kofi"` ne donne qu’un mot : le premier `return` donne `["Kofi", ""]`.',
-      '`"Jean Marc Dossou"` donne le dernier mot `Dossou` et le prénom `Jean Marc`.',
-      '`"Mariam Bello"` est déstructuré, puis affiché `BELLO, Mariam`.',
-    ],
     erreurs: [
       ['TS2322 : `string | undefined` dans le tuple', '`return [parts[0], ""]` est refusé. Écris `parts[0] ?? ""`.'],
       ['TS2322 : tableau au lieu de tuple', 'Renvoyer une variable de type `string[]` échoue, car sa longueur n’est pas garantie. Renvoie directement `[first, last]`.'],
@@ -537,11 +487,6 @@ export const MODULE1 = {
       ['30', 'Affiche quatre valeurs. `offer.description ?? "(sans description)"` remplace l’absence par un texte.'],
       ['31-33', 'À l’exécution, `priority` existe bien. Le `filter` l’exclut : il reste 6 champs.'],
       ['35', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      'Les deux objets sont créés. Le type a déjà disparu à l’exécution.',
-      'La première ligne affichée donne le titre, le budget, la devise et le texte de repli.',
-      '`Object.keys(withPriority)` donne 7 clés, et le filtre en retire une : le programme affiche `6`.',
     ],
     erreurs: [
       ['TS2741 : Property is missing', 'Un champ obligatoire manque, par exemple `budget`. Ajoute-le ou rends-le optionnel si c’est justifié.'],

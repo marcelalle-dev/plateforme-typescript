@@ -2,6 +2,7 @@
 import { EXERCICES, MODULES } from "../data/index.js";
 import { h } from "./ui.js";
 import { barreModule, vueExercices, vueModule, vueModules, vueProgression, vueTableau } from "./vues-generales.js";
+import { activerBullesMots } from "./mots-ui.js";
 import { vueCours, vuePratique, vueQuiz } from "./vues-exercice.js";
 
 const rail = document.getElementById("rail");
@@ -84,5 +85,6 @@ function afficher() {
   principal.focus({ preventScroll: true });
 }
 
+activerBullesMots();
 window.addEventListener("hashchange", afficher);
 afficher();

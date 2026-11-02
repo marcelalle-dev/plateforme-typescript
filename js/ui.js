@@ -1,4 +1,5 @@
 // Composants d’affichage réutilisables.
+import { definition } from "../data/glossaire.js";
 
 export function h(balise, attributs = {}, ...enfants) {
   const el = document.createElement(balise);
@@ -33,31 +34,69 @@ export function riche(balise, texte, attributs = {}) {
 
 const MOTS_CLES = new Set("abstract as asserts async await break case catch class const continue default delete do else export extends false finally for from function if implements import in instanceof interface is keyof let new null of readonly return satisfies static super switch this throw true try type typeof undefined var void while".split(" "));
 const TYPES = new Set("string number boolean unknown any never object bigint symbol".split(" "));
-const JETONS = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*'|`(?:\\.|[^`\\])*`)|(\b\d[\d_]*(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)/g;
+const JETONS = /(\/\/[^\n]*|\/\*[\s\S]*?\*\/)|("(?:\\.|[^"\\\n])*"|'(?:\\.|[^'\\\n])*')|(`(?:\\.|[^`\\])*`)|((?<=[(,=]\s*)\/(?![/*])(?:\\.|\[[^\]\n]*\]|[^/\\\n])+\/[gimsuy]*)|(\b\d[\d_]*(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)|(=>|\?\?|\?\.|===|!==|\|\||&&|\.\.\.|<=|>=|\+=|[!|&?])/g;
+const DIRECTIVE = "@ts-expect-error";
 
-export function colorer(code) {
+function attribut(texte) {
+  return echapper(texte).replace(/"/g, "&quot;");
+}
+
+// Enveloppe un mot expliqué par le glossaire ; un mot nouveau est souligné et atteignable au clavier.
+function marquer(mot, html, contexte) {
+  if (!contexte || !definition(mot)) return html;
+  const nouveau = contexte.nouveau(mot);
+  const acces = nouveau ? ' tabindex="0" role="button"' : "";
+  return `<span class="mot${nouveau ? " mot-nouveau" : ""}" data-mot="${attribut(mot)}"${acces}>${html}</span>`;
+}
+
+function colorerGabarit(texte, contexte) {
+  let sortie = "";
+  let position = 0;
+  for (const m of texte.matchAll(/\$\{([^}]*)\}/g)) {
+    sortie += `<span class="t-ch">${echapper(texte.slice(position, m.index))}</span>`;
+    sortie += marquer("${", '<span class="t-ch">${</span>', contexte);
+    sortie += colorer(m[1], contexte);
+    sortie += '<span class="t-ch">}</span>';
+    position = m.index + m[0].length;
+  }
+  return sortie + `<span class="t-ch">${echapper(texte.slice(position))}</span>`;
+}
+
+function colorerCommentaire(texte, contexte) {
+  const i = texte.indexOf(DIRECTIVE);
+  if (i < 0) return `<span class="t-co">${echapper(texte)}</span>`;
+  const avant = echapper(texte.slice(0, i));
+  const apres = echapper(texte.slice(i + DIRECTIVE.length));
+  return `<span class="t-co">${avant}${marquer(DIRECTIVE, DIRECTIVE, contexte)}${apres}</span>`;
+}
+
+// contexte (facultatif) : { nouveau(mot) } rend les mots du code explicables au clic.
+export function colorer(code, contexte) {
   let sortie = "";
   let position = 0;
   for (const m of code.matchAll(JETONS)) {
     sortie += echapper(code.slice(position, m.index));
     position = m.index + m[0].length;
     const texte = echapper(m[0]);
-    if (m[1]) sortie += `<span class="t-co">${texte}</span>`;
-    else if (m[2]) sortie += `<span class="t-ch">${texte}</span>`;
-    else if (m[3]) sortie += `<span class="t-nb">${texte}</span>`;
-    else if (MOTS_CLES.has(m[0])) sortie += `<span class="t-mc">${texte}</span>`;
-    else if (TYPES.has(m[0]) || /^[A-Z]/.test(m[0])) sortie += `<span class="t-ty">${texte}</span>`;
-    else sortie += texte;
+    if (m[1]) sortie += colorerCommentaire(m[0], contexte);
+    else if (m[2]) sortie += marquer(m[0], `<span class="t-ch">${texte}</span>`, contexte);
+    else if (m[3]) sortie += colorerGabarit(m[0], contexte);
+    else if (m[4]) sortie += marquer(m[0], `<span class="t-ch">${texte}</span>`, contexte);
+    else if (m[5]) sortie += `<span class="t-nb">${texte}</span>`;
+    else if (m[7]) sortie += marquer(m[0], texte, contexte);
+    else if (MOTS_CLES.has(m[0])) sortie += marquer(m[0], `<span class="t-mc">${texte}</span>`, contexte);
+    else if (TYPES.has(m[0]) || /^[A-Z]/.test(m[0])) sortie += marquer(m[0], `<span class="t-ty">${texte}</span>`, contexte);
+    else sortie += marquer(m[0], texte, contexte);
   }
   return sortie + echapper(code.slice(position));
 }
 
-export function blocCode(code, { numeros = false, debut = 1 } = {}) {
+export function blocCode(code, { numeros = false, debut = 1, mots = null } = {}) {
   const lignes = code.split("\n");
   const largeur = numeros
     ? lignes.map((_, i) => `<span class="num-ligne">${debut + i}</span>`)
     : null;
-  const html = colorer(code)
+  const html = colorer(code, mots)
     .split("\n")
     .map((l, i) => (largeur ? largeur[i] : "") + l)
     .join("\n");

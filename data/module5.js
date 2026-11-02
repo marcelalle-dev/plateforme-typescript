@@ -21,11 +21,6 @@ export const MODULE5 = {
       ['17', '90 000 × 0,95 = 85 500.'],
       ['19', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`tenPercent` et `fivePercent` sont créées et retiennent leur taux.',
-      '`both(100_000)` appelle d’abord `tenPercent`, qui donne 90000.',
-      'Ce résultat entre dans `fivePercent`, qui donne 85500.',
-    ],
     erreurs: [
       ['TS2322 : mauvais type de fonction', 'Si la fonction renvoyée ne correspond pas à `(amount: number) => number`, le retour est refusé. Vérifie ses paramètres et sa valeur.'],
       ['TS2554 : fonction appelée trop tôt', '`makeDiscount()` sans taux est refusé. Il faut lui passer `rate`.'],
@@ -76,11 +71,6 @@ export const MODULE5 = {
       ['16', '`push` renvoie la nouvelle longueur, un nombre ignoré par `forEach`.'],
       ['17', 'Affiche `[ 2, 4, 6 ]`.'],
       ['19', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`returnsSeven()` renvoie 7 : le programme affiche `retour réel : 7`.',
-      'Le premier `forEach` calcule des valeurs qui sont ignorées.',
-      'Le second remplit `doubled`, puis le tableau est affiché.',
     ],
     erreurs: [
       ['TS2322 : Type number is not assignable to type void', 'Une fonction déclarée `: void` ne peut pas renvoyer un nombre. Retire le `return` ou change l’annotation.'],
@@ -137,12 +127,6 @@ export const MODULE5 = {
       ['31-33', 'Le `catch` affiche le message.'],
       ['35', 'Fait du fichier un module, ce qui permet aussi le `await` de premier niveau.'],
     ],
-    deroulement: [
-      '`await fetchOffer("off_1")` attend, puis affiche `Logo boutique`.',
-      '`pending.title` vaut `undefined` : il est affiché.',
-      '`await pending` laisse la promesse se terminer.',
-      '`fetchOffer("off_404")` rejette la promesse, et le `catch` affiche le message.',
-    ],
     erreurs: [
       ['TS2339 : Property title does not exist on type Promise<Offer>', 'Il manque `await`. TypeScript peut l’indiquer avec TS2801 : « Did you forget to use await? ».'],
       ['TS1308 : `await` hors d’une fonction async', 'Ajoute `async` à la fonction ou utilise un module avec `await` de premier niveau.'],
@@ -196,11 +180,6 @@ export const MODULE5 = {
       ['27', 'Affiche `[ true, true ]`.'],
       ['29', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Les deux fonctions sont appelées : leurs minuteurs démarrent en même temps.',
-      '`await Promise.all` attend environ 10 ms, et non 20 ms.',
-      'Le programme affiche `Logo boutique — Awa Sagbo`, puis `[ true, true ]`.',
-    ],
     erreurs: [
       ['TS2339 : propriété sur la mauvaise position', '`offer.fullName` est refusé, car `offer` est une `Offer`. Vérifie l’ordre de la déstructuration.'],
       ['Promesse oubliée', 'Sans `await`, on déstructure la promesse et non le résultat : TypeScript le refuse (TS2488).'],
@@ -252,12 +231,6 @@ export const MODULE5 = {
       ['16-18', 'Le `catch` affiche `Délai dépassé (20 ms)`.'],
       ['20', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Première course : `delay(5, ...)` finit avant le délai de 50 ms, et sa valeur est affichée.',
-      'Le minuteur de 50 ms est annulé par `finally`.',
-      'Deuxième course : le minuteur de 20 ms finit avant `delay(200, ...)`.',
-      'La promesse est rejetée, et le `catch` affiche le message.',
-    ],
     erreurs: [
       ['TS2454 ou `undefined` sur `timer`', '`timer` est affecté dans un rappel : il doit accepter `undefined` à sa déclaration. `clearTimeout(undefined)` reste sans effet.'],
       ['TS2322 : type de minuteur', '`let timer: number` échoue sous Node. `ReturnType<typeof setTimeout>` convient partout.'],
@@ -308,12 +281,6 @@ export const MODULE5 = {
       ['17', '`T` est déduit comme `Offer`.'],
       ['18-19', '`items[0]` est `Offer | undefined`, d’où `?.title`.'],
       ['21', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      'Pour la page 2 de taille 3, `start` vaut 3 : `slice(3, 6)` donne `[4, 5, 6]`.',
-      'L’objet est affiché avec `total: 7`.',
-      'Pour les offres, la page 1 de taille 2 contient `Logo` et `Affiche`.',
-      'Le programme affiche `Logo / 3 offres`.',
     ],
     erreurs: [
       ['TS2314 : Generic type requires 1 type argument', '`const p: Page = ...` est refusé. Écris `Page<Offer>`.'],
@@ -367,12 +334,6 @@ export const MODULE5 = {
       ['18', 'Le repli s’applique au tableau vide, pas au tableau rempli.'],
       ['20', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`first` et `last` sur `[10, 20, 30]` affichent `10 30`.',
-      'Sur les textes, le programme affiche `ab`.',
-      'Sur `empty`, il affiche `undefined undefined`.',
-      '`firstOr` affiche `par défaut x`.',
-    ],
     erreurs: [
       ['TS2322 : `T | undefined` vers `T`', '`function first<T>(items: T[]): T { return items[0]; }` est refusé. Ajoute `| undefined` au retour ou un repli.'],
       ['TS2339 : `push` sur `readonly`', 'Un tableau `readonly T[]` ne peut pas être modifié dans la fonction.'],
@@ -425,12 +386,6 @@ export const MODULE5 = {
       ['16', 'Un identifiant inconnu : affiche `undefined`.'],
       ['18-19', 'Un nombre n’a pas d’`id` : erreur attendue.'],
       ['21', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`findById(offers, "o2")` trouve `Affiche`.',
-      '`findById(collaborators, "c1")` trouve `Awa Sagbo`.',
-      '`findById(offers, "o9")` ne trouve rien et affiche `undefined`.',
-      'Le dernier appel s’exécute aussi, mais son résultat n’est pas affiché.',
     ],
     erreurs: [
       ['TS2339 : Property id does not exist on type T', 'Sans contrainte, `item.id` est refusé. Ajoute `extends { id: string }`.'],
@@ -490,12 +445,6 @@ export const MODULE5 = {
       ['32', 'Ferme la boucle.'],
       ['34', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`t1` crée la boîte `draft`.',
-      '`t2` crée `published`, puis `t3` s’y ajoute.',
-      '`t4` crée `closed`, puis `t5` rejoint `published`.',
-      'La boucle affiche chaque statut, le nombre de tâches et leurs noms.',
-    ],
     erreurs: [
       ['TS2739 : champs manquants avec `Record`', '`const groups: Record<K, T[]> = {}` est refusé. `Partial` autorise l’objet vide.'],
       ['TS18048 : boîte peut-être absente', '`groups[key].push(item)` est refusé. Teste d’abord `group === undefined`.'],
@@ -554,12 +503,6 @@ export const MODULE5 = {
       ['33-34', 'Avec la réponse invalide, `parseOffer` lève une erreur.'],
       ['35-37', 'Affiche le message d’erreur.'],
       ['39', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`goodFetcher` renvoie un objet valide.',
-      '`parseOffer` le valide : le programme affiche `Logo 75000`.',
-      '`badFetcher` renvoie un budget `"75000"`.',
-      'La validation échoue, et le `catch` affiche le message.',
     ],
     erreurs: [
       ['TS18046 : raw is of type unknown', 'Tu lis `raw.id` sans validation. Passe par `parseOffer`.'],

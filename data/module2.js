@@ -18,12 +18,6 @@ export const MODULE2 = {
       ['24', 'Affiche le tarif : `dailyRate` existe, car `awa` est une `Freelancer`.'],
       ['26', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Les interfaces disparaissent à la compilation : il ne reste que les valeurs.',
-      '`awa` est créée avec ses quatre champs.',
-      '`describe(awa)` lit le nom et les compétences, et le résultat est affiché.',
-      'La dernière ligne affiche le tarif journalier.',
-    ],
     erreurs: [
       ['TS2741 : Property is missing', 'Un `Freelancer` sans `dailyRate` est refusé. Ajoute le champ manquant.'],
       ['TS2339 : Property does not exist', 'Dans `describe`, `c.dailyRate` est refusé, car `Collaborator` n’a pas ce champ. Change le type du paramètre si tu en as besoin.'],
@@ -77,11 +71,6 @@ export const MODULE2 = {
       ['25', 'Utilise `missing` pour éviter un avertissement.'],
       ['27', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`task` est créée, puis `createdAt` est réaffecté à l’exécution : `readonly` n’existe qu’à la compilation.',
-      'Le premier appel affiche `Flyer : (aucune description)`.',
-      'Le second reçoit une copie enrichie et affiche la description.',
-    ],
     erreurs: [
       ['TS2540 : Cannot assign to read-only property', 'Tu modifies un champ `readonly`. Crée plutôt un nouvel objet avec `{ ...task }` si un changement est nécessaire.'],
       ['TS2741 : Property is missing', 'Avec `description: string | undefined`, écris `description: undefined` explicitement.'],
@@ -130,12 +119,6 @@ export const MODULE2 = {
       ['17-18', 'Affiche l’objet `config`, puis la devise.'],
       ['19', 'À l’exécution, `incomplete` existe avec une seule clé : `apiUrl`.'],
       ['21', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      'À la compilation, les deux `AppConfig` fusionnent en un seul type à deux champs.',
-      '`console.log(config)` affiche l’objet complet.',
-      '`console.log(currency)` affiche `XOF`.',
-      '`Object.keys(incomplete)` affiche `[ \'apiUrl\' ]`, car le type n’a aucun effet à l’exécution.',
     ],
     erreurs: [
       ['Erreur de syntaxe sur `interface Currency = ...`', 'Une interface ne peut pas nommer une union. Utilise `type Currency = "XOF" | "EUR";`.'],
@@ -192,13 +175,6 @@ export const MODULE2 = {
       ['26-28', 'Si une erreur survient, récupère son message. `instanceof Error` est nécessaire car `error` est `unknown`.'],
       ['29-30', 'Ferme le `catch` et la boucle.'],
       ['32', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`75000` est un nombre valide : il est renvoyé.',
-      '`"75 000"` et `" 120000 "` sont nettoyés puis convertis.',
-      '`""`, `"abc"`, `-5` et `null` sont rejetés.',
-      '`NaN` est rejeté. Il s’affiche `null`, car `JSON.stringify(NaN)` donne `null`.',
-      '`"50 000"` (espace insécable) est nettoyé et donne `50000`.',
     ],
     erreurs: [
       ['TS18046 : value is of type unknown', '`input.trim()` est refusé sans test. Écris d’abord `if (typeof input === "string")`.'],
@@ -257,12 +233,6 @@ export const MODULE2 = {
       ['21-22', 'Ferme le `catch` et la boucle.'],
       ['24', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`{ title: " Logo " }` passe les quatre tests : le titre devient `"Logo"`.',
-      '`{}` échoue au test `in`.',
-      '`null` échoue au test `!== null`.',
-      '`{ title: 42 }` échoue au test `typeof payload.title === "string"`.',
-    ],
     erreurs: [
       ['TS18046 : payload is of type unknown', 'Tu lis `payload.title` sans contrôle. Ajoute les tests de type.'],
       ['TS18047 : possibly null', 'Après `typeof payload === "object"`, le type inclut encore `null`. Ajoute `payload !== null`.'],
@@ -311,11 +281,6 @@ export const MODULE2 = {
       ['11-12', 'Sans budget : `fail` lève une erreur, capturée par `try`.'],
       ['13-15', 'Affiche le message d’erreur, puis ferme le `catch`.'],
       ['17', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`requireBudget({ budget: 50_000 })` : `??` garde 50000 et `fail` n’est pas appelée.',
-      '`requireBudget({})` : `budget` vaut `undefined`, donc `fail` s’exécute et lève l’erreur.',
-      'Le `catch` affiche `budget manquant`.',
     ],
     erreurs: [
       ['TS2534 : fonction never avec un point de fin atteignable', 'Une fonction annotée `never` ne doit pas pouvoir se terminer. Elle doit lever une erreur ou boucler.'],
@@ -367,12 +332,6 @@ export const MODULE2 = {
       ['16-18', 'Le test rétrécit `draft` en `string`, ce qui permet `toUpperCase()`.'],
       ['20', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`getLabel` affiche `Brouillon`, puis `Inconnu`.',
-      'La ligne 11 s’exécute sans problème, car la clé `draft` existe. Son résultat est ignoré.',
-      'Le `?.` affiche `BROUILLON`.',
-      'Le test `!== undefined` passe : `BROUILLON` est affiché une seconde fois.',
-    ],
     erreurs: [
       ['TS18048 ou TS2532 : possibly undefined', '`labels["draft"].toUpperCase()` est refusé. Le commentaire de l’exercice cite TS18048 ; selon la version du compilateur, le code affiché peut être TS2532. Utilise `?.` ou teste la valeur.'],
       ['TS2322 : `string | undefined` vers `string`', '`const x: string = labels["draft"];` est refusé. Ajoute `?? "repli"`.'],
@@ -418,11 +377,6 @@ export const MODULE2 = {
       ['18-19', '`"finished"` ne fait pas partie de l’union : erreur attendue. L’affectation a tout de même lieu à l’exécution.'],
       ['21', 'Affiche trois résultats de `isFinal`, puis la valeur de `status`.'],
       ['23', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`status` vaut d’abord `draft`, puis `finished` à l’exécution.',
-      '`isFinal("closed")` donne `true`, `isFinal("draft")` donne `false`, `isFinal("cancelled")` donne `true`.',
-      'Le programme affiche ces valeurs, suivies de `finished`.',
     ],
     erreurs: [
       ['TS2322 : Type "finished" is not assignable', 'La valeur n’est pas dans l’union. Corrige-la, ou ajoute le statut au type si c’est voulu.'],
@@ -473,11 +427,6 @@ export const MODULE2 = {
       ['15', 'Cas `Date`.'],
       ['17', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`null` : le premier `if` renvoie `Sans échéance`.',
-      '`"2026-11-30"` : le deuxième `if` affiche `30/11/2026`.',
-      '`new Date("2027-01-05")` : la dernière ligne affiche `05/01/2027`.',
-    ],
     noteSortie: 'Les dates dépendent du fuseau horaire. Comme l’indique le document, le résultat affiché correspond à `TZ=UTC`.',
     erreurs: [
       ['TS18047 : possibly null', '`deadline.toLocaleDateString()` sans test est refusé. Traite d’abord le cas `null`.'],
@@ -523,11 +472,6 @@ export const MODULE2 = {
       ['5-6', 'Branche texte : met en majuscules, puis ferme la fonction.'],
       ['8', '`42` devient `00042`, `"ab1"` devient `AB1`. `123456` dépasse 5 chiffres et reste inchangé.'],
       ['10', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`padId(42)` : branche nombre, `"42"` devient `"00042"`.',
-      '`padId("ab1")` : branche texte, résultat `AB1`.',
-      '`padId(123456)` : `padStart` n’a rien à ajouter, résultat `123456`.',
     ],
     erreurs: [
       ['TS2339 : méthode absente sur l’union', '`id.toUpperCase()` sans test est refusé, car `number` n’a pas cette méthode. Teste d’abord le type.'],

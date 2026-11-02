@@ -16,15 +16,27 @@ await import("../js/ts-core.js");
 const { TsCore } = globalThis;
 const libs = JSON.parse(readFileSync(join(racine, "vendor", "ts-libs.json"), "utf8"));
 const { EXERCICES } = await import("../data/index.js");
+const { definition, GLOSSAIRE, cleMot } = await import("../data/glossaire.js");
+const { MOTS_NOUVEAUX } = await import("../data/mots.js");
+const { extraireMots } = await import("../js/mots-code.js");
 const { creerCompilateur, executer, corriger } = TsCore;
 const compilateur = creerCompilateur(ts, libs);
 
 const seul = process.argv[2] ? Number(process.argv[2]) : null;
 const problemes = [];
 const FORMATS = ["choix", "multi", "vf", "prediction", "erreur", "completer"];
-const CHAMPS = ["objectif", "simple", "lignes", "deroulement", "erreurs", "retenir", "quiz", "pratique", "notion"];
+const CHAMPS = ["objectif", "simple", "lignes", "erreurs", "retenir", "quiz", "pratique", "notion"];
 const ecrire = (args) => args.map((a) => (typeof a === "string" ? a : inspect(a))).join(" ");
-const stats = { questions: 0, predictions: 0, erreurs: 0 };
+const stats = { questions: 0, predictions: 0, erreurs: 0, mots: 0 };
+const motsUtilises = new Set();
+const motsDejaVus = new Set();
+
+function controlerMots(code, signaler, origine) {
+  for (const mot of extraireMots(ts, code)) {
+    motsUtilises.add(cleMot(mot));
+    if (!definition(mot)) signaler(`mot sans explication (${origine}) : ${mot}`);
+  }
+}
 const formatsVus = new Set();
 
 function plage(spec) {
@@ -39,6 +51,12 @@ for (const ex of EXERCICES) {
 
   for (const champ of CHAMPS) if (!ex[champ] || ex[champ].length === 0) signaler(`champ absent : ${champ}`);
   if (!ex.lignes) continue;
+
+  controlerMots(ex.ts, signaler, "cours");
+  const attendus = extraireMots(ts, ex.ts).filter((mot) => !motsDejaVus.has(mot));
+  attendus.forEach((mot) => motsDejaVus.add(mot));
+  stats.mots += attendus.length;
+  if (!seul && JSON.stringify(attendus) !== JSON.stringify(MOTS_NOUVEAUX[ex.id])) signaler("data/mots.js n'est pas à jour");
 
   const lignes = ex.ts.split("\n");
   const couvertes = new Map();
@@ -70,6 +88,7 @@ for (const ex of EXERCICES) {
     if (q.t === "multi" && (!Array.isArray(q.a) || q.a.length < 2 || q.a.some((a) => !q.o[a]))) signaler(`${nom} : réponses multiples invalides`);
     if (q.t === "vf" && typeof q.a !== "boolean") signaler(`${nom} : vrai/faux invalide`);
     if (q.t === "completer" && (!q.r?.length || !q.code?.includes("___"))) signaler(`${nom} : complétion invalide`);
+    if (q.code) controlerMots(q.t === "completer" ? q.code.replace(/___/g, q.r[0]) : q.code, signaler, nom);
     if (q.o && new Set(q.o).size !== q.o.length) signaler(`${nom} : options en double`);
 
     if (q.t === "prediction") {
@@ -102,6 +121,8 @@ for (const ex of EXERCICES) {
 
   const p = ex.pratique;
   if (p) {
+    controlerMots(p.depart, signaler, "départ de la pratique");
+    controlerMots(p.solution, signaler, "solution de la pratique");
     const sol = await corriger(ts, compilateur, p.solution, p, ecrire);
     if (!sol.reussi) {
       const detail = [
@@ -120,7 +141,11 @@ for (const ex of EXERCICES) {
 
 for (const f of FORMATS) if (!seul && !formatsVus.has(f)) problemes.push(`format jamais utilisé : ${f}`);
 
-console.log(`${stats.questions} questions, ${stats.predictions} prédictions exécutées, ${stats.erreurs} erreurs compilées`);
+if (!seul) {
+  for (const cle of Object.keys(GLOSSAIRE)) if (!motsUtilises.has(cle)) problemes.push(`explication inutile : ${cle}`);
+}
+
+console.log(`${stats.questions} questions, ${stats.predictions} prédictions exécutées, ${stats.erreurs} erreurs compilées, ${stats.mots} mots nouveaux`);
 if (problemes.length) {
   console.log(`\n${problemes.length} problème(s) :`);
   for (const p of problemes) console.log(" -", p);

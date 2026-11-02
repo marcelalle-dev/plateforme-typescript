@@ -19,12 +19,6 @@ export const MODULE3 = {
       ['17', 'Un nombre, qui n’entre dans aucun test : affiche `Erreur inconnue`.'],
       ['19', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`new Error("réseau")` passe le premier test.',
-      '`"timeout"` échoue au premier et passe le deuxième.',
-      '`new Date(0)` passe le troisième test.',
-      '`42` n’en passe aucun et atteint le dernier `return`.',
-    ],
     erreurs: [
       ['TS18046 : error is of type unknown', '`error.message` est refusé sans test. Écris `if (error instanceof Error)`.'],
       ['TS2358 : instanceof sur une primitive', 'Le côté gauche de `instanceof` doit pouvoir être un objet. `"abc" instanceof Error` n’a aucun sens.'],
@@ -74,10 +68,6 @@ export const MODULE3 = {
       ['14', 'Avec une candidature : la seconde branche s’exécute.'],
       ['16', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Le premier objet contient `budget` : le test `in` est vrai et l’offre est décrite.',
-      'Le second n’en contient pas : la candidature est décrite.',
-    ],
     erreurs: [
       ['TS2339 : Property does not exist', '`item.budget` sans test est refusé, car `Application` n’a pas ce champ.'],
       ['Choisir une clé commune', 'Si les deux types ont la clé testée, `in` ne les distingue pas. Choisis une clé propre à un seul type.'],
@@ -124,11 +114,6 @@ export const MODULE3 = {
       ['12', 'Applique la version `||` à chaque valeur et joint les résultats.'],
       ['13', 'Applique la version `??` à chaque valeur.'],
       ['15', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      'La première ligne montre les entrées : `50000 0 null undefined`.',
-      'Avec `||`, seul 50000 reste : `0`, `null` et `undefined` donnent `Sur devis`.',
-      'Avec `??`, 50000 et 0 restent : `null` et `undefined` donnent `Sur devis`.',
     ],
     erreurs: [
       ['Bug logique sans erreur de compilation', '`budget || "Sur devis"` compile mais efface le 0. Utilise `??` quand 0 est une valeur valide.'],
@@ -189,11 +174,6 @@ export const MODULE3 = {
       ['25', 'Exemple de paiement remboursé.'],
       ['27', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'Le premier paiement a le statut `held` : la référence `KKP-123` est affichée.',
-      'Le deuxième a le statut `released` : la commission de 5000 XOF est affichée.',
-      'Le troisième a le statut `refunded` : le motif `litige` est affiché.',
-    ],
     erreurs: [
       ['TS2339 : Property does not exist', 'Tu lis un champ d’un autre état, comme `providerRef` dans `pending`. Place la lecture dans le bon `case`.'],
       ['TS2322 : objet incompatible', 'Un `status` donné impose ses champs. `{ status: "held", amount: 1 }` manque de `heldAt` et `providerRef`.'],
@@ -253,12 +233,6 @@ export const MODULE3 = {
       ['53-55', 'Affiche le message d’erreur, qui contient le paiement sérialisé.'],
       ['57', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`label` traite `failed` et renvoie `Échec (CARD_DECLINED)`.',
-      '`label` traite `held` et renvoie `Bloqué`.',
-      '`labelMissingCase` atteint le `default` avec `failed` : `assertNever` lève une erreur.',
-      'Le `catch` affiche `Cas non traité : ...`.',
-    ],
     erreurs: [
       ['TS2345 : argument non assignable à `never`', 'Un cas n’est pas traité : le message indique lequel. Ajoute le `case` manquant.'],
       ['TS2366 sans `default`', 'Sans `default`, un `switch` incomplet peut laisser la fonction sans `return`. `assertNever` rend le message plus clair.'],
@@ -317,11 +291,6 @@ export const MODULE3 = {
       ['71', '`map(badgeColor)` transforme chaque statut en couleur.'],
       ['73', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      'La première ligne affiche les dix statuts.',
-      '`map` applique `badgeColor` à chacun.',
-      'La seconde ligne affiche : six `grey`, deux `green`, un `orange`, un `grey`.',
-    ],
     erreurs: [
       ['TS2322 : Type "archived" is not assignable to type never', 'Un statut n’est pas traité. Ajoute son `case`.'],
       ['TS7029 : passage involontaire au cas suivant', '`noFallthroughCasesInSwitch` refuse un `case` non vide sans `return` ou `break`. Les `case` vides regroupés restent autorisés.'],
@@ -372,11 +341,6 @@ export const MODULE3 = {
       ['26', 'Une réponse de type `unknown`.'],
       ['27-30', 'Dans le `if`, `response` est une `ApiError` : ses champs sont utilisables.'],
       ['32', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`null`, `"oops"`, `{ error: "x" }` et `{ statusCode: 500 }` échouent à l’un des tests.',
-      '`{ error: "Introuvable", statusCode: 404 }` réussit : `true`.',
-      'Dans le `if`, le programme affiche `Erreur 404 : Introuvable`.',
     ],
     erreurs: [
       ['TS18046 : unknown sans garde', 'Sans prédicat, `response.error` reste refusé. Utilise `isApiError` dans un `if`.'],
@@ -430,11 +394,6 @@ export const MODULE3 = {
       ['15', '`null` : `(aucune)`.'],
       ['17', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`["Figma", "Illustrator"]` passe la garde : `Figma, Illustrator`.',
-      '`["Figma", 42]` échoue à `every` à cause de 42.',
-      '`"Figma"` et `null` échouent à `Array.isArray`.',
-    ],
     erreurs: [
       ['Garde incomplète', '`Array.isArray(value)` seul ne garantit pas un `string[]`. Ajoute `every`.'],
       ['TS18046 : unknown', '`input.join` est refusé sans garde. Passe par `isStringArray`.'],
@@ -487,11 +446,6 @@ export const MODULE3 = {
       ['17', 'Affiche les identifiants filtrés, puis `true`.'],
       ['19', 'Fait du fichier un module.'],
     ],
-    deroulement: [
-      '`filter` appelle `isDefined` sur chaque élément.',
-      'Les valeurs `undefined` sont retirées.',
-      'Le programme affiche `[ \'a1\', \'b2\', \'c3\' ] true`.',
-    ],
     erreurs: [
       ['TS2344 : `Expect` échoue', 'Si le type n’est pas exactement celui attendu, `Expect<Equal<...>>` échoue. Vérifie le prédicat de la garde.'],
       ['TS18048 après un filtre', 'Si le type du tableau reste `(string | undefined)[]`, les éléments doivent encore être traités. Passe une garde à `filter`.'],
@@ -543,11 +497,6 @@ export const MODULE3 = {
       ['24-25', 'Avec un budget texte : l’assertion lève une erreur.'],
       ['26-28', 'Affiche le message d’erreur.'],
       ['30', 'Fait du fichier un module.'],
-    ],
-    deroulement: [
-      '`handle({ id: "off_1", budget: 75_000 })` passe l’assertion : le programme affiche `Offre off_1 : 75000 XOF`.',
-      'Le second appel échoue car `budget` vaut `"beaucoup"`.',
-      'Le `catch` affiche `Offre invalide`.',
     ],
     erreurs: [
       ['TS2775 : assertion sur une fonction non annotée', 'Une fonction fléchée utilisée comme assertion doit avoir une annotation explicite. Une déclaration `function` évite ce problème.'],
