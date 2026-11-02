@@ -1,5 +1,6 @@
 // Tableau de bord, modules, liste des exercices et progression.
 import { EXERCICES, MODULES, NIVEAUX } from "../data/index.js";
+import { etatCompte } from "./compte.js";
 import { notionsFragiles } from "./notions.js";
 import { etatCase, h, legendeGrille, noteTexte, riche } from "./ui.js";
 import * as store from "./store.js";
@@ -255,7 +256,10 @@ export function vueProgression(naviguer) {
         : h("p", { class: "vide" }, "Aucun quiz terminé pour le moment.")),
     h("section", { class: "section" },
       h("h2", {}, "Sauvegarde"),
-      riche("p", "Votre progression est enregistrée dans ce navigateur, sur cet appareil."),
+      etatCompte().session
+        ? h("p", {}, "Votre progression est enregistrée dans ce navigateur et dans votre compte. ", h("a", { href: "#/compte" }, "Voir mon compte"))
+        : h("p", {}, "Votre progression est enregistrée dans ce navigateur, sur cet appareil. ",
+          etatCompte().actif ? h("a", { href: "#/compte" }, "Créer un compte pour la retrouver partout") : null),
       store.stockageDisponible() ? null : h("p", { class: "explication", "data-etat": "faux" }, "Le stockage local est bloqué : votre progression sera perdue à la fermeture de la page."),
       zoneReset),
   ];

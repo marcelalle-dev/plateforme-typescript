@@ -237,6 +237,25 @@ code { font: 500 0.88em/1.4 var(--mono); background: color-mix(in srgb, var(--ts
 .rappel a { color: inherit; }
 .section-courte { margin-bottom: 24px; }
 
+/* Accès */
+.bandeau-essai { margin: 0 0 22px; padding: 8px 12px; border-radius: 6px; background: var(--surface); border-left: 5px solid var(--marqueur); font-size: 0.93rem; }
+body.verrou .cadre { display: block; }
+body.verrou .rail, body.verrou .onglets { display: none; }
+body.verrou .principal { margin-inline: auto; max-width: 560px; }
+
+/* Compte */
+.bloc-compte { max-width: 460px; }
+.formulaire { display: grid; grid-template-columns: minmax(0, 1fr); gap: 13px; justify-items: start; margin-top: 12px; }
+.champ { display: grid; gap: 4px; width: 100%; font-size: 0.95rem; font-weight: 700; }
+.champ input { min-height: 44px; width: 100%; padding: 8px 10px; border: 1.5px solid var(--trait); border-radius: 6px; background: var(--surface); color: var(--encre); font: 400 1rem var(--texte); }
+.message-form { margin: 0; min-height: 1.4em; }
+.message-form[data-etat="juste"] { color: var(--juste); font-weight: 700; }
+.message-form[data-etat="faux"] { color: var(--faux); font-weight: 700; }
+.liens-form { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-top: 14px; }
+.lien { min-height: 36px; padding: 0; border: 0; background: none; color: var(--ts-fort); font: inherit; text-decoration: underline; cursor: pointer; }
+.note-donnees { margin-top: 14px; font-size: 0.95rem; }
+.note-donnees summary { cursor: pointer; font-weight: 700; min-height: 32px; }
+
 /* Quiz */
 .quiz { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; max-width: 800px; }
 .question { border: 0; margin: 0; padding: 0 0 26px; border-bottom: 1px solid var(--trait); min-width: 0; }

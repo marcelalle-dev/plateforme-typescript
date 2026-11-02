@@ -1,4 +1,5 @@
 // Sauvegarde locale de la progression (localStorage).
+import { fusionnerProgressions } from "./fusion.js";
 import { SEUIL_VALIDATION } from "./quiz-core.js";
 
 const CLE = "ts50.progression.v1";
@@ -23,13 +24,44 @@ function lire() {
   return { exercices: {}, dernier: null };
 }
 
-function ecrire() {
+let surModif = null;
+
+function sauvegarder() {
   try {
     localStorage.setItem(CLE, JSON.stringify(memoire));
     return true;
   } catch {
     return false;
   }
+}
+
+function ecrire(detail = {}) {
+  const ok = sauvegarder();
+  surModif?.(detail);
+  return ok;
+}
+
+export function surModification(fn) {
+  surModif = fn;
+}
+
+export function exporter() {
+  return memoire;
+}
+
+// Intègre la progression du compte ; indique si cet appareil a appris quelque chose.
+export function integrer(distant) {
+  const avant = JSON.stringify(memoire);
+  memoire = fusionnerProgressions(memoire, distant);
+  const change = JSON.stringify(memoire) !== avant;
+  if (change) sauvegarder();
+  return change;
+}
+
+// Retire la progression de cet appareil, sans toucher au compte.
+export function oublier() {
+  memoire = { exercices: {}, dernier: null };
+  sauvegarder();
 }
 
 export function stockageDisponible() {
@@ -53,7 +85,7 @@ function creer(id) {
 
 export function marquerVisite(id) {
   memoire.dernier = id;
-  ecrire();
+  sauvegarder();
 }
 
 export function dernierVisite() {
@@ -129,7 +161,7 @@ export function effacerBrouillon(id) {
 
 export function reinitialiser() {
   memoire = { exercices: {}, dernier: null };
-  ecrire();
+  ecrire({ remplacer: true });
 }
 
 // Statistiques de la page de progression.

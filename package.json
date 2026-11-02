@@ -10,6 +10,10 @@
     "verifier": "node outils/verifier.mjs",
     "sources": "node outils/generer-sources.mjs",
     "mots": "node outils/generer-mots.mjs",
-    "traces": "node outils/generer-traces.mjs"
+    "traces": "node outils/generer-traces.mjs",
+    "test:fusion": "node outils/test-fusion.mjs"
+  },
+  "devDependencies": {
+    "supabase": "^2.122.0"
   }
 }
