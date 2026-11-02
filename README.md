@@ -28,15 +28,17 @@ Le terminal affiche l'adresse à ouvrir sur le téléphone. La progression est e
 
 ## Ce que contient chaque exercice
 
-1. **Cours** : objectif, explication simple, mots nouveaux, code original, explication ligne par ligne, résultat attendu, erreurs fréquentes et points à retenir.
+1. **Cours** : objectif, explication simple, code original modifiable, mots nouveaux, explication ligne par ligne, exécution pas à pas, résultat attendu, erreurs fréquentes, points à retenir et liens avec les autres exercices.
 2. **Quiz** : 6 questions dans plusieurs formats, un score sur 10 et une explication pour chaque correction. L'exercice est validé à partir de 8/10.
-3. **Pratique** : un éditeur intégré, avec une vraie compilation TypeScript stricte et des tests automatiques. La correction devient disponible après un premier essai.
+3. **Pratique** : un éditeur intégré, avec une vraie compilation TypeScript stricte et des tests automatiques. Les erreurs sont expliquées en français. La correction devient disponible après un premier essai.
+
+La plateforme propose aussi une page sur les bases de JavaScript, un résumé et un quiz par module, la reprise des questions ratées, et des révisions espacées.
 
 ## D'où viennent les contenus
 
 - `data/sources.js` est généré par un script, sans recopie manuelle : le TypeScript vient de `../src/exerciceNN.ts`, le JavaScript, les titres et les niveaux viennent de `../docs/*.docx`, et les résultats viennent de l'exécution réelle de chaque exercice en UTC.
 - `data/module1.js` à `data/module5.js` contiennent le contenu pédagogique rédigé : explications, quiz et exercices pratiques.
-- `data/glossaire.js` explique chaque mot du code, et `data/mots.js`, généré par `node outils/generer-mots.mjs`, indique où chacun apparaît pour la première fois.
+- `data/glossaire.js` explique chaque mot du code, et `data/mots.js`, généré par `node outils/generer-mots.mjs`, indique où chacun apparaît pour la première fois. `data/traces.js`, généré par `TZ=UTC node outils/generer-traces.mjs`, contient l'exécution réelle de chaque exercice, étape par étape.
 
 Ce dépôt contient le fichier `data/sources.js` déjà généré. Pour le régénérer avec `npm run sources`, le dossier du projet doit se trouver à côté des dossiers `src/` et `docs/` d'origine.
 

@@ -1,5 +1,7 @@
 // Explication de chaque mot présent dans le code des exercices, des quiz et de la pratique.
 // outils/verifier.mjs contrôle qu'aucun mot du code ne manque ici.
+import { CONTEXTE } from "./glossaire-contexte.js";
+
 export const GLOSSAIRE = {
   // --- Mots-clés du langage ---
   'function': 'Mot-clé qui déclare une fonction : un bloc de code réutilisable, avec un nom.',
@@ -475,6 +477,7 @@ export const GLOSSAIRE = {
   '"y"': 'Texte d’exemple.',
   '"Carte"': 'Nom de tâche d’exemple.',
 
+  '"Bonjour"': 'Texte d’exemple, en français.',
   // --- Mots des quiz et des exercices pratiques ---
   'netAmount': '« Montant net », après commission.',
   'apply': '« Appliquer ».',
@@ -701,7 +704,8 @@ export function cleMot(mot) {
   return mot.replace(/[  ]/g, " ");
 }
 
-export function definition(mot) {
+export function definition(mot, id) {
   const cle = cleMot(mot);
+  if (id && Object.hasOwn(CONTEXTE, cle) && CONTEXTE[cle][id]) return CONTEXTE[cle][id];
   return Object.hasOwn(GLOSSAIRE, cle) ? GLOSSAIRE[cle] : undefined;
 }

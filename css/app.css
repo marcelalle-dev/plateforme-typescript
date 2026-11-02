@@ -198,6 +198,45 @@ code { font: 500 0.88em/1.4 var(--mono); background: color-mix(in srgb, var(--ts
 .bulle-mot { position: fixed; z-index: 40; display: grid; gap: 4px; max-width: min(340px, calc(100vw - 16px)); padding: 10px 12px; border-radius: 7px; background: var(--encre); color: var(--papier); font-size: 0.93rem; line-height: 1.45; box-shadow: 0 4px 14px rgb(0 0 0 / .28); }
 .bulle-mot code { justify-self: start; background: rgb(255 255 255 / .16); color: inherit; font-weight: 600; }
 
+/* Essai du code */
+.bloc-essai { margin-top: 14px; }
+.bac { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-top: 14px; }
+.bac[hidden] { display: none; }
+.bac-resultat { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+.bac-resultat h3 { margin-bottom: 6px; }
+.essai { margin: 0; padding: 10px 14px; border-left: 5px solid var(--marqueur); background: var(--surface); }
+.diag p { margin: 3px 0; }
+.titre-sortie { margin: 14px 0 6px; font-size: 1rem; }
+
+/* Pas à pas */
+.pas { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: 16px; align-items: start; }
+.pas-code { max-height: 460px; overflow: auto; position: relative; padding: 10px 0; }
+.pas-code code { display: block; white-space: normal; }
+.pas-ligne { padding: 0 12px; white-space: pre; min-width: max-content; border-left: 4px solid transparent; }
+.pas-ligne.active { background: rgb(245 195 59 / .22); border-left-color: var(--marqueur); }
+.pas-panneau { display: grid; grid-template-columns: minmax(0, 1fr); gap: 9px; min-width: 0; }
+.pas-panneau h3 { margin-top: 6px; font-size: 1rem; }
+.pas-phrase { margin: 0; min-height: 3.2em; }
+.pas-phrase span:first-child { font-weight: 700; }
+.pas-actions { margin-top: 0; }
+.pas-actions .bouton { padding: 7px 12px; min-height: 40px; font-size: 0.93rem; }
+.pas-variables { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.pas-var { display: grid; grid-template-columns: minmax(0, 34%) minmax(0, 1fr); gap: 8px; padding: 4px 8px; border-radius: 5px; background: var(--surface); font: 450 0.85rem/1.45 var(--mono); }
+.pas-var span { overflow-wrap: anywhere; }
+.pas-var code { overflow-wrap: anywhere; }
+.pas-var.change { background: var(--marqueur); color: var(--sur-marqueur); }
+.pas-var.change code { background: transparent; }
+.pas-sortie { max-height: 170px; overflow: auto; font-size: 0.82rem; }
+
+/* Compléments */
+.approfondir { padding: 16px 18px; background: var(--surface); border-radius: 8px; }
+.approfondir p:last-child { margin-bottom: 0; }
+.liste-simple { margin: 0; padding-left: 1.1em; }
+.liste-simple li { margin-bottom: 6px; }
+.rappel { margin: 0 0 18px; padding: 10px 14px; background: var(--marqueur); color: var(--sur-marqueur); border-radius: 7px; font-weight: 700; }
+.rappel a { color: inherit; }
+.section-courte { margin-bottom: 24px; }
+
 /* Quiz */
 .quiz { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; max-width: 800px; }
 .question { border: 0; margin: 0; padding: 0 0 26px; border-bottom: 1px solid var(--trait); min-width: 0; }
@@ -277,10 +316,11 @@ table.scores td.n { font-family: var(--mono); white-space: nowrap; }
   .cadre { display: block; }
   .rail { display: none; }
   .principal { padding: 24px 16px 96px; }
-  .onglets { position: fixed; inset: auto 0 0 0; z-index: 20; display: grid; grid-template-columns: repeat(4, 1fr); background: var(--surface); border-top: 1px solid var(--trait); padding-bottom: env(safe-area-inset-bottom); }
+  .onglets { position: fixed; inset: auto 0 0 0; z-index: 20; display: grid; grid-template-columns: repeat(5, 1fr); background: var(--surface); border-top: 1px solid var(--trait); padding-bottom: env(safe-area-inset-bottom); }
   .onglets a { display: grid; place-items: center; min-height: 56px; padding: 6px 2px; text-align: center; color: var(--encre-douce); font-size: 0.85rem; font-weight: 700; line-height: 1.15; text-decoration: none; }
   .onglets a[aria-current="page"] { color: var(--ts-fort); box-shadow: inset 0 3px 0 var(--ts); }
-  .bloc-module, .deux { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .bloc-module, .deux, .pas { grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .pas-code { max-height: 300px; }
   .annote-ligne { grid-template-columns: minmax(0, 1fr); }
   .lexique { grid-template-columns: minmax(0, 34%) minmax(0, 1fr); font-size: 0.96rem; }
   .lexique dt, .lexique dd { padding-block: 6px; }

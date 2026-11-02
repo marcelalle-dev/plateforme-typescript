@@ -65,7 +65,11 @@ export function vueTableau() {
   const st = store.statistiques(EXERCICES);
   const prochain = prochainExercice();
   const reprise = prochain ? pointDeReprise(prochain) : null;
+  const dues = store.aReviser(EXERCICES).length;
   return [
+    dues
+      ? h("p", { class: "rappel" }, h("a", { href: "#/revisions" }, `${dues} exercice${dues > 1 ? "s" : ""} à réviser aujourd’hui`))
+      : null,
     h("div", { class: "accueil" },
       h("div", {},
         prochain
@@ -76,7 +80,7 @@ export function vueTableau() {
           : h("p", { class: "intro" }, "Vous pouvez refaire n’importe quel quiz pour améliorer votre score."),
         h("div", { class: "actions" },
           prochain ? h("a", { class: "bouton fort", href: reprise.lien }, reprise.texte) : null,
-          h("a", { class: "bouton", href: "#/progression" }, "Voir ma progression"))),
+          st.tentes ? h("a", { class: "bouton", href: "#/progression" }, "Voir ma progression") : h("a", { class: "bouton", href: "#/bases" }, "Je débute : voir les bases"))),
       h("div", {},
         grille(EXERCICES, prochain?.id),
         legendeGrille())),
@@ -136,6 +140,11 @@ export function vueModule(module) {
     h("h1", {}, `Module ${module.id} : ${module.nom}`),
     h("p", { class: "sous-titre" }, `Exercices ${nn(module.premier)} à ${nn(module.dernier)}. ${module.resume}`),
     h("ul", { class: "liste-ex section" }, liste.map(ligneExercice)),
+    h("section", { class: "section" },
+      h("h2", {}, "L’essentiel du module"),
+      h("ul", { class: "retenir" }, liste.map((e) => h("li", {},
+        h("a", { href: `#/exercice/${e.id}` }, `Exercice ${nn(e.id)}`), " : ", riche("span", e.retenir[0])))),
+      h("div", { class: "actions" }, h("a", { class: "bouton fort", href: `#/revisions/module/${module.id}` }, "Faire le quiz de révision du module"))),
     suivant ? h("div", { class: "actions" }, h("a", { class: "bouton", href: `#/module/${suivant.id}` }, `Voir le module ${suivant.id}`)) : null,
   ];
 }

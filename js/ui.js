@@ -45,8 +45,9 @@ function attribut(texte) {
 function marquer(mot, html, contexte) {
   if (!contexte || !definition(mot)) return html;
   const nouveau = contexte.nouveau(mot);
+  const exercice = contexte.id ? ` data-ex="${contexte.id}"` : "";
   const acces = nouveau ? ' tabindex="0" role="button"' : "";
-  return `<span class="mot${nouveau ? " mot-nouveau" : ""}" data-mot="${attribut(mot)}"${acces}>${html}</span>`;
+  return `<span class="mot${nouveau ? " mot-nouveau" : ""}" data-mot="${attribut(mot)}"${exercice}${acces}>${html}</span>`;
 }
 
 function colorerGabarit(texte, contexte) {

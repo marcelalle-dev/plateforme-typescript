@@ -19,6 +19,10 @@ const { EXERCICES } = await import("../data/index.js");
 const { definition, GLOSSAIRE, cleMot } = await import("../data/glossaire.js");
 const { MOTS_NOUVEAUX } = await import("../data/mots.js");
 const { extraireMots } = await import("../js/mots-code.js");
+const { CONTEXTE } = await import("../data/glossaire-contexte.js");
+const { BASES } = await import("../data/bases.js");
+const { codeTraduit } = await import("../js/erreurs-fr.js");
+const { TRACES } = await import("../data/traces.js");
 const { creerCompilateur, executer, corriger } = TsCore;
 const compilateur = creerCompilateur(ts, libs);
 
@@ -53,6 +57,25 @@ for (const ex of EXERCICES) {
   if (!ex.lignes) continue;
 
   controlerMots(ex.ts, signaler, "cours");
+  const motsExercice = extraireMots(ts, ex.ts);
+  for (const [mot, sens] of Object.entries(CONTEXTE)) {
+    if (sens[ex.id] && !motsExercice.includes(mot)) signaler(`sens particulier d'un mot absent du code : ${mot}`);
+  }
+  if (!ex.essai) signaler("essai du code absent");
+  for (const [lien] of [...(ex.avant ?? []), ...(ex.apres ?? [])]) {
+    if (lien < 1 || lien > 50 || lien === ex.id) signaler(`lien invalide vers l'exercice ${lien}`);
+  }
+  for (const [lien] of ex.avant ?? []) if (lien > ex.id) signaler(`« d'où vient » pointe vers un exercice plus loin : ${lien}`);
+  for (const [lien] of ex.apres ?? []) if (lien < ex.id) signaler(`« où elle resservira » pointe en arrière : ${lien}`);
+  const trace = TRACES[ex.id];
+  if (!trace?.etapes.length) signaler("pas à pas absent");
+  if (trace?.tronque) signaler(`pas à pas tronqué (${trace.total} étapes)`);
+  for (const e of trace?.etapes ?? []) {
+    if (e.l[1] > ex.ts.split("\n").length) signaler("pas à pas : ligne hors du fichier");
+  }
+  for (const [titre] of ex.erreurs ?? []) {
+    for (const m of titre.matchAll(/TS(\d+)/g)) if (!codeTraduit(Number(m[1]))) signaler(`erreur non traduite : TS${m[1]}`);
+  }
   const attendus = extraireMots(ts, ex.ts).filter((mot) => !motsDejaVus.has(mot));
   attendus.forEach((mot) => motsDejaVus.add(mot));
   stats.mots += attendus.length;
@@ -105,6 +128,7 @@ for (const ex of EXERCICES) {
     }
     if (q.t === "erreur" && q.ts) {
       stats.erreurs += 1;
+      if (!codeTraduit(q.ts)) signaler(`${nom} : TS${q.ts} non traduite`);
       const d = compilateur.diagnostiquer(q.code, "");
       if (!d.some((x) => x.code === q.ts)) signaler(`${nom} : TS${q.ts} attendu, obtenu ${d.map((x) => `TS${x.code}`).join(",") || "aucune erreur"}`);
     } else if (q.t === "erreur") {
@@ -134,6 +158,7 @@ for (const ex of EXERCICES) {
       signaler(`solution rejetée : ${detail.join(" | ")}`);
     }
     const dep = await corriger(ts, compilateur, p.depart, p, ecrire);
+    for (const d of dep.diagnostics) if (!codeTraduit(d.code)) signaler(`code de départ : TS${d.code} non traduite (${d.message})`);
     if (dep.reussi) signaler("le code de départ réussit déjà");
     if (!p.enonce || !p.correction || !p.tests?.length) signaler("pratique incomplète");
   }
@@ -142,6 +167,16 @@ for (const ex of EXERCICES) {
 for (const f of FORMATS) if (!seul && !formatsVus.has(f)) problemes.push(`format jamais utilisé : ${f}`);
 
 if (!seul) {
+  for (const [i, b] of BASES.entries()) {
+    const signaler = (texte) => problemes.push(`Bases ${i + 1} : ${texte}`);
+    controlerMots(b.code, signaler, "exemple");
+    const r = await executer(compilateur.transpiler(b.code), [], ecrire);
+    if (r.erreur) signaler(`le code plante : ${r.erreur}`);
+    else if (r.sortie.join("\n") !== b.sortie) signaler(`sortie réelle ${JSON.stringify(r.sortie.join("\n"))}`);
+    const d = compilateur.diagnostiquer(b.code, "");
+    if (d.length && !b.compileMal) signaler(`erreurs de compilation : ${d.map((x) => `TS${x.code}`).join(",")}`);
+    if (!d.length && b.compileMal) signaler("la note annonce une erreur qui n'existe pas");
+  }
   for (const cle of Object.keys(GLOSSAIRE)) if (!motsUtilises.has(cle)) problemes.push(`explication inutile : ${cle}`);
 }
 

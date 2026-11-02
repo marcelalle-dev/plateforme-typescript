@@ -1,5 +1,6 @@
 // Mots du code : quels mots sont nouveaux, et bulle d'explication au clic ou au survol.
 import { definition } from "../data/glossaire.js";
+import { CONTEXTE } from "../data/glossaire-contexte.js";
 import { MOTS_NOUVEAUX } from "../data/mots.js";
 import { enLigne, h, riche } from "./ui.js";
 
@@ -10,12 +11,13 @@ for (const [id, mots] of Object.entries(MOTS_NOUVEAUX)) {
 
 // Dans le cours : les mots qui apparaissent pour la première fois dans cet exercice.
 export function motsDuCours(id) {
-  return { nouveau: (mot) => premierExercice.get(mot) === id };
+  return { id, nouveau: (mot) => premierExercice.get(mot) === id || Boolean(CONTEXTE[mot]?.[id]) };
 }
 
 // Dans le quiz et la pratique : les mots que les cours précédents n'ont pas encore présentés.
 export function motsDeLExercice(id) {
   return {
+    id,
     nouveau: (mot) => {
       const premier = premierExercice.get(mot);
       return premier === undefined || premier > id;
@@ -23,10 +25,17 @@ export function motsDeLExercice(id) {
   };
 }
 
-export function lexique(mots) {
+// Les mots nouveaux de l'exercice, et les mots déjà vus qui prennent ici un sens particulier.
+export function motsAExpliquer(id) {
+  const nouveaux = MOTS_NOUVEAUX[id];
+  const repris = Object.keys(CONTEXTE).filter((mot) => CONTEXTE[mot][id] && !nouveaux.includes(mot));
+  return [...nouveaux, ...repris];
+}
+
+export function lexique(mots, id) {
   return h("dl", { class: "lexique" }, mots.flatMap((mot) => [
     h("dt", {}, h("code", {}, mot)),
-    riche("dd", definition(mot) ?? ""),
+    riche("dd", definition(mot, id) ?? ""),
   ]));
 }
 
@@ -47,7 +56,7 @@ function ouvrir(element) {
   const mot = element.dataset.mot;
   bulle = h("div", { class: "bulle-mot", role: "status" },
     h("code", {}, mot),
-    h("span", { html: enLigne(definition(mot) ?? "") }));
+    h("span", { html: enLigne(definition(mot, Number(element.dataset.ex) || undefined) ?? "") }));
   document.body.append(bulle);
   const zone = element.getBoundingClientRect();
   const largeur = bulle.offsetWidth;

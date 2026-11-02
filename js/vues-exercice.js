@@ -1,8 +1,11 @@
 // Page d’un exercice : cours, quiz et exercice pratique.
 import { EXERCICES, MODULES, NIVEAUX } from "../data/index.js";
-import { MOTS_NOUVEAUX, MOTS_PRATIQUE } from "../data/mots.js";
+import { MOTS_PRATIQUE } from "../data/mots.js";
+import { TRACES } from "../data/traces.js";
+import { bacASable, erreurExecution, listeErreurs, pasAPas, resultatDelai, resultatPanne } from "./composants.js";
 import { creerEditeur } from "./editeur.js";
-import { lexique, motsDeLExercice, motsDuCours } from "./mots-ui.js";
+import { expliquerExecution } from "./erreurs-fr.js";
+import { lexique, motsAExpliquer, motsDeLExercice, motsDuCours } from "./mots-ui.js";
 import { corrigerQuiz, SEUIL_VALIDATION } from "./quiz-core.js";
 import { blocCode, enLigne, h, melanger, noteTexte, riche } from "./ui.js";
 import * as store from "./store.js";
@@ -85,6 +88,19 @@ function ligneParLigne(ex) {
   }));
 }
 
+function liensNotions(ex) {
+  const groupe = (titre, liens) => (liens?.length
+    ? h("div", {},
+      h("h3", {}, titre),
+      h("ul", { class: "liste-simple" }, liens.map(([id, raison]) => h("li", {},
+        h("a", { href: `#/exercice/${id}` }, `Exercice ${nn(id)}`), " : ", riche("span", raison)))))
+    : null);
+  const avant = groupe("D’où vient cette notion", ex.avant);
+  const apres = groupe("Où elle resservira", ex.apres);
+  if (!avant && !apres) return null;
+  return h("section", {}, h("h2", {}, "Le lien avec les autres exercices"), h("div", { class: "deux" }, avant, apres));
+}
+
 export function vueCours(ex) {
   store.marquerVisite(ex.id);
   const { precedent } = voisins(ex);
@@ -93,14 +109,22 @@ export function vueCours(ex) {
     h("div", { class: "cours" },
       h("section", { class: "objectif" }, h("h2", {}, "Objectif"), riche("p", ex.objectif)),
       h("section", {}, h("h2", {}, "Explication simple"), ex.simple.map((p) => riche("p", p))),
+      ex.approfondir
+        ? h("section", { class: "approfondir" }, riche("h2", ex.approfondir.titre), ex.approfondir.textes.map((p) => riche("p", p)))
+        : null,
       h("section", {},
         h("h2", {}, "Code original"),
         h("p", {}, "Les mots soulignés apparaissent pour la première fois. Cliquez sur n’importe quel mot du code, ou survolez-le, pour lire son explication."),
-        coderOriginal(ex)),
+        coderOriginal(ex),
+        bacASable({ code: ex.ts, essai: ex.essai, libelle: `Éditeur d’essai de l’exercice ${nn(ex.id)}` })),
       h("section", {},
-        h("h2", {}, `Mots nouveaux (${MOTS_NOUVEAUX[ex.id].length})`),
-        lexique(MOTS_NOUVEAUX[ex.id])),
+        h("h2", {}, `Mots nouveaux (${motsAExpliquer(ex.id).length})`),
+        lexique(motsAExpliquer(ex.id), ex.id)),
       h("section", {}, h("h2", {}, "Explication ligne par ligne"), ligneParLigne(ex)),
+      h("section", {},
+        h("h2", {}, "Le code pas à pas"),
+        h("p", {}, "Avancez étape par étape : ce sont les vraies valeurs du programme, enregistrées lors de son exécution."),
+        pasAPas({ code: ex.ts, trace: TRACES[ex.id], mots: motsDuCours(ex.id) })),
       h("section", {},
         h("h2", {}, "Résultat attendu"),
         h("pre", { class: "terminal", tabindex: "0" }, ex.sortie),
@@ -111,6 +135,7 @@ export function vueCours(ex) {
         h("div", { class: "erreurs-freq" }, ex.erreurs.map(([titre, texte]) =>
           h("div", {}, riche("h3", titre), riche("p", texte))))),
       h("section", {}, h("h2", {}, "À retenir"), h("ul", { class: "retenir" }, ex.retenir.map((r) => riche("li", r)))),
+      liensNotions(ex),
       h("div", { class: "actions" },
         h("a", { class: "bouton fort", href: `#/exercice/${ex.id}/quiz` }, "Passer au quiz"),
         precedent ? h("a", { class: "bouton", href: `#/exercice/${precedent.id}` }, `Revoir l’exercice ${nn(precedent.id)}`) : null)),
@@ -142,9 +167,9 @@ function champOption(question, i, indexOption, texte, reponses, type) {
   return h("label", { class: "option", "data-valeur": String(valeur) }, entree, h("span", {}, contenu));
 }
 
-function carteQuestion(question, i, reponses, mots) {
+function carteQuestion(question, i, reponses, mots, avecExercice) {
   const titre = h("legend", {},
-    h("span", { class: "format" }, FORMATS[question.t]),
+    h("span", { class: "format" }, avecExercice ? `Exercice ${nn(question._ex)}. ${FORMATS[question.t]}` : FORMATS[question.t]),
     h("span", { html: `${i + 1}. ${enLigne(question.q)}` }));
   const corps = [];
 
@@ -183,7 +208,7 @@ function estBonneOption(question, valeurTexte) {
   return question.a === Number(valeurTexte);
 }
 
-function afficherCorrection(carte, question, detail, reponse) {
+function afficherCorrection(carte, question, detail) {
   carte.querySelectorAll("input").forEach((entree) => { entree.disabled = true; });
 
   if (question.t === "completer") {
@@ -209,70 +234,100 @@ function afficherCorrection(carte, question, detail, reponse) {
   const solution = question.t === "completer" && !detail.juste
     ? h("p", { html: `Réponse attendue : <code>${enLigne(question.r[0]).replace(/<\/?code>/g, "")}</code>` })
     : null;
-  void reponse;
   carte.append(h("div", { class: "explication", "data-etat": detail.juste ? "juste" : "faux" },
     h("strong", {}, statut), solution, riche("span", question.e)));
 }
 
-export function vueQuiz(ex, naviguer) {
-  store.marquerVisite(ex.id);
+// Moteur commun aux quiz : l'exercice, les questions ratées et les révisions.
+export function construireQuiz({ questions, surCorrection, avecExercice = false, introduction }) {
   const conteneur = h("div", { class: "quiz" });
-  const mots = motsDeLExercice(ex.id);
 
   function demarrer() {
-    const reponses = new Array(ex.quiz.length);
-    const cartes = ex.quiz.map((q, i) => carteQuestion(q, i, reponses, mots));
+    const reponses = new Array(questions.length);
+    const cartes = questions.map((q, i) => carteQuestion(q, i, reponses, motsDeLExercice(q._ex), avecExercice));
     const zoneResultat = h("div", { tabindex: "-1", "aria-live": "polite" });
     const verifier = h("button", {
       class: "bouton fort",
       type: "button",
       onclick: () => {
-        const correction = corrigerQuiz(ex.quiz, reponses);
-        const { nouveauRecord } = store.enregistrerQuiz(ex.id, correction);
-        ex.quiz.forEach((q, i) => afficherCorrection(cartes[i], q, correction.details[i], reponses[i]));
+        const correction = corrigerQuiz(questions, reponses);
+        questions.forEach((q, i) => afficherCorrection(cartes[i], q, correction.details[i]));
         pied.remove();
-        afficherResultat(correction, nouveauRecord, zoneResultat);
-        naviguer.rafraichirRail();
+        surCorrection(correction, zoneResultat, () => { demarrer(); window.scrollTo(0, 0); });
         zoneResultat.focus();
         zoneResultat.scrollIntoView({ block: "start" });
       },
     }, "Vérifier mes réponses");
     const pied = h("div", { class: "pied-quiz" }, verifier,
-      h("span", {}, `${ex.quiz.length} questions. Vous pouvez modifier vos réponses avant de vérifier. Une question sans réponse ne rapporte aucun point.`));
+      h("span", {}, introduction ?? `${questions.length} questions. Vous pouvez modifier vos réponses avant de vérifier. Une question sans réponse ne rapporte aucun point.`));
     conteneur.replaceChildren(zoneResultat, ...cartes, pied);
   }
 
-  function afficherResultat(correction, nouveauRecord, zone) {
-    const s = store.suivi(ex.id);
-    const message = correction.valide
-      ? `Exercice validé : il fallait au moins ${SEUIL_VALIDATION}/10.`
-      : `Il faut au moins ${SEUIL_VALIDATION}/10 pour valider cet exercice. Lisez les explications, puis réessayez.`;
-    zone.replaceChildren(h("div", { class: "resultat" },
-      h("div", { class: "note-sur" }, `${noteTexte(correction.score)}/10`),
-      h("p", {}, `${correction.justes} bonne${correction.justes > 1 ? "s" : ""} réponse${correction.justes > 1 ? "s" : ""} sur ${correction.total}${correction.sansReponse ? `, ${correction.sansReponse} sans réponse` : ""}. ${message}`),
-      h("p", {}, nouveauRecord ? "C’est votre meilleur score sur ce quiz." : `Votre meilleur score reste ${noteTexte(s.meilleur)}/10.`),
-      h("div", { class: "actions" },
-        h("a", { class: "bouton fort", href: `#/exercice/${ex.id}/pratique` }, "Faire l’exercice pratique"),
-        h("button", { class: "bouton", type: "button", onclick: () => { demarrer(); window.scrollTo(0, 0); } }, "Recommencer le quiz"))));
+  demarrer();
+  return conteneur;
+}
+
+export function vueQuiz(ex, naviguer) {
+  store.marquerVisite(ex.id);
+  const zone = h("div", {});
+  const questionsOfficielles = ex.quiz.map((q, i) => ({ ...q, _ex: ex.id, _i: i }));
+
+  function quizOfficiel() {
+    zone.replaceChildren(construireQuiz({
+      questions: questionsOfficielles,
+      surCorrection: (correction, resultat, recommencer) => {
+        const { nouveauRecord } = store.enregistrerQuiz(ex.id, correction);
+        naviguer.rafraichirRail();
+        const s = store.suivi(ex.id);
+        const message = correction.valide
+          ? `Exercice validé : il fallait au moins ${SEUIL_VALIDATION}/10.`
+          : `Il faut au moins ${SEUIL_VALIDATION}/10 pour valider cet exercice. Lisez les explications, puis réessayez.`;
+        const ratees = s.ratees.length;
+        resultat.replaceChildren(h("div", { class: "resultat" },
+          h("div", { class: "note-sur" }, `${noteTexte(correction.score)}/10`),
+          h("p", {}, `${correction.justes} bonne${correction.justes > 1 ? "s" : ""} réponse${correction.justes > 1 ? "s" : ""} sur ${correction.total}${correction.sansReponse ? `, ${correction.sansReponse} sans réponse` : ""}. ${message}`),
+          h("p", {}, nouveauRecord ? "C’est votre meilleur score sur ce quiz." : `Votre meilleur score reste ${noteTexte(s.meilleur)}/10.`),
+          h("div", { class: "actions" },
+            h("a", { class: "bouton fort", href: `#/exercice/${ex.id}/pratique` }, "Faire l’exercice pratique"),
+            ratees ? h("button", { class: "bouton", type: "button", onclick: () => { quizRatees(); window.scrollTo(0, 0); } }, `Refaire ${ratees > 1 ? `les ${ratees} questions ratées` : "la question ratée"}`) : null,
+            h("button", { class: "bouton", type: "button", onclick: recommencer }, "Recommencer le quiz"))));
+      },
+    }));
   }
 
-  demarrer();
-  return [entete(ex, "quiz"), conteneur];
+  // Reprise ciblée : elle corrige la liste des questions ratées, sans changer le score officiel.
+  function quizRatees() {
+    const questions = store.suivi(ex.id).ratees.map((i) => questionsOfficielles[i]);
+    zone.replaceChildren(construireQuiz({
+      questions,
+      introduction: "Seules vos questions ratées reviennent ici. Votre score officiel ne change pas.",
+      surCorrection: (correction, resultat) => {
+        questions.forEach((q, i) => store.noterReponse(ex.id, q._i, correction.details[i].juste));
+        const restantes = store.suivi(ex.id).ratees.length;
+        resultat.replaceChildren(h("div", { class: "resultat" },
+          h("div", { class: "note-sur" }, `${correction.justes}/${correction.total}`),
+          h("p", {}, restantes ? `Il reste ${restantes > 1 ? `${restantes} questions` : "1 question"} à reprendre. Le score officiel ne change qu’en recommençant le quiz complet.` : "Toutes vos erreurs sont corrigées. Le score officiel ne change qu’en recommençant le quiz complet."),
+          h("div", { class: "actions" },
+            restantes ? h("button", { class: "bouton fort", type: "button", onclick: () => { quizRatees(); window.scrollTo(0, 0); } }, "Refaire ces questions") : null,
+            h("button", { class: restantes ? "bouton" : "bouton fort", type: "button", onclick: () => { quizOfficiel(); window.scrollTo(0, 0); } }, "Recommencer le quiz complet"),
+            h("a", { class: "bouton", href: `#/exercice/${ex.id}/pratique` }, "Faire l’exercice pratique"))));
+      },
+    }));
+  }
+
+  quizOfficiel();
+  return [entete(ex, "quiz"), zone];
 }
 
 // --- Exercice pratique ---------------------------------------------------------------------
 
 function afficherVerification(zone, issue) {
   if (issue.panne) {
-    zone.replaceChildren(h("div", { class: "verdict", "data-etat": "faux" },
-      h("h3", {}, "La vérification n’a pas pu démarrer"),
-      h("p", {}, `Lancez la plateforme avec « npm start », puis rechargez la page. Détail : ${issue.panne}`)));
+    zone.replaceChildren(resultatPanne(issue.panne));
     return false;
   }
   if (issue.delaiDepasse) {
-    zone.replaceChildren(h("div", { class: "verdict", "data-etat": "faux" },
-      h("h3", {}, "Exécution interrompue après 6 secondes"),
-      h("p", {}, "Votre code ne se termine pas : vérifiez vos boucles et vos promesses.")));
+    zone.replaceChildren(resultatDelai());
     return false;
   }
   const r = issue.resultat;
@@ -287,21 +342,14 @@ function afficherVerification(zone, issue) {
     blocs.push(h("p", { class: "diag" }, riche("span", "Votre code utilise `any` : remplacez-le par un type précis.")));
   }
   if (r.diagnostics.length) {
-    blocs.push(h("div", {},
-      h("h3", {}, "Erreurs du compilateur"),
-      h("ul", { class: "diag" }, r.diagnostics.map((d) => h("li", {},
-        h("strong", {}, d.dansTests ? `Contrôle de types, TS${d.code}` : `Ligne ${d.ligne}, TS${d.code}`),
-        h("span", { class: "msg" }, d.dansTests ? `Votre code ne respecte pas le type demandé. ${d.message}` : d.message)))),
-      h("p", { class: "note" }, "Les messages restent en anglais, comme dans votre terminal.")));
+    blocs.push(h("div", {}, h("h3", {}, "Erreurs du compilateur"), listeErreurs(r.diagnostics)));
   }
   blocs.push(h("div", {},
     h("h3", {}, "Tests"),
     h("ul", { class: "tests" }, r.tests.map((t) => h("li", {},
       h("span", { class: t.ok ? "ok" : "ko" }, t.ok ? "Réussi" : "Échoué"),
-      h("span", {}, t.libelle, t.erreur && !t.ok ? ` (${t.erreur})` : ""))))));
-  if (r.erreur) {
-    blocs.push(h("p", { class: "note" }, `Erreur à l’exécution : ${r.erreur}`));
-  }
+      h("span", {}, t.libelle, t.erreur && !t.ok && !r.erreur ? ` (${expliquerExecution(t.erreur)})` : ""))))));
+  if (r.erreur) blocs.push(erreurExecution(r.erreur));
   if (r.sortie.length) {
     blocs.push(h("div", {}, h("h3", {}, "Sortie de votre programme"), h("pre", { class: "terminal", tabindex: "0" }, r.sortie.join("\n"))));
   }
@@ -371,7 +419,7 @@ export function vuePratique(ex, naviguer) {
     h("div", { class: "pratique" },
       h("section", {}, h("h2", {}, "Votre mission"), riche("p", p.enonce)),
       MOTS_PRATIQUE[ex.id].length
-        ? h("section", {}, h("h2", {}, "Mots nouveaux du code de départ"), lexique(MOTS_PRATIQUE[ex.id]))
+        ? h("section", {}, h("h2", {}, "Mots nouveaux du code de départ"), lexique(MOTS_PRATIQUE[ex.id], ex.id))
         : null,
       h("section", {},
         editeur.element,

@@ -3,6 +3,8 @@ import { EXERCICES, MODULES } from "../data/index.js";
 import { h } from "./ui.js";
 import { barreModule, vueExercices, vueModule, vueModules, vueProgression, vueTableau } from "./vues-generales.js";
 import { activerBullesMots } from "./mots-ui.js";
+import { vueBases } from "./vues-bases.js";
+import { vueQuizModule, vueQuizRevision, vueRevisions } from "./vues-revision.js";
 import { vueCours, vuePratique, vueQuiz } from "./vues-exercice.js";
 
 const rail = document.getElementById("rail");
@@ -11,8 +13,10 @@ const principal = document.getElementById("contenu");
 
 const LIENS = [
   ["#/", "Tableau de bord", "tableau"],
+  ["#/bases", "Les bases", "bases"],
   ["#/modules", "Modules", "modules"],
   ["#/exercices", "Exercices", "exercices"],
+  ["#/revisions", "Révisions", "revisions"],
   ["#/progression", "Progression", "progression"],
 ];
 
@@ -44,8 +48,8 @@ function dessinerRail(actif) {
       h("span", { class: "mod-nom" }, `${m.id}. ${m.nom}`),
       h("small", {}, `Exercices ${m.premier} à ${m.dernier}`),
       barreModule(m))));
-  onglets.replaceChildren(...LIENS.map(([href, nom, cle]) =>
-    h("a", { href, "aria-current": actif === cle ? "page" : null }, nom === "Tableau de bord" ? "Accueil" : nom)));
+  onglets.replaceChildren(...LIENS.filter(([, , cle]) => cle !== "modules").map(([href, nom, cle]) =>
+    h("a", { href, "aria-current": actif === cle ? "page" : null }, nom === "Tableau de bord" ? "Accueil" : nom === "Les bases" ? "Bases" : nom)));
 }
 
 function pageIntrouvable() {
@@ -62,6 +66,14 @@ function contenu() {
   if (page === "modules") return vueModules();
   if (page === "exercices") return vueExercices(filtres);
   if (page === "progression") return vueProgression(naviguer);
+  if (page === "bases") return vueBases();
+  if (page === "revisions") {
+    const [, cible, numero] = location.hash.replace(/^#\/?/, "").split("/");
+    if (!cible) return vueRevisions();
+    if (cible === "quiz") return vueQuizRevision(naviguer);
+    const module = MODULES.find((m) => m.id === Number(numero));
+    return cible === "module" && module ? vueQuizModule(module, naviguer) : pageIntrouvable();
+  }
   if (page === "module") {
     const module = MODULES.find((m) => m.id === id);
     return module ? vueModule(module) : pageIntrouvable();

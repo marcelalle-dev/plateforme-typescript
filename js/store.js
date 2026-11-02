@@ -3,6 +3,8 @@ import { SEUIL_VALIDATION } from "./quiz-core.js";
 
 const CLE = "ts50.progression.v1";
 const MAX_TENTATIVES = 30;
+const JOUR = 86_400_000;
+const INTERVALLES = [1, 3, 7, 14, 30];
 let memoire = lire();
 
 // Un autre onglet a enregistré : on reprend ses données pour ne pas les écraser.
@@ -66,8 +68,37 @@ export function enregistrerQuiz(id, resultat) {
   const nouveauRecord = s.meilleur === null || resultat.score > s.meilleur;
   if (nouveauRecord) s.meilleur = resultat.score;
   s.valide = s.valide || resultat.score >= SEUIL_VALIDATION;
+  s.ratees = resultat.details.flatMap((d, i) => (d.juste ? [] : [i]));
+  if (resultat.score >= SEUIL_VALIDATION && !s.revision) {
+    s.revision = { niveau: 0, prochaine: Date.now() + JOUR };
+  }
   ecrire();
   return { nouveauRecord };
+}
+
+// Une réponse donnée hors du quiz officiel met à jour les questions à reprendre.
+export function noterReponse(id, indice, juste) {
+  const s = creer(id);
+  const ratees = new Set(s.ratees ?? []);
+  if (juste) ratees.delete(indice);
+  else ratees.add(indice);
+  s.ratees = [...ratees].sort((a, b) => a - b);
+  ecrire();
+}
+
+export function noterRevision(id, reussi) {
+  const s = creer(id);
+  const niveau = reussi ? Math.min((s.revision?.niveau ?? -1) + 1, INTERVALLES.length - 1) : 0;
+  s.revision = { niveau, prochaine: Date.now() + INTERVALLES[niveau] * JOUR };
+  ecrire();
+}
+
+export function aReviser(exercices) {
+  const maintenant = Date.now();
+  return exercices.filter((e) => {
+    const r = suivi(e.id)?.revision;
+    return r && r.prochaine <= maintenant;
+  });
 }
 
 export function brouillon(id) {

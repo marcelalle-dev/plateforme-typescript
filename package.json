@@ -8,6 +8,8 @@
     "start": "node serve.mjs",
     "start:reseau": "node serve.mjs --reseau",
     "verifier": "node outils/verifier.mjs",
-    "sources": "node outils/generer-sources.mjs"
+    "sources": "node outils/generer-sources.mjs",
+    "mots": "node outils/generer-mots.mjs",
+    "traces": "node outils/generer-traces.mjs"
   }
 }

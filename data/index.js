@@ -1,4 +1,6 @@
 // Assemble les sources générées et le contenu pédagogique des cinq modules.
+import { ENRICHISSEMENT } from "./enrichissement.js";
+import { detaillerLignes } from "./lignes-detail.js";
 import { SOURCES } from "./sources.js";
 import { MODULE1 } from "./module1.js";
 import { MODULE2 } from "./module2.js";
@@ -27,4 +29,6 @@ export const EXERCICES = SOURCES.map((source) => ({
   ...source,
   module: MODULES.find((m) => source.id >= m.premier && source.id <= m.dernier).id,
   ...CONTENU[source.id],
+  ...ENRICHISSEMENT[source.id],
+  lignes: detaillerLignes(source.id, CONTENU[source.id].lignes),
 }));
