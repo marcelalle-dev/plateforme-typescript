@@ -18,7 +18,7 @@ Quand ils sont activés, un compte devient obligatoire 5 minutes après la premi
 
 Dans **Authentication**, puis **URL Configuration** :
 
-- **Site URL** : `https://marcelalle-dev.github.io/typescript-50-exercices/`
+- **Site URL** : `https://marcelalle-dev.github.io/plateforme-typescript/`
 - **Redirect URLs** : ajoutez la même adresse, ainsi que `http://localhost:5173/`.
 
 ## 4. Copier les valeurs

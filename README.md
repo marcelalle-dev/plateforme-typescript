@@ -2,7 +2,7 @@
 
 Plateforme interactive pour comprendre les exercices 01 à 100 : cours détaillé, quiz corrigé, code à écrire et suivi de progression. Aucune installation n'est nécessaire en dehors de Node.js, et tout fonctionne hors ligne.
 
-**Version en ligne :** https://marcelalle-dev.github.io/typescript-50-exercices/
+**Version en ligne :** https://marcelalle-dev.github.io/plateforme-typescript/
 
 ## Lancer la plateforme
 
