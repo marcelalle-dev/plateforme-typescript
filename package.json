@@ -11,7 +11,8 @@
     "sources": "node outils/generer-sources.mjs",
     "mots": "node outils/generer-mots.mjs",
     "traces": "node outils/generer-traces.mjs",
-    "test:fusion": "node outils/test-fusion.mjs"
+    "test:fusion": "node outils/test-fusion.mjs",
+    "hors-ligne": "node outils/generer-hors-ligne.mjs"
   },
   "devDependencies": {
     "supabase": "^2.122.0"

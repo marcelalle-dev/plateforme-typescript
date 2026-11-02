@@ -250,3 +250,19 @@ export async function reactiverCompte() {
   prevenir({ session: true });
   await synchroniser();
 }
+
+export async function lireAvis() {
+  const { data, error } = await client.from("avis").select("note, commentaire").eq("id_utilisateur", etat.session.user.id).maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
+export async function envoyerAvis({ note, commentaire }) {
+  const { error } = await client.from("avis").upsert({
+    id_utilisateur: etat.session.user.id,
+    note,
+    commentaire,
+    modifie_le: new Date().toISOString(),
+  });
+  if (error) throw error;
+}

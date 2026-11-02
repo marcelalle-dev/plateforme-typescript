@@ -2,9 +2,10 @@
 import { EXERCICES, MODULES, NIVEAUX } from "../data/index.js";
 import { MOTS_PRATIQUE } from "../data/mots.js";
 import { TRACES } from "../data/traces.js";
-import { bacASable, erreurExecution, listeErreurs, pasAPas, resultatDelai, resultatPanne } from "./composants.js";
+import { bacASable, erreurExecution, listeErreurs, pasAPas, resultatDelai, resultatPanne, sommaire } from "./composants.js";
 import { creerEditeur } from "./editeur.js";
 import { expliquerExecution } from "./erreurs-fr.js";
+import { animerResultat } from "./motion.js";
 import { lexique, motsAExpliquer, motsDeLExercice, motsDuCours } from "./mots-ui.js";
 import { corrigerQuiz, SEUIL_VALIDATION } from "./quiz-core.js";
 import { blocCode, enLigne, h, melanger, noteTexte, riche } from "./ui.js";
@@ -27,7 +28,7 @@ function entete(ex, etape) {
   const s = store.suivi(ex.id);
   const lien = (cible, texte, cle, fait) =>
     h("li", {}, h("a", { href: `#/exercice/${ex.id}${cible}`, "aria-current": etape === cle ? "step" : null },
-      texte, fait ? h("span", { class: "fait" }, " ✓") : null));
+      texte, fait ? h("span", { class: "fait" }, " ✓") : null, etape === cle ? h("span", { class: "etape-trait", "aria-hidden": "true" }) : null));
   return h("header", {},
     h("p", { class: "fil" }, h("a", { href: `#/module/${module.id}` }, `Module ${module.id}, ${module.nom}`)),
     h("h1", {}, `Exercice ${nn(ex.id)} : ${ex.titre}`),
@@ -104,9 +105,7 @@ function liensNotions(ex) {
 export function vueCours(ex) {
   store.marquerVisite(ex.id);
   const { precedent } = voisins(ex);
-  return [
-    entete(ex, "cours"),
-    h("div", { class: "cours" },
+  const cours = h("div", { class: "cours" },
       h("section", { class: "objectif" }, h("h2", {}, "Objectif"), riche("p", ex.objectif)),
       h("section", {}, h("h2", {}, "Explication simple"), ex.simple.map((p) => riche("p", p))),
       ex.approfondir
@@ -138,8 +137,8 @@ export function vueCours(ex) {
       liensNotions(ex),
       h("div", { class: "actions" },
         h("a", { class: "bouton fort", href: `#/exercice/${ex.id}/quiz` }, "Passer au quiz"),
-        precedent ? h("a", { class: "bouton", href: `#/exercice/${precedent.id}` }, `Revoir l’exercice ${nn(precedent.id)}`) : null)),
-  ];
+        precedent ? h("a", { class: "bouton", href: `#/exercice/${precedent.id}` }, `Revoir l’exercice ${nn(precedent.id)}`) : null));
+  return [entete(ex, "cours"), h("div", { class: "cours-cadre" }, cours, sommaire(cours))];
 }
 
 // --- Quiz ----------------------------------------------------------------------------------
@@ -254,6 +253,7 @@ export function construireQuiz({ questions, surCorrection, avecExercice = false,
         questions.forEach((q, i) => afficherCorrection(cartes[i], q, correction.details[i]));
         pied.remove();
         surCorrection(correction, zoneResultat, () => { demarrer(); window.scrollTo(0, 0); });
+        animerResultat(zoneResultat, correction.valide);
         zoneResultat.focus();
         zoneResultat.scrollIntoView({ block: "start" });
       },

@@ -175,3 +175,27 @@ export function pasAPas({ code, trace, mots }) {
       sortie,
       trace.tronque ? h("p", { class: "note" }, `Seules les ${etapes.length} premières étapes sont montrées, sur ${trace.total}.`) : null));
 }
+
+// Sommaire latéral des longs cours, sur les grands écrans. La section visible y est signalée.
+export function sommaire(racine) {
+  const titres = [...racine.querySelectorAll(":scope > section > h2")];
+  const boutons = titres.map((titre) => h("button", {
+    class: "sommaire-lien",
+    type: "button",
+    onclick: () => titre.scrollIntoView({ behavior: "smooth", block: "start" }),
+  }, titre.textContent));
+  const nav = h("nav", { class: "sommaire", "aria-label": "Sur cette page" },
+    h("h2", {}, "Sur cette page"),
+    boutons);
+  if ("IntersectionObserver" in window) {
+    const suivi = new IntersectionObserver((entrees) => {
+      for (const e of entrees) {
+        if (!e.isIntersecting) continue;
+        const i = titres.indexOf(e.target);
+        boutons.forEach((b, n) => b.toggleAttribute("data-actif", n === i));
+      }
+    }, { rootMargin: "-10% 0px -75% 0px" });
+    titres.forEach((t) => suivi.observe(t));
+  }
+  return nav;
+}

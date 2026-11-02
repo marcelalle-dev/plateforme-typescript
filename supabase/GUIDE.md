@@ -38,6 +38,8 @@ Le service d'e-mails inclus envoie très peu de messages par heure. Pour quelque
 
 Dans **Table Editor**, ouvrez la vue `suivi` : prénom, e-mail, date d'inscription, dernière visite, exercices validés et moyenne des quiz.
 
+Pour lire les avis, ouvrez la vue `avis_recus` dans **Table Editor**.
+
 Les utilisateurs peuvent désactiver leur compte, mais pas le supprimer. Pour effacer un compte, par exemple à la demande de son titulaire : **Authentication**, puis **Users**, puis supprimez l'utilisateur. Ses données sont effacées avec lui.
 
 Le projet gratuit se met en pause après une semaine d'inactivité. Réactivez-le depuis le tableau de bord : le site et les cours restent accessibles entre-temps.

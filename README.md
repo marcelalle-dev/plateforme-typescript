@@ -50,6 +50,10 @@ npm run verifier
 
 Ce contrôle confirme que chaque ligne et chaque mot du code sont expliqués, exécute les questions de prédiction, compile les questions d'erreur avec le code annoncé, et s'assure que chaque solution pratique réussit et que chaque code de départ échoue.
 
+## Sans connexion
+
+Après une première visite avec Internet, un service (`sw.js`) garde le site sur l'appareil : cours, quiz, éditeur et compilateur fonctionnent sans connexion, et la plateforme s'installe comme une application. La progression est envoyée au compte au retour de la connexion. Après toute modification du site, relancez `npm run hors-ligne`, sinon les visiteurs garderont l'ancienne version.
+
 ## Comptes
 
 Les comptes s'activent avec Supabase : voir [supabase/GUIDE.md](supabase/GUIDE.md). Un compte devient obligatoire 5 minutes après la première visite. Sans configuration, ou si le service est indisponible, tout fonctionne dans le navigateur.

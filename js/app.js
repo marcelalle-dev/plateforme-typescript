@@ -1,10 +1,14 @@
 // Point d’entrée : navigation par ancres (#/...) et cadre commun des pages.
 import { EXERCICES, MODULES } from "../data/index.js";
+import { icone } from "./icones.js";
+import { apresRendu, transitionPage } from "./motion.js";
 import { h } from "./ui.js";
 import { barreModule, vueExercices, vueModule, vueModules, vueProgression, vueTableau } from "./vues-generales.js";
 import { demarrerEssai, essaiTermine, etatService, tempsRestant, testerService } from "./acces.js";
 import { demarrerCompte, etatCompte, surChangementCompte } from "./compte.js";
+import { activerHorsLigne } from "./hors-ligne.js";
 import { activerBullesMots } from "./mots-ui.js";
+import { vueAvis } from "./vues-avis.js";
 import { vueCompte, vueCompteDesactive } from "./vues-compte.js";
 import { vueBases } from "./vues-bases.js";
 import { vueQuizModule, vueQuizRevision, vueRevisions } from "./vues-revision.js";
@@ -21,6 +25,7 @@ const LIENS = [
   ["#/exercices", "Exercices", "exercices"],
   ["#/revisions", "Révisions", "revisions"],
   ["#/progression", "Progression", "progression"],
+  ["#/avis", "Mon avis", "avis"],
 ];
 
 const filtres = { texte: "", etat: "tous", niveau: "tous", module: "tous" };
@@ -41,13 +46,13 @@ function section() {
 
 function dessinerRail(actif) {
   const lien = ([href, nom, cle]) =>
-    h("a", { href, "aria-current": actif === cle ? "page" : null }, nom);
+    h("a", { href, "aria-current": actif === cle ? "page" : null }, icone(cle), nom);
   const compte = etatCompte();
   const liensRail = compte.actif
     ? [...LIENS, ["#/compte", compte.session ? "Mon compte" : "Se connecter", "compte"]]
     : LIENS;
   rail.replaceChildren(
-    h("a", { class: "marque", href: "#/" }, "TypeScript en 50 exercices", h("span", {}, "Cours, quiz et pratique")),
+    h("a", { class: "marque", href: "#/" }, h("b", { class: "logo", "aria-hidden": "true" }, "TS"), h("span", {}, "TypeScript en 50 exercices", h("small", {}, "Cours, quiz et pratique"))),
     h("nav", { "aria-label": "Navigation principale" },
       h("ul", { class: "nav-rail" }, liensRail.map((l) => h("li", {}, lien(l))))),
     h("h2", {}, "Modules"),
@@ -55,8 +60,8 @@ function dessinerRail(actif) {
       h("span", { class: "mod-nom" }, `${m.id}. ${m.nom}`),
       h("small", {}, `Exercices ${m.premier} à ${m.dernier}`),
       barreModule(m))));
-  onglets.replaceChildren(...LIENS.filter(([, , cle]) => cle !== "modules").map(([href, nom, cle]) =>
-    h("a", { href, "aria-current": actif === cle ? "page" : null }, nom === "Tableau de bord" ? "Accueil" : nom === "Les bases" ? "Bases" : nom)));
+  onglets.replaceChildren(...LIENS.filter(([, , cle]) => cle !== "modules" && cle !== "avis").map(([href, nom, cle]) =>
+    h("a", { href, "aria-current": actif === cle ? "page" : null }, icone(cle), h("span", {}, nom === "Tableau de bord" ? "Accueil" : nom === "Les bases" ? "Bases" : nom === "Progression" ? "Progrès" : nom))));
 }
 
 function texteRestant() {
@@ -89,6 +94,7 @@ function contenu() {
   if (page === "progression") return vueProgression(naviguer);
   if (page === "bases") return vueBases();
   if (page === "compte") return vueCompte();
+  if (page === "avis") return vueAvis();
   if (page === "revisions") {
     const [, cible, numero] = location.hash.replace(/^#\/?/, "").split("/");
     if (!cible) return vueRevisions();
@@ -147,10 +153,41 @@ function afficher() {
   const titre = principal.querySelector("h1");
   document.title = titre ? `${titre.textContent} | TypeScript en 50 exercices` : "TypeScript en 50 exercices";
   principal.focus({ preventScroll: true });
+  apresRendu(principal);
+}
+
+// Le sens du glissement suit le parcours : on avance dans l'exercice, ou on revient en arrière.
+let rangPrecedent = null;
+
+function rangPage() {
+  const { page, id, etape } = analyser();
+  if (page !== "exercice") return null;
+  return id * 10 + ({ quiz: 1, pratique: 2 }[etape] ?? 0);
+}
+
+function changerDePage() {
+  const rang = rangPage();
+  let sens = "fondu";
+  if (rang !== null && rangPrecedent !== null && rang !== rangPrecedent) sens = rang > rangPrecedent ? "avant" : "arriere";
+  rangPrecedent = rang;
+  transitionPage(afficher, sens);
 }
 
 // Un changement de compte redessine la page, sauf pendant un quiz ou de la pratique en cours.
-surChangementCompte(({ session, donnees, statut }) => {
+let premierRendu = false;
+let dernierEtat = "";
+
+function resumeCompte() {
+  const { actif, session, desactive, recuperation } = etatCompte();
+  return `${actif}|${session?.user.id ?? ""}|${desactive}|${recuperation}`;
+}
+
+surChangementCompte(({ session: changementSession, donnees, statut }) => {
+  if (!premierRendu) return;
+  // Le service prévient aussi quand rien n'a changé : redessiner interromprait les animations.
+  const resume = resumeCompte();
+  const session = changementSession && resume !== dernierEtat;
+  dernierEtat = resume;
   const { page, etape } = analyser();
   const enTravail = (page === "exercice" && etape) || (page === "revisions" && location.hash.split("/").length > 2);
   if (acces() !== accesAffiche) return void afficher();
@@ -160,7 +197,8 @@ surChangementCompte(({ session, donnees, statut }) => {
   else if (statut && page === "compte") afficher();
 });
 activerBullesMots();
-window.addEventListener("hashchange", afficher);
+activerHorsLigne();
+window.addEventListener("hashchange", changerDePage);
 
 // Vérifie régulièrement la règle : le blocage s'applique même au milieu d'une page.
 async function surveiller() {
@@ -172,7 +210,11 @@ async function surveiller() {
 }
 
 await demarrerEssai();
+rangPrecedent = rangPage();
+const compteDemarre = demarrerCompte();
 afficher();
-demarrerCompte();
+dernierEtat = resumeCompte();
+premierRendu = true;
+compteDemarre.catch(() => {});
 setInterval(surveiller, 5000);
 surveiller();

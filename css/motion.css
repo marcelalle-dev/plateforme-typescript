@@ -1,0 +1,100 @@
+/* Mouvement : seules transform et opacity sont animées, pour rester fluide sur un petit téléphone.
+   Les entrées durent plus longtemps que les sorties ; les réponses à une action restent brèves. */
+:root {
+  --sortie: cubic-bezier(0.22, 1, 0.36, 1);
+  --rebond: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --rapide: 130ms;
+  --moyen: 240ms;
+  --lent: 420ms;
+}
+
+/* Transition entre les pages : le menu ne bouge pas, seul le contenu glisse. */
+.principal { view-transition-name: contenu; }
+.etape-trait { view-transition-name: etape-active; }
+::view-transition-group(root) { animation: none; }
+::view-transition-old(root), ::view-transition-new(root) { animation: none; }
+::view-transition-old(contenu) { animation: page-sort var(--rapide) ease-in both; }
+::view-transition-new(contenu) { animation: page-entre var(--moyen) var(--sortie) both; }
+::view-transition-group(etape-active) { animation-duration: var(--moyen); animation-timing-function: var(--sortie); }
+[data-sens="avant"]::view-transition-old(contenu) { animation-name: sort-gauche; }
+[data-sens="avant"]::view-transition-new(contenu) { animation-name: entre-droite; }
+[data-sens="arriere"]::view-transition-old(contenu) { animation-name: sort-droite; }
+[data-sens="arriere"]::view-transition-new(contenu) { animation-name: entre-gauche; }
+
+@keyframes page-sort { to { opacity: 0; } }
+@keyframes page-entre { from { opacity: 0; transform: translateY(8px); } }
+@keyframes sort-gauche { to { opacity: 0; transform: translateX(-18px); } }
+@keyframes entre-droite { from { opacity: 0; transform: translateX(26px); } }
+@keyframes sort-droite { to { opacity: 0; transform: translateX(18px); } }
+@keyframes entre-gauche { from { opacity: 0; transform: translateX(-26px); } }
+
+/* Apparition au défilement */
+.a-reveler { opacity: 0; transform: translateY(12px); transition: opacity var(--lent) var(--sortie), transform var(--lent) var(--sortie); }
+.a-reveler.apparu { opacity: 1; transform: none; }
+
+/* La vague de la grille d'accueil, en diagonale */
+.grille.vague .case { animation: case-apparait 460ms var(--sortie) both; animation-delay: calc(var(--i, 0) * 34ms + 120ms); }
+@keyframes case-apparait { from { opacity: 0; transform: scale(0.72) translateY(6px); } }
+
+/* Réponses aux actions */
+.bouton, .volet, .lien, .nav-rail a, .onglets a, .option, .case, .etapes a { transition: transform var(--rapide) ease, background-color var(--rapide) ease, border-color var(--rapide) ease, color var(--rapide) ease, box-shadow var(--rapide) ease; }
+.bouton:active, .case:active, .option:active, .onglets a:active { transform: scale(0.97); }
+@media (hover: hover) {
+  .bouton:hover { transform: translateY(-1px); }
+  .bouton:active { transform: scale(0.97); }
+  .nav-rail a:hover .icone { transform: translateX(2px); }
+}
+.icone { transition: transform var(--rapide) ease; }
+.onglets a[aria-current="page"] .icone { animation: icone-active var(--moyen) var(--rebond); }
+@keyframes icone-active { from { transform: translateY(3px) scale(0.86); } }
+
+/* Correction du quiz */
+.option[data-correction="juste"] { animation: juste-pop var(--moyen) var(--rebond); }
+.option[data-correction="faux"] { animation: faux-secoue 320ms ease; }
+@keyframes juste-pop { 40% { transform: scale(1.012); } }
+@keyframes faux-secoue { 25% { transform: translateX(-4px); } 60% { transform: translateX(3px); } 85% { transform: translateX(-1px); } }
+.explication, .verdict, .bac-resultat > *, .diag li { animation: entree-douce var(--moyen) var(--sortie) both; }
+@keyframes entree-douce { from { opacity: 0; transform: translateY(6px); } }
+
+/* Résultat du quiz et gerbe de validation */
+.resultat { position: relative; overflow: hidden; }
+.resultat-entre { animation: resultat-entre var(--lent) var(--sortie) both; }
+@keyframes resultat-entre { from { opacity: 0; transform: translateY(14px) scale(0.985); } }
+.gerbe { position: absolute; top: 44px; left: 72px; pointer-events: none; }
+.gerbe i { position: absolute; width: 10px; height: 10px; border-radius: 2px; background: var(--marqueur); animation: gerbe 900ms var(--sortie) both; animation-delay: var(--d, 0ms); }
+.gerbe i[data-teinte="ts"] { background: #8FC1FF; }
+@keyframes gerbe {
+  0% { opacity: 1; transform: translate(0, 0) scale(1); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(0.4) rotate(120deg); }
+}
+
+/* Pas à pas : la variable qui change s'allume, la ligne en cours glisse en douceur. */
+.pas-ligne { transition: background-color var(--moyen) ease, border-color var(--moyen) ease; }
+.pas-var.change { animation: variable-change 420ms var(--sortie); }
+@keyframes variable-change { from { transform: scale(1.03); opacity: 0.4; } }
+.pas-phrase { animation: entree-douce var(--rapide) ease; }
+
+/* Ouvertures */
+.bac:not([hidden]) { animation: entree-douce var(--moyen) var(--sortie); }
+.bulle-mot { animation: bulle-entre 160ms var(--sortie); transform-origin: top left; }
+@keyframes bulle-entre { from { opacity: 0; transform: translateY(4px) scale(0.97); } }
+.bandeau-hors-ligne { animation: bandeau-descend var(--moyen) var(--sortie); }
+@keyframes bandeau-descend { from { transform: translateY(-100%); } }
+.jauge i { transform-origin: left; animation: jauge-remplit 800ms var(--sortie) both; }
+@keyframes jauge-remplit { from { transform: scaleX(0); } }
+.approfondir { animation: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after, ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) {
+    animation-duration: 1ms !important;
+    animation-delay: 0ms !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+  .a-reveler { opacity: 1; transform: none; }
+}
+
+@media print {
+  .a-reveler { opacity: 1; transform: none; }
+}

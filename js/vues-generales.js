@@ -1,6 +1,7 @@
 // Tableau de bord, modules, liste des exercices et progression.
 import { EXERCICES, MODULES, NIVEAUX } from "../data/index.js";
 import { etatCompte } from "./compte.js";
+import { pretHorsLigne } from "./hors-ligne.js";
 import { notionsFragiles } from "./notions.js";
 import { etatCase, h, legendeGrille, noteTexte, riche } from "./ui.js";
 import * as store from "./store.js";
@@ -188,6 +189,21 @@ export function vueExercices(filtres) {
   ];
 }
 
+function sectionHorsLigne() {
+  const etat = h("p", {}, "Vérification en cours.");
+  pretHorsLigne().then((pret) => {
+    etat.textContent = pret
+      ? "Cet appareil est prêt : les cours, les quiz et l’éditeur fonctionnent sans connexion."
+      : "Le site se prépare pour fonctionner sans connexion. Gardez la connexion quelques instants, puis rechargez la page.";
+  }, () => {
+    etat.textContent = "Ce navigateur ne permet pas d’utiliser la plateforme sans connexion.";
+  });
+  return h("section", { class: "section" },
+    h("h2", {}, "Sans connexion"),
+    etat,
+    h("p", { class: "note" }, "Une première visite avec Internet est nécessaire. Pour ouvrir la plateforme comme une application, utilisez « Ajouter à l’écran d’accueil » ou « Installer » dans le menu du navigateur. S’inscrire et se connecter demandent une connexion."));
+}
+
 export function vueProgression(naviguer) {
   const st = store.statistiques(EXERCICES);
   const termines = EXERCICES.filter((e) => store.suivi(e.id)?.valide);
@@ -262,5 +278,6 @@ export function vueProgression(naviguer) {
           etatCompte().actif ? h("a", { href: "#/compte" }, "Créer un compte pour la retrouver partout") : null),
       store.stockageDisponible() ? null : h("p", { class: "explication", "data-etat": "faux" }, "Le stockage local est bloqué : votre progression sera perdue à la fermeture de la page."),
       zoneReset),
+    sectionHorsLigne(),
   ];
 }
