@@ -1,0 +1,13 @@
+{
+  "name": "plateforme-typescript-50",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Plateforme interactive pour apprendre TypeScript avec 50 exercices",
+  "scripts": {
+    "start": "node serve.mjs",
+    "start:reseau": "node serve.mjs --reseau",
+    "verifier": "node outils/verifier.mjs",
+    "sources": "node outils/generer-sources.mjs"
+  }
+}
