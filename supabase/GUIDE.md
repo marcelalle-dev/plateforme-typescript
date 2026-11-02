@@ -32,7 +32,9 @@ Ne copiez jamais la clé `service_role` ou `sb_secret_...`.
 
 ## 5. E-mails de confirmation
 
-Le service d'e-mails inclus envoie très peu de messages par heure. Pour quelques utilisateurs, cela suffit. Pour davantage, configurez votre propre service d'envoi (**Authentication**, puis **SMTP Settings**).
+La confirmation par e-mail est désactivée (`enable_confirmations = false` dans `config.toml`) : le service d'e-mails inclus envoie trop peu de messages par heure et bloquait les inscriptions. Les comptes sont donc créés sans vérifier l'adresse, et les e-mails de réinitialisation du mot de passe restent soumis à ce quota.
+
+Pour la réactiver, configurez d'abord votre propre service d'envoi (**Authentication**, puis **SMTP Settings**), repassez la valeur à `true`, puis lancez `npx supabase config push`. Refusez l'envoi de la partie storage si elle est proposée.
 
 ## Voir qui utilise la plateforme
 
