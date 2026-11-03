@@ -7,6 +7,7 @@ import { barreModule, vueExercices, vueModule, vueModules, vueProgression, vueTa
 import { demarrerEssai, essaiTermine, etatService, tempsRestant, testerService } from "./acces.js";
 import { demarrerCompte, etatCompte, surChangementCompte } from "./compte.js";
 import { activerHorsLigne } from "./hors-ligne.js";
+import { arreterLecture, lecteur, lectureEnCours } from "./lecture.js";
 import { activerBullesMots } from "./mots-ui.js";
 import { vueAvis } from "./vues-avis.js";
 import { vueCompte, vueCompteDesactive } from "./vues-compte.js";
@@ -128,6 +129,7 @@ function acces() {
 let accesAffiche = null;
 
 function afficher() {
+  arreterLecture();
   const situation = acces();
   accesAffiche = situation;
   document.body.classList.toggle("verrou", situation !== "libre");
@@ -148,7 +150,7 @@ function afficher() {
     return;
   }
   dessinerRail(section());
-  principal.replaceChildren(...[bandeauEssai(), ...contenu().flat()].filter(Boolean));
+  principal.replaceChildren(...[bandeauEssai(), lecteur(principal), ...contenu().flat()].filter(Boolean));
   window.scrollTo(0, 0);
   const titre = principal.querySelector("h1");
   document.title = titre ? `${titre.textContent} | Plateforme interactive TypeScript personnalisée` : "Plateforme interactive TypeScript personnalisée";
@@ -173,7 +175,7 @@ function changerDePage() {
   transitionPage(afficher, sens);
 }
 
-// Un changement de compte redessine la page, sauf pendant un quiz ou de la pratique en cours.
+// Un changement de compte redessine la page, sauf pendant un quiz, de la pratique ou une lecture en cours.
 let premierRendu = false;
 let dernierEtat = "";
 
@@ -189,7 +191,7 @@ surChangementCompte(({ session: changementSession, donnees, statut }) => {
   const session = changementSession && resume !== dernierEtat;
   dernierEtat = resume;
   const { page, etape } = analyser();
-  const enTravail = (page === "exercice" && etape) || (page === "revisions" && location.hash.split("/").length > 2);
+  const enTravail = (page === "exercice" && etape) || (page === "revisions" && location.hash.split("/").length > 2) || lectureEnCours();
   if (acces() !== accesAffiche) return void afficher();
   if (accesAffiche !== "libre") return;
   dessinerRail(section());

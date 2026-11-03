@@ -269,6 +269,17 @@ body.verrou .rail, body.verrou .onglets { display: none; }
 body.verrou .pied-site { padding-bottom: 18px; }
 body.verrou .principal { margin-inline: auto; max-width: 560px; }
 
+/* Lecture à voix haute */
+.lecteur { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; margin: 0 0 22px; padding: 8px 10px; background: var(--surface); border: 1px solid var(--trait); border-radius: 8px; font-size: 0.93rem; }
+.lecteur:not([data-etat="arret"]) { position: sticky; top: 8px; z-index: 6; box-shadow: 0 4px 14px rgb(0 0 0 / .14); }
+.lecteur .bouton { min-height: 40px; padding: 6px 12px; font-size: 0.93rem; }
+.lecteur label { display: inline-flex; align-items: center; gap: 6px; }
+.lecteur select { min-height: 40px; padding: 4px 6px; background: var(--surface); color: var(--encre); border: 1px solid var(--trait); border-radius: 6px; font: inherit; }
+.lecteur-avancee { font-weight: 700; font-variant-numeric: tabular-nums; }
+.lecteur-statut { color: var(--encre-douce); }
+.lecteur-statut:empty { display: none; }
+.en-lecture { outline: 3px solid var(--marqueur); outline-offset: 3px; border-radius: 3px; scroll-margin-block: 130px; }
+
 /* Pied de page et avis */
 .pied-site { padding: 16px 16px 18px; border-top: 1px solid var(--trait); color: var(--encre-douce); font-size: 0.93rem; text-align: center; }
 .groupe-note { width: 100%; margin: 0; padding: 0; border: 0; }

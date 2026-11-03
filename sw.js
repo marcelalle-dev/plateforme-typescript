@@ -1,6 +1,6 @@
 // Fichier généré par outils/generer-hors-ligne.mjs : ne pas modifier à la main.
 const GROUPES = {
- "ts50-site-f9ad68a2aa49": [
+ "ts50-site-cf6112e7bd8b": [
   "index.html",
   "manifest.webmanifest",
   "icone-192.png",
@@ -17,6 +17,7 @@ const GROUPES = {
   "js/fusion.js",
   "js/hors-ligne.js",
   "js/icones.js",
+  "js/lecture.js",
   "js/motion.js",
   "js/mots-code.js",
   "js/mots-ui.js",
